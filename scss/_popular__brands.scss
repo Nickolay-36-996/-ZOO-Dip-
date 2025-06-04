@@ -1,0 +1,65 @@
+.popualr__brands {
+  background-color: #f6f6f7;
+}
+
+.popular__brands__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 56px 0px;
+}
+
+.popular__brands__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 32px;
+  color: #202223;
+}
+
+.popular__brands__box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 25px;
+  max-height: 395px;
+  overflow: hidden;
+}
+
+.popular__brand {
+  border-radius: 4px;
+  max-width: 174px;
+  max-height: 116px;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  padding: 14px 20px;
+  aspect-ratio: 174 / 116;
+}
+
+.popular__brand__img {
+  max-width: 134px;
+  max-height: 87px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.watch__more__brands {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: white;
+  background-color: #00A0AC;
+  border-radius: 4px;
+  padding: 12px 24px;
+  transition: linear .3s;
+}
+
+.watch__more__brands:hover {
+  box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 0px 0px rgba(0, 0, 0, 0.08);
+  background-color: #347c84;
+}

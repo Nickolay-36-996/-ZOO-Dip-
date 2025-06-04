@@ -1,0 +1,64 @@
+.about__owner__wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 110px;
+}
+
+.about__owner__content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.about__owner__content__title__box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.about__owner__content__title {
+    font-family: SF Pro Display;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 32px;
+    color: #202223;
+}
+
+.about__owner__content__title__txt {
+    font-family: SF Pro Text;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 125%;
+    color: #202223;
+}
+
+.about__owner__content__services {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.about__owner__content__service {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 2px solid #98C6CD;
+    padding-left: 12px;
+}
+
+.about__owner__content__service__title {
+    font-family: SF Pro Text;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 125%;
+    color: #202223;
+}
+
+.about__owner__content__service__txt {
+    font-family: SF Pro Text;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 125%;
+    color: #202223;
+}
