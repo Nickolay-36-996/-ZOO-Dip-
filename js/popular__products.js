@@ -110,8 +110,10 @@ document.addEventListener("DOMContentLoaded", () => {
             ${
               discountPercent > 0
                 ? `
+                <div class="popular__products__card__pay__price__box">
               <p class="popular__products__card__pay__price__old">${displayOldPrice} BYN</p>
               <p class="popular__products__card__pay__price__p">${displayPrice} BYN</p>
+              </div>
             `
                 : `
               <p class="popular__products__card__pay__price__p">${displayPrice} BYN</p>
@@ -194,29 +196,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function initSliderControls() {
-    const gap = 30;
-    const cardCount = container.children.length;
-    const widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
+ function initSliderControls() {
+  let cardWidth, gap, widthAllElements, cardCount;
+  let saveTranslate = 0;
 
-    vectorLeft.addEventListener("click", function (event) {
-      if (saveTranslate >= 0) {
-        saveTranslate = -widthAllElements + cardWidth;
-        container.style.transform = `translateX(${saveTranslate}px)`;
-      } else {
-        saveTranslate = saveTranslate + (cardWidth + gap);
-        container.style.transform = `translateX(${saveTranslate}px)`;
-      }
-    });
-
-    vectorRight.addEventListener("click", function (event) {
-      if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
-        saveTranslate = saveTranslate - (cardWidth + gap);
-        container.style.transform = `translateX(${saveTranslate}px)`;
-      } else {
-        saveTranslate = 0;
-        container.style.transform = `translateX(0)`;
-      }
-    });
+  function updateSizes() {
+    cardCount = container.children.length;
+    cardWidth = container.children[0].offsetWidth;
+    gap = parseInt(window.getComputedStyle(container).gap) || 30;
+    widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
   }
+
+  updateSizes();
+
+  vectorLeft.addEventListener("click", function() {
+    updateSizes(); 
+    if (saveTranslate >= 0) {
+      saveTranslate = -widthAllElements + cardWidth;
+    } else {
+      saveTranslate = saveTranslate + (cardWidth + gap);
+    }
+    container.style.transform = `translateX(${saveTranslate}px)`;
+  });
+
+  vectorRight.addEventListener("click", function() {
+    updateSizes(); 
+    if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
+      saveTranslate = saveTranslate - (cardWidth + gap);
+    } else {
+      saveTranslate = 0;
+    }
+    container.style.transform = `translateX(${saveTranslate}px)`;
+  });
+
+  window.addEventListener('resize', function() {
+    updateSizes();
+    saveTranslate = 0;
+    container.style.transform = `translateX(0)`;
+  });
+}
 });

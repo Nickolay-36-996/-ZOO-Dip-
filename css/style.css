@@ -577,6 +577,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .popular__products__slider__buttons {
@@ -631,8 +632,6 @@ body {
   gap: 30px;
   max-width: 1170px;
   transition: linear 0.3s;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
 
 .popular__products__card {
@@ -749,11 +748,16 @@ body {
 
 .popular__products__card__pay__price {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   gap: 19px;
   white-space: nowrap;
+}
+
+.popular__products__card__pay__price__box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .popular__products__card__pay__price__p {
@@ -843,7 +847,7 @@ body {
 
 @media (max-width: 992px) {
   .popular__products__wrapper {
-    padding: 28px 0px;
+    padding: 32px 0px;
     gap: 32px;
   }
   .popular__products__sales__box {
@@ -867,10 +871,14 @@ body {
   .present {
     background-image: url(../img/image-30-mobile.png);
   }
+  .popular__products__slider {
+    gap: 16px;
+  }
   .popular__products__slider__title {
     font-size: 21px;
     line-height: 28px;
     font-weight: 700;
+    align-items: center;
   }
   .popular__products__cards {
     gap: 18px;
@@ -881,11 +889,18 @@ body {
   .popular__products__card__title__link {
     font-size: 15px;
   }
+  .popular__products__card__pay {
+    gap: 11px;
+  }
   .popular__products__card__pay__price {
     gap: 16px;
+    flex-wrap: wrap;
   }
   .popular__products__card__pay__btn {
     padding: 8px 58px;
+  }
+  .popular__products__watch__more__products {
+    padding: 8px 16px;
   }
 }
 .new__products__slider {
@@ -900,6 +915,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .new__products__slider__title {
@@ -1078,11 +1094,16 @@ body {
 
 .new__products__card__pay__price {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   gap: 19px;
   white-space: nowrap;
+}
+
+.new__products__card__pay__price__box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .new__products__card__pay__price__p {
@@ -1170,6 +1191,43 @@ body {
   background-color: #347c84;
 }
 
+@media (max-width: 992px) {
+  .new__products {
+    background-color: #f6f6f7;
+  }
+  .new__products__slider {
+    gap: 16px;
+    padding: 32px 0px;
+  }
+  .new__products__slider__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 700;
+    align-items: center;
+  }
+  .new__products__cards {
+    gap: 18px;
+  }
+  .new__products__card {
+    max-width: 243px;
+  }
+  .new__products__card__title__link {
+    font-size: 15px;
+  }
+  .new__products__card__pay {
+    gap: 11px;
+  }
+  .new__products__card__pay__price {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .new__products__card__pay__btn {
+    padding: 8px 58px;
+  }
+  .new__products__watch__more__products {
+    padding: 8px 16px;
+  }
+}
 .popualr__brands {
   background-color: #f6f6f7;
 }
@@ -1193,6 +1251,7 @@ body {
 .popular__brands__box {
   display: flex;
   flex-direction: row;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 25px;
   max-height: 395px;
@@ -1236,6 +1295,27 @@ body {
   background-color: #347c84;
 }
 
+@media (max-width: 992px) {
+  .popular__brands__wrapper {
+    padding-bottom: 63px;
+    gap: 16px;
+  }
+  .popular__brands__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 700;
+  }
+  .popular__brands__box {
+    gap: 16px 8px;
+    max-height: 205px;
+  }
+  .popular__brand {
+    flex: 0 1 85px;
+  }
+  .watch__more__brands {
+    padding: 8px 16px;
+  }
+}
 .reviews__about__shop {
   background-color: #f6f6f7;
   padding-bottom: 56px;
@@ -1268,9 +1348,7 @@ body {
   display: flex;
   flex-direction: row;
   max-width: 718px;
-  max-height: 252px;
-  width: 100%;
-  height: 100%;
+  min-height: 280px;
   transition: linear 0.3s;
 }
 
@@ -1387,6 +1465,41 @@ body {
   order: 2;
 }
 
+@media (max-width: 992px) {
+  .reviews__about__shop__wrapper {
+    padding: 16px 10px 24px 10px;
+    gap: 12px;
+  }
+  .reviews__about__shop__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 700;
+  }
+  .review__about__shop__title {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+  .review__about__shop__txt {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+  .review__about__shop__details {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .review__about__shop__phone__user {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+  .reviews__about__shop__slider__control {
+    margin-top: 12px;
+    gap: 32px;
+  }
+}
 .articles {
   background-color: #f6f6f7;
 }

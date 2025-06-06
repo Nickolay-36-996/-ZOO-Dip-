@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .new__products__slider__title {
@@ -186,11 +187,16 @@
 
 .new__products__card__pay__price {
   display: flex;
-  flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   gap: 19px;
   white-space: nowrap;
+}
+
+.new__products__card__pay__price__box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .new__products__card__pay__price__p {
@@ -277,4 +283,51 @@
 
 .new__products__watch__more__products:hover {
   background-color: #347c84;
+}
+
+@media (max-width: 992px) {
+  .new__products {
+    background-color: #f6f6f7;
+  }
+
+  .new__products__slider {
+    gap: 16px;
+    padding: 32px 0px;
+  }
+
+  .new__products__slider__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 700;
+    align-items: center;
+  }
+
+  .new__products__cards {
+    gap: 18px;
+  }
+
+  .new__products__card {
+    max-width: 243px;
+  }
+
+  .new__products__card__title__link {
+    font-size: 15px;
+  }
+
+  .new__products__card__pay {
+    gap: 11px;
+  }
+
+  .new__products__card__pay__price {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .new__products__card__pay__btn {
+    padding: 8px 58px;
+  }
+
+  .new__products__watch__more__products {
+    padding: 8px 16px;
+  }
 }

@@ -84,6 +84,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .popular__products__slider__buttons {
@@ -138,8 +139,12 @@
   gap: 30px;
   max-width: 1170px;
   transition: linear 0.3s;
-  overflow-x: auto;
-  scrollbar-width: none;
+  // overflow-x: auto;
+  // scrollbar-width: none;
+  // -ms-overflow-style: none;
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
 }
 
 .popular__products__card {
@@ -254,11 +259,17 @@
 
 .popular__products__card__pay__price {
   display: flex;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   gap: 19px;
   white-space: nowrap;
+}
+
+.popular__products__card__pay__price__box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .popular__products__card__pay__price__p {
@@ -349,7 +360,7 @@
 
 @media (max-width: 992px) {
   .popular__products__wrapper {
-    padding: 28px 0px;
+    padding: 32px 0px;
     gap: 32px;
   }
 
@@ -381,10 +392,15 @@
 
   // слайдер
 
+  .popular__products__slider {
+    gap: 16px;
+  }
+
   .popular__products__slider__title {
     font-size: 21px;
     line-height: 28px;
     font-weight: 700;
+    align-items: center;
   }
 
   .popular__products__cards {
@@ -399,11 +415,21 @@
     font-size: 15px;
   }
 
+  .popular__products__card__pay {
+    gap: 11px;
+  }
+
   .popular__products__card__pay__price {
     gap: 16px;
+    flex-wrap: wrap;
   }
 
   .popular__products__card__pay__btn {
     padding: 8px 58px;
+  }
+
+
+  .popular__products__watch__more__products {
+    padding: 8px 16px;
   }
 }
