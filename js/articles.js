@@ -63,28 +63,42 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       function initSliderControls() {
-        const gap = 30;
-        const cardCount = container.children.length;
-        const widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
+        let cardWidth, gap, widthAllElements, cardCount;
+        let saveTranslate = 0;
 
-        vectorLeft.addEventListener("click", function (event) {
-          if (saveTranslate >= 0) {
-            saveTranslate = -widthAllElements + cardWidth;
-            container.style.transform = `translateX(${saveTranslate}px)`;
-          } else {
-            saveTranslate = saveTranslate + (cardWidth + gap);
-            container.style.transform = `translateX(${saveTranslate}px)`;
+        function updateSizes() {
+          cardCount = container.children.length;
+          if(cardCount > 0) {
+            cardWidth = container.children[0].offsetWidth;
+            gap = parseInt(window.getComputedStyle(container).gap) || 30;
+            widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
           }
-        });
+        }
+        updateSizes();
 
-        vectorRight.addEventListener("click", function (event) {
-          if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
-            saveTranslate = saveTranslate - (cardWidth + gap);
-            container.style.transform = `translateX(${saveTranslate}px)`;
+        vectorLeft.addEventListener('click', function() {
+          updateSizes();
+          if(saveTranslate >= 0) {
+            saveTranslate = -widthAllElements + cardWidth;
+          } else {
+            saveTranslate += cardWidth + gap;
+          }
+          container.style.transform = `translateX(${saveTranslate}px)`;
+        })
+
+        vectorRight.addEventListener('click', function() {
+          updateSizes();
+          if(saveTranslate > -widthAllElements + (cardWidth + gap)) {
+            saveTranslate -= cardWidth + gap;
           } else {
             saveTranslate = 0;
-            container.style.transform = `translateX(0)`;
           }
+          container.style.transform = `translateX(${saveTranslate}px)`;
+        });
+        window.addEventListener('resize', function() {
+          updateSizes();
+          saveTranslate = 0;
+          container.style.transform = `translateX(0)`;
         });
       }
 
