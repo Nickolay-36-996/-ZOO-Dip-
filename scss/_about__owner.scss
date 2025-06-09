@@ -8,6 +8,7 @@
 .about__owner__content {
     display: flex;
     flex-direction: column;
+    flex: 0 1 597px;
     gap: 24px;
 }
 
@@ -61,4 +62,61 @@
     font-size: 16px;
     line-height: 125%;
     color: #202223;
+}
+
+.about__owner__img {
+    display: flex;
+    flex: 0 1 463px;
+  }
+
+@media (max-width: 992px) {
+  .about__owner__wrapper {
+    padding: 16px 10px;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .about__owner__content {
+    gap: 16px;
+  }
+
+  .about__owner__content__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 700;
+  }
+
+  .about__owner__content__title__txt {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+
+  .about__owner__content__services {
+    gap: 16px;
+  }
+
+  .about__owner__content__service {
+    padding-left: 6px;
+  }
+
+  .about__owner__content__service__title {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 700;
+  }
+
+  .about__owner__content__service__txt {
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+
+  .about__owner__img {
+    max-width: 420px;
+  }
+
+  .about__owner__img__image {
+    width: 100%;
+  }
 }
