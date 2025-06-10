@@ -2030,7 +2030,6 @@ body {
   .location__wrapper {
     padding: 32px 0px;
     gap: 16px;
-    flex-direction: column;
   }
   .location__map {
     width: 100%;
@@ -2039,8 +2038,8 @@ body {
   .location__info {
     align-items: center;
   }
-  .location__info__title {
-    text-align: center;
+  .location__working__time__info__icone {
+    display: none;
   }
 }
 .footer__wrapper {
@@ -2110,7 +2109,8 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 66px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .footer__low__up__adress__icone {
@@ -2219,4 +2219,31 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #8C9196;
+}
+
+@media (max-width: 992px) {
+  .footer__wrapper {
+    padding: 16px 0px;
+  }
+  .footer__hight {
+    padding: 16px 10px;
+    gap: 16px;
+  }
+  .footer__nav__list__item__link {
+    font-size: 15px;
+  }
+  .footer__nav {
+    flex: 0;
+  }
+  .footer__low {
+    padding-top: 0;
+  }
+  .footer__low__up {
+    padding-top: 16px;
+    gap: 16px;
+  }
+  .footer__low__lower {
+    border-top: 1px solid #D2D5D8;
+    padding-top: 16px;
+  }
 }/*# sourceMappingURL=style.css.map */

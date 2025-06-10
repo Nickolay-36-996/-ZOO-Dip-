@@ -168,7 +168,6 @@
   .location__wrapper {
     padding: 32px 0px;
     gap: 16px;
-    flex-direction: column;
   }
 
   .location__map {
@@ -180,7 +179,7 @@
     align-items: center;
   }
 
-  .location__info__title {
-    text-align: center;
+  .location__working__time__info__icone {
+    display: none;
   }
 }
