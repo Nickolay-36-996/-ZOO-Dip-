@@ -148,3 +148,9 @@ h6 {
         max-width: 792px;
     }
 }
+
+@media(max-width: 768px) {
+  .container {
+    padding: 0;
+  }
+}
