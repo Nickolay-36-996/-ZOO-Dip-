@@ -1,11 +1,12 @@
 .about {
   background-color: white;
+  overflow: hidden;
 }
 
 .about__wrapper {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 30px;
   padding: 33px 0px 40px 0px;
@@ -86,5 +87,31 @@
 
   .change__button {
     padding: 8px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about__wrapper {
+    padding: 24px 0px;
+    gap: 0;
+  }
+  .about__first__block {
+    flex: 0 0 267px;
+    gap: 16px;
+  }
+
+  .about__first__block__info {
+    gap: 16px;
+  }
+
+  .about__first__block__info p:last-child {
+    max-width: 164px;
+  }
+
+  .about__second__block {
+    flex: 0 0 380px;
+    position: relative;
+    right: 80px;
+    top: 25px;
   }
 }
