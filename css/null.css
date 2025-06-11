@@ -151,6 +151,6 @@ h6 {
 
 @media(max-width: 768px) {
   .container {
-    padding: 0;
+    padding: 0px 10px;
   }
 }
