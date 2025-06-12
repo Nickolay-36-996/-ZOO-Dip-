@@ -256,3 +256,9 @@
     padding: 8px 16px;
   }
 }
+
+@media(max-width: 768px) {
+  .articles__slider__buttons {
+    display: none;
+  }
+}

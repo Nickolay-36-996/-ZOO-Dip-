@@ -67,7 +67,7 @@
 
 @media(max-width: 992px) {
   .popular__brands__wrapper {
-    padding: 0px 0px 63px 0px;
+    padding: 0px 0px 54px 0px;
     gap: 16px;
   }
 
@@ -84,6 +84,7 @@
 
   .popular__brand {
     flex: 0 1 85px;
+    padding: 8px 8px;
   }
 
   .watch__more__brands {
@@ -98,6 +99,10 @@
 }
 
 @media(max-width: 768px) {
+  .popular__brands__box {
+    column-gap: 6px;
+  }
+
   .popular__brand {
     flex: 0 1 80px;
   }

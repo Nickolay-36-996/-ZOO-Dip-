@@ -41,7 +41,7 @@
   align-items: center;
   flex: 0 0 auto;
   max-width: 718px;
-  max-height: 252px;
+  max-height: auto;
   width: 100%;
   height: 100%;
 }
@@ -148,6 +148,10 @@
 }
 
 @media(max-width: 992px) {
+  .reviews__about__shop {
+    padding-bottom: 0;
+  }
+
   .reviews__about__shop__wrapper {
     padding: 16px 10px 24px 10px;
     gap: 12px;

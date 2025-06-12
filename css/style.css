@@ -1544,7 +1544,7 @@ body {
 
 @media (max-width: 992px) {
   .popular__brands__wrapper {
-    padding: 0px 0px 63px 0px;
+    padding: 0px 0px 54px 0px;
     gap: 16px;
   }
   .popular__brands__title {
@@ -1558,6 +1558,7 @@ body {
   }
   .popular__brand {
     flex: 0 1 85px;
+    padding: 8px 8px;
   }
   .watch__more__brands {
     padding: 8px 16px;
@@ -1569,6 +1570,10 @@ body {
   }
 }
 @media (max-width: 768px) {
+  .popular__brands__box {
+    -moz-column-gap: 6px;
+         column-gap: 6px;
+  }
   .popular__brand {
     flex: 0 1 80px;
   }
@@ -1616,7 +1621,7 @@ body {
   align-items: center;
   flex: 0 0 auto;
   max-width: 718px;
-  max-height: 252px;
+  max-height: auto;
   width: 100%;
   height: 100%;
 }
@@ -1723,6 +1728,9 @@ body {
 }
 
 @media (max-width: 992px) {
+  .reviews__about__shop {
+    padding-bottom: 0;
+  }
   .reviews__about__shop__wrapper {
     padding: 16px 10px 24px 10px;
     gap: 12px;
@@ -2004,6 +2012,11 @@ body {
     padding: 8px 16px;
   }
 }
+@media (max-width: 768px) {
+  .articles__slider__buttons {
+    display: none;
+  }
+}
 .about__owner__wrapper {
   display: flex;
   flex-direction: row;
@@ -2115,6 +2128,17 @@ body {
   }
   .about__owner__img__image {
     width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .about__owner__img {
+    display: none;
+  }
+  .about__owner__wrapper {
+    justify-content: center;
+  }
+  .about__owner__content {
+    flex: auto;
   }
 }
 .location {

@@ -120,3 +120,17 @@
     width: 100%;
   }
 }
+
+@media(max-width: 768px) {
+  .about__owner__img {
+    display: none;
+  }
+
+  .about__owner__wrapper {
+    justify-content: center;
+  }
+
+  .about__owner__content {
+    flex: auto;
+  }
+}
