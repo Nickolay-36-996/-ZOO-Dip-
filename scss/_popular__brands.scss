@@ -67,7 +67,7 @@
 
 @media(max-width: 992px) {
   .popular__brands__wrapper {
-    padding-bottom: 63px;
+    padding: 0px 0px 63px 0px;
     gap: 16px;
   }
 
@@ -88,5 +88,17 @@
 
   .watch__more__brands {
     padding: 8px 16px;
+  }
+}
+
+@media(max-width: 992px) {
+  .popular__brands__title {
+    align-self: flex-start;
+  }
+}
+
+@media(max-width: 768px) {
+  .popular__brand {
+    flex: 0 1 80px;
   }
 }

@@ -1081,6 +1081,7 @@ body {
   .popular__products__wrapper {
     padding: 32px 0px;
     gap: 32px;
+    overflow: hidden;
   }
   .popular__products__sales__box {
     justify-content: center;
@@ -1438,7 +1439,7 @@ body {
   }
   .new__products__slider {
     gap: 16px;
-    padding: 32px 0px;
+    padding-bottom: 32px;
   }
   .new__products__slider__title {
     font-size: 21px;
@@ -1467,6 +1468,11 @@ body {
   }
   .new__products__watch__more__products {
     padding: 8px 16px;
+  }
+}
+@media (max-width: 768px) {
+  .new__products__slider__buttons {
+    display: none;
   }
 }
 .popualr__brands {
@@ -1538,7 +1544,7 @@ body {
 
 @media (max-width: 992px) {
   .popular__brands__wrapper {
-    padding-bottom: 63px;
+    padding: 0px 0px 63px 0px;
     gap: 16px;
   }
   .popular__brands__title {
@@ -1555,6 +1561,16 @@ body {
   }
   .watch__more__brands {
     padding: 8px 16px;
+  }
+}
+@media (max-width: 992px) {
+  .popular__brands__title {
+    align-self: flex-start;
+  }
+}
+@media (max-width: 768px) {
+  .popular__brand {
+    flex: 0 1 80px;
   }
 }
 .reviews__about__shop {

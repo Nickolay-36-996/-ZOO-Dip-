@@ -292,7 +292,7 @@
 
   .new__products__slider {
     gap: 16px;
-    padding: 32px 0px;
+    padding-bottom: 32px;
   }
 
   .new__products__slider__title {
@@ -329,5 +329,11 @@
 
   .new__products__watch__more__products {
     padding: 8px 16px;
+  }
+}
+
+@media(max-width: 768px) {
+  .new__products__slider__buttons {
+    display: none;
   }
 }
