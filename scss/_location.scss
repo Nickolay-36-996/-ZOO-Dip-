@@ -183,3 +183,17 @@
     display: none;
   }
 }
+
+@media(max-width: 768px) {
+  .location__wrapper {
+    flex-direction: column;
+  }
+
+  .location__info {
+    align-items: flex-start;
+  }
+
+  .location__map {
+    flex: 0 1 243px;
+  }
+}

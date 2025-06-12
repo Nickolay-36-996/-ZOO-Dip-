@@ -208,3 +208,37 @@
     padding-top: 16px;
   }
 }
+
+@media(max-width: 597px) {
+  .footer__hight {
+    flex-direction: column;
+  }
+
+  .footer__nav__list {
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .footer__low__up {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer__low__up__working__time__info__icone {
+    display: none;
+  }
+
+  .footer__low__up__working__time__info {
+    gap: 8px;
+  }
+
+  .padding {
+    padding-right: 0;
+    border-right: none;
+  }
+
+  .footer__low__lower {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
