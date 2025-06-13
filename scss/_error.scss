@@ -1,5 +1,5 @@
 .error {
-    background-color: #f6f6f8;
+  background-color: #f6f6f8;
 }
 
 .error__wrapper {
@@ -7,7 +7,6 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
   padding-top: 20px;
 }
 
@@ -46,6 +45,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 435px;
 }
 
 .error__txt {
@@ -75,4 +75,48 @@
 
 .back__main__page:hover {
   background-color: #347c84;
+}
+
+.error__img {
+  position: relative;
+  right: 14px;
+}
+
+@media(max-width: 992px) {
+  .error__wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .error__content {
+    align-items: center;
+  }
+
+  .error__main__title {
+    font-size: 96px;
+  }
+
+  .error__title__box {
+    align-items: center;
+  }
+
+  .error__title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 120%;
+  }
+
+  .error__txt__box {
+    width: auto;
+    text-align: center;
+  }
+
+  .error__img {
+    width: 393px;
+  }
+
+  .error__img img {
+    width: 100%;
+  }
 }
