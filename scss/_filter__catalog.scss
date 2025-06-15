@@ -1,0 +1,95 @@
+.filter__catalog {
+  background-color: #f6f6f7;
+}
+
+.filter__catalog__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 0px 40px 0px;
+}
+
+.catalog__nav__list {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.catalog__nav__list__item__link {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #202223;
+}
+
+.catalog__nav__list__item__link_relevant {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6D7175;
+}
+
+.filter__catalog__animals__list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.animal__category__catalog {
+  display: flex;
+  flex-direction: row;
+  flex: 0 1 215px;
+  padding-right: 30px;
+  background-color: white;
+  border-radius: 5px;
+  gap: 16px;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: linear 0.3s;
+}
+
+.animal__category__catalog:hover {
+  box-shadow: 0px 12px 32px 0px rgba(0, 0, 0, 0.1);
+}
+
+.animal__category__catalog__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #202223;
+}
+
+@media (max-width: 992px) {
+  .filter__catalog {
+    overflow: hidden;
+  }
+
+  .filter__catalog__animals__list {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .filter__catalog__animals__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .animal__category__catalog {
+    max-width: 138px;
+    gap: 8px;
+  }
+
+  .animal__category__catalog__title {
+    font-size: 15px;
+    line-height: 20px;
+  }
+
+  .animal__category__catalog img {
+    width: 56px;
+    height: 56px;
+  }
+}

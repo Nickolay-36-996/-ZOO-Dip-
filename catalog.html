@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Каталог</title>
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/null.css" />
-</head>
-<body>
+  </head>
+  <body>
     <script src="./js/header.js"></script>
     <header class="header">
       <div class="header__wrapper">
@@ -307,10 +307,14 @@
                 </search>
                 <ul class="header__low__nav__list">
                   <li class="header__low__nav__item">
-                    <a href="index.html" class="header__low__nav__item__link">Главная</a>
+                    <a href="index.html" class="header__low__nav__item__link"
+                      >Главная</a
+                    >
                   </li>
                   <li class="header__low__nav__item">
-                    <a href="catalog.html" class="header__low__nav__item__link">Каталог</a>
+                    <a href="catalog.html" class="header__low__nav__item__link"
+                      >Каталог</a
+                    >
                   </li>
                   <li class="header__low__nav__item">
                     <a href="#" class="header__low__nav__item__link">Акции</a>
@@ -320,7 +324,7 @@
                   </li>
                 </ul>
                 <a href="#" class="basket__mobile__burger">
-                  <img src="./img/cart_major.png" alt="cart">
+                  <img src="./img/cart_major.png" alt="cart" />
                   <p class="basket__mobile__burger__txt">Корзина</p>
                 </a>
                 <div class="nav__for__mobile">
@@ -479,13 +483,113 @@
         </div>
       </div>
     </header>
-     <script src="./js/filter.js"></script>
-    <section class="filter">
+    <script src="./js/filter__catalog.js"></script>
+    <section class="filter__catalog">
       <div class="container">
-        <div class="filter__wrapper" id="animals-list"></div>
+        <div class="filter__catalog__wrapper">
+          <nav class="catalog__nav">
+            <ul class="catalog__nav__list">
+              <li class="catalog__nav__list__item">
+                <a href="index.html" class="catalog__nav__list__item__link"
+                  >Главная</a
+                >
+              </li>
+              <li class="catalog__nav__list__item">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7.99976 16C7.74376 16 7.48776 15.902 7.29276 15.707C6.90176 15.316 6.90176 14.684 7.29276 14.293L11.5858 10L7.29276 5.707C6.90176 5.316 6.90176 4.684 7.29276 4.293C7.68376 3.902 8.31576 3.902 8.70676 4.293L13.7068 9.293C14.0978 9.684 14.0978 10.316 13.7068 10.707L8.70676 15.707C8.51176 15.902 8.25576 16 7.99976 16Z"
+                    fill="#5C5F62"
+                  />
+                </svg>
+              </li>
+              <li class="catalog__nav__list__item">
+                <a
+                  href="catalog.html"
+                  class="catalog__nav__list__item__link_relevant"
+                  >Каталог</a
+                >
+              </li>
+            </ul>
+          </nav>
+          <div class="filter__catalog__animals__list" id="animals-list"></div>
+        </div>
       </div>
     </section>
-     <footer class="footer">
+    <script src="./js/products__catalog.js"></script>
+    <section class="products__catalog">
+      <div class="container">
+        <div class="products__catalog__wrapper">
+          <div class="products__catalog__title__box">
+            <h1 class="products__catalog__title">Каталог товаров</h1>
+            <div class="products__catalog__sort">
+              <p class="products__catalog__sort__txt">Сортировать по:</p>
+              <div class="products__catalog__sort__select">
+                <div class="products__catalog__sort__select__active">
+                  дате добавления
+                </div>
+                <div class="select__icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M9.99976 14C9.74376 14 9.48776 13.902 9.29276 13.707L4.29276 8.70701C3.90176 8.31601 3.90176 7.68401 4.29276 7.29301C4.68376 6.90201 5.31576 6.90201 5.70676 7.29301L9.99976 11.586L14.2928 7.29301C14.6838 6.90201 15.3158 6.90201 15.7068 7.29301C16.0978 7.68401 16.0978 8.31601 15.7068 8.70701L10.7068 13.707C10.5118 13.902 10.2558 14 9.99976 14Z"
+                      fill="#8C9196"
+                    />
+                  </svg>
+                </div>
+                <ul class="products__catalog__sort__select__list">
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      дате добавления
+                    </p>
+                  </li>
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      названию: «от А до Я»
+                    </p>
+                  </li>
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      названию: «от Я до А»
+                    </p>
+                  </li>
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      цене по возр.
+                    </p>
+                  </li>
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      цене по убыв.
+                    </p>
+                  </li>
+                  <li class="products__catalog__sort__select__list__item">
+                    <p class="products__catalog__sort__select__list__item__txt">
+                      популярности
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
       <div class="container">
         <div class="footer__wrapper">
           <div class="footer__hight">
@@ -527,10 +631,14 @@
             <nav class="footer__nav">
               <ul class="footer__nav__list">
                 <li class="footer__nav__list__item">
-                  <a href="index.html" class="footer__nav__list__item__link">Главная</a>
+                  <a href="index.html" class="footer__nav__list__item__link"
+                    >Главная</a
+                  >
                 </li>
                 <li class="footer__nav__list__item">
-                  <a href="catalog.html" class="footer__nav__list__item__link">Каталог</a>
+                  <a href="catalog.html" class="footer__nav__list__item__link"
+                    >Каталог</a
+                  >
                 </li>
                 <li class="footer__nav__list__item">
                   <a href="#" class="footer__nav__list__item__link">Акции</a>
@@ -679,5 +787,5 @@
         </div>
       </div>
     </footer>
-</body>
+  </body>
 </html>

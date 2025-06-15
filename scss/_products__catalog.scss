@@ -1,0 +1,111 @@
+.products__catalog {
+  background-color: #f6f6f7;
+}
+
+.products__catalog__wrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 56px;
+}
+
+.products__catalog__title__box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.products__catalog__title {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 44px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.products__catalog__sort {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 1 395px;
+  gap: 8px;
+}
+
+.products__catalog__sort__txt {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.products__catalog__sort__select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 1 268px;
+  padding: 8px 12px;
+  border: 1px solid #babfc3;
+  border-radius: 4px;
+  background-color: white;
+  position: relative;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.05);
+}
+
+.products__catalog__sort__select__active {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.select__icon {
+  display: flex;
+  align-items: center;
+}
+
+.products__catalog__sort__select__list {
+  position: absolute;
+  left: 0;
+  top: 43px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 8px 8px;
+  z-index: 2;
+  width: 100%;
+  display: none;
+  transition: .5s ease;
+  text-transform: scaleY(0);
+}
+
+.products__catalog__sort__select__list__active {
+  display: block;
+  transition: .5s ease;
+  transform: scaleY(1);
+}
+
+.products__catalog__sort__select__list__item {
+  padding: 10px 8px;
+  transition: .5s ease;
+}
+
+.products__catalog__sort__select__list__item:hover {
+  background-color: #F6F6F7;
+  border-radius: 4px;
+}
+
+.products__catalog__sort__select__list__item__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}
