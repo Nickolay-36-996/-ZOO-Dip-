@@ -2874,7 +2874,7 @@ body {
 }
 
 .products__catalog__sort__select__list__item:hover {
-  background-color: #F6F6F7;
+  background-color: #f6f6f7;
   border-radius: 4px;
 }
 
@@ -2903,7 +2903,7 @@ body {
 .promotional__item {
   padding: 18px 16px;
   border-radius: 5px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .promotional__item__lbl {
@@ -2917,9 +2917,9 @@ body {
 .promotional__item__indicator {
   width: 18px;
   height: 18px;
-  border: 2px solid #8C9196;
+  border: 2px solid #8c9196;
   border-radius: 4px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .promotional__item__indicator__active {
@@ -2936,5 +2936,182 @@ body {
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0px;
-  color: #1A1C1D;
+  color: #1a1c1d;
+}
+
+.products__catalog__filter__type {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.products__catalog__filter__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.products__catalog__filter__type__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.products__catalog__filter__type__list__item {
+  display: flex;
+  flex-direction: row;
+  gap: 9px;
+}
+
+.products__catalog__filter__type__indicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 100px;
+  border: 2px solid #8c9196;
+}
+
+.products__catalog__filter__type__indicator__active {
+  background-image: url(../img/Checktype.svg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: white;
+  border: 2px solid #008060;
+}
+
+.products__catalog__filter__type__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.products__catalog__filter__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.products__catalog__filter__brand__src {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.products__catalog__filter__brand__src__img {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+}
+
+.products__catalog__filter__brand__src__input {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  vertical-align: middle;
+  color: #6d7175;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #a7acb1;
+  padding: 8px 0px 8px 40px;
+}
+
+.products__catalog__products__list {
+  display: flex;
+  flex-direction: row;
+  gap: 24px 30px;
+}
+
+.products__catalog__products__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 31px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 8px 8px;
+  max-width: 270px;
+  width: 100%;
+  transition: linear 0.3s;
+}
+
+.products__catalog__products__card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: start;
+  position: relative;
+}
+
+.products__catalog__products__card__photo__link {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.products__catalog__products__card__photo__img {
+  max-height: 130px;
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.products__catalog__products__card__title__link {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 130%;
+  color: black;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.products__catalog__products__card__quantity__container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.products__catalog__products__card__quantity__box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.products__catalog__products__card__quantity {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #202223;
+  background-color: #e4e5e7;
+  border-radius: 2px;
+  padding: 2px 8px;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: linear 0.3s;
+}
+
+.products__catalog__products__card__pay {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }/*# sourceMappingURL=style.css.map */
