@@ -2777,6 +2777,7 @@ body {
 .products__catalog__wrapper {
   display: flex;
   flex-direction: column;
+  gap: 40px;
   padding-bottom: 56px;
 }
 
@@ -2825,6 +2826,7 @@ body {
   background-color: white;
   position: relative;
   box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
 }
 
 .products__catalog__sort__select__active {
@@ -2839,6 +2841,11 @@ body {
 .select__icon {
   display: flex;
   align-items: center;
+  transition: linear 0.3s;
+}
+
+.select__icon__active {
+  transform: rotate(180deg);
 }
 
 .products__catalog__sort__select__list {
@@ -2851,9 +2858,8 @@ body {
   padding: 8px 8px;
   z-index: 2;
   width: 100%;
-  display: none;
   transition: 0.5s ease;
-  text-transform: scaleY(0);
+  transform: scaleY(0);
 }
 
 .products__catalog__sort__select__list__active {
@@ -2879,4 +2885,56 @@ body {
   line-height: 20px;
   letter-spacing: 0px;
   color: #202223;
+}
+
+.products__catalog__products__box {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.products__catalog__products__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 0 0 270px;
+}
+
+.promotional__item {
+  padding: 18px 16px;
+  border-radius: 5px;
+  background-color: #FFFFFF;
+}
+
+.promotional__item__lbl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.promotional__item__indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #8C9196;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+}
+
+.promotional__item__indicator__active {
+  background-image: url(../img/check.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #008060;
+  border: none;
+}
+
+.promotional__item__txt {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #1A1C1D;
 }/*# sourceMappingURL=style.css.map */
