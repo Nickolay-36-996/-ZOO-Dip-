@@ -260,6 +260,8 @@
 .products__catalog__products__list {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  flex: 0 1 870px;
   gap: 24px 30px;
 }
 
@@ -342,4 +344,80 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.products__catalog__products__card__pay__price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 19px;
+  white-space: nowrap;
+}
+
+.products__catalog__products__card__pay__price__box {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.products__catalog__products__card__pay__price__old {
+  font-family: SF Pro Text;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 130%;
+  color: rgb(140, 145, 150);
+  text-decoration: line-through;
+  text-decoration-color: red;
+  border: 1px dashed gainsboro;
+}
+
+.products__catalog__products__card__pay__price__p {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  color: #202223;
+}
+
+.products__catalog__products__card__basked__add {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  border: 1px solid #babfc3;
+  border-radius: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 12px;
+  padding-right: 8px;
+}
+
+.products__catalog__products__card__basked__img__box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.products__catalog__products__card__basked__img {
+  width: 20px;
+  height: 20px;
+  order: 2;
+}
+
+.products__catalog__products__card__plus__img {
+  width: 10px;
+}
+
+.products__catalog__products__card__pay__btn {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #202223;
+  border-radius: 4px;
+  border: 1px solid #00a0ac;
+  padding: 8px 72px;
+  background-color: white;
+  white-space: nowrap;
+  transition: linear 0.3s;
 }
