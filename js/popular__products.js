@@ -63,8 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
         quantityOptions = product.countitemproduct_set
           .map((item) => {
             return `<span class="popular__products__card__quantity" 
-                     data-count="${item.count}">
-                     ${item.count} ${item.unit}
+                     data-count="${item.value}">
+                     ${item.value} ${item.unit}
                    </span>`;
           })
           .join("");

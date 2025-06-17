@@ -60,6 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      function shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+      }
+
+      cardsData = shuffleArray(cardsData);
+
       createCards(cardsData);
     })
     .catch((error) => {
@@ -74,6 +85,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("div");
       card.className = "products__catalog__products__card";
 
+      let quantityOptions = "";
+      if (cards.countitemproduct_set?.length > 0) {
+        quantityOptions = cards.countitemproduct_set
+          .map(
+            (item) => `
+          <span class="products__catalog__products__card__quantity" data-count="${item.count}">
+          ${item.value} ${item.unit}</span>`
+          )
+          .join("");
+      }
+
       card.innerHTML = `
       <div class="products__catalog__products__card__info">
       <a href="#" class="products__catalog__products__card__photo__link">
@@ -87,7 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="products__catalog__products__card__quantity__container">
       <div class="products__catalog__products__card__quantity__box">
-        <span class="products__catalog__products__card__quantity">1 шт.</span>
+        ${
+          quantityOptions ||
+          '<span class="products__catalog__products__card__quantity">1 шт.</span>'
+        }
       </div>
       </div>
       <div class="products__catalog__products__card__pay">

@@ -3112,6 +3112,16 @@ body {
   transition: linear 0.3s;
 }
 
+.products__catalog__products__card__quantity:hover {
+  background-color: #449da7;
+  color: white;
+}
+
+.products__catalog__products__card__quantity__active {
+  color: white;
+  background-color: #449da7;
+}
+
 .products__catalog__products__card__pay {
   display: flex;
   flex-direction: column;
@@ -3192,4 +3202,9 @@ body {
   background-color: white;
   white-space: nowrap;
   transition: linear 0.3s;
+}
+
+.products__catalog__products__card__pay__btn:hover {
+  background-color: #00a0ac;
+  color: #ffffff;
 }/*# sourceMappingURL=style.css.map */
