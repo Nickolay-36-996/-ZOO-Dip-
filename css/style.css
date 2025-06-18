@@ -2967,6 +2967,7 @@ body {
   display: flex;
   flex-direction: row;
   gap: 9px;
+  cursor: pointer;
 }
 
 .products__catalog__filter__type__indicator {

@@ -1,20 +1,24 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
-  const revealSelect = document.querySelector(".select__icon");
+  const revealSelect = document.querySelector(
+    ".products__catalog__sort__select"
+  );
   const selectList = document.querySelector(
     ".products__catalog__sort__select__list"
   );
+  const revealSelectIndicator = document.querySelector(".select__icon");
   revealSelect.addEventListener("click", function () {
     selectList.classList.toggle(
       "products__catalog__sort__select__list__active"
     );
-    revealSelect.classList.toggle("select__icon__active");
+    revealSelectIndicator.classList.toggle("select__icon__active");
   });
 
   const promotionalIndicator = document.querySelector(
     ".promotional__item__indicator"
   );
-  promotionalIndicator.addEventListener("click", function () {
+  const promotional = document.querySelector(".promotional__item__lbl");
+  promotional.addEventListener("click", function () {
     promotionalIndicator.classList.toggle(
       "promotional__item__indicator__active"
     );
@@ -23,20 +27,27 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .querySelector(".products__catalog__filter__type__list")
     .addEventListener("click", function (e) {
-      const indicator = e.target.closest(
-        ".products__catalog__filter__type__indicator"
+      const listItem = e.target.closest(
+        ".products__catalog__filter__type__list__item"
       );
-      if (indicator) {
-        document
-          .querySelectorAll(".products__catalog__filter__type__indicator")
-          .forEach((el) => {
-            el.classList.remove(
-              "products__catalog__filter__type__indicator__active"
-            );
-          });
-        indicator.classList.add(
-          "products__catalog__filter__type__indicator__active"
+
+      if (listItem) {
+        const indicator = listItem.querySelector(
+          ".products__catalog__filter__type__indicator"
         );
+
+        if (indicator) {
+          document
+            .querySelectorAll(".products__catalog__filter__type__indicator")
+            .forEach((el) => {
+              el.classList.remove(
+                "products__catalog__filter__type__indicator__active"
+              );
+            });
+          indicator.classList.add(
+            "products__catalog__filter__type__indicator__active"
+          );
+        }
       }
     });
 
@@ -85,7 +96,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("div");
       card.className = "products__catalog__products__card";
 
+      const basePrice = parseFloat(cards.price) || 0;
+      const discountPercent = cards.sale?.percent || 0;
+      const discountedPrice = basePrice * (1 - discountPercent / 100);
+
+      const displayPrice = discountedPrice.toFixed(2);
+      const displayOldPrice = basePrice.toFixed(2);
+
       let quantityOptions = "";
+
       if (cards.countitemproduct_set?.length > 0) {
         quantityOptions = cards.countitemproduct_set
           .map(
@@ -118,8 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="products__catalog__products__card__pay">
       <div class="products__catalog__products__card__pay__price">
       <div class="products__catalog__products__card__pay__price__box">
-      <p class="products__catalog__products__card__pay__price__old"></p>
-      <p class="products__catalog__products__card__pay__price__p"></p>
+      <p class="products__catalog__products__card__pay__price__old">${displayOldPrice} BYN</p>
+      <p class="products__catalog__products__card__pay__price__p">${displayPrice} BYN</p>
       </div>
       <button class="products__catalog__products__card__basked__add">
       <div class="products__catalog__products__card__basked__img__box">
@@ -137,6 +156,34 @@ document.addEventListener("DOMContentLoaded", () => {
       <button class="products__catalog__products__card__pay__btn">Купить в 1 клик</button>
       </div>
       `;
+
+      const quantityBox = card.querySelector(
+        ".products__catalog__products__card__quantity__box"
+      );
+      const quantityElements = quantityBox.querySelectorAll(
+        ".products__catalog__products__card__quantity"
+      );
+
+      for (const element of quantityElements) {
+        element.addEventListener("click", function () {
+          const isActive = this.classList.contains(
+            "products__catalog__products__card__quantity__active"
+          );
+
+          for (const el of quantityElements) {
+            el.classList.remove(
+              "products__catalog__products__card__quantity__active"
+            );
+          }
+
+          if (!isActive) {
+            this.classList.add(
+              "products__catalog__products__card__quantity__active"
+            );
+          }
+        });
+      }
+
       container.appendChild(card);
     }
   }
