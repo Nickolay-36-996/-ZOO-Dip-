@@ -137,7 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="products__catalog__products__card__pay">
       <div class="products__catalog__products__card__pay__price">
       <div class="products__catalog__products__card__pay__price__box">
-      <p class="products__catalog__products__card__pay__price__old">${displayOldPrice} BYN</p>
+      ${
+        discountPercent > 0
+          ? `<p class="products__catalog__products__card__pay__price__old">${displayOldPrice} BYN</p>`
+          : ""
+      }
       <p class="products__catalog__products__card__pay__price__p">${displayPrice} BYN</p>
       </div>
       <button class="products__catalog__products__card__basked__add">
