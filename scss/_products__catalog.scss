@@ -292,6 +292,20 @@
   position: relative;
 }
 
+.products__catalog__products__card__sale__badge {
+  font-family: SF Pro Text;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  background-color: #ff733b;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 2px;
+  user-select: none;
+  position: absolute;
+  top: 8px;
+}
+
 .products__catalog__products__card__photo__link {
   display: flex;
   flex-direction: row;
@@ -372,8 +386,8 @@
 
 .products__catalog__products__card__pay__price__box {
   display: flex;
-  flex-direction: column;
-  gap: 1px;
+  flex-direction: row;
+  gap: 15px;
 }
 
 .products__catalog__products__card__pay__price__old {
