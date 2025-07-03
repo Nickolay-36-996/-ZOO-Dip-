@@ -28,7 +28,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #6D7175;
+  color: #6d7175;
 }
 
 .filter__catalog__animals__list {
@@ -50,18 +50,28 @@
   cursor: pointer;
   opacity: 0.6;
   transition: linear 0.3s;
-}
-
-.animal__category__catalog:hover {
-  box-shadow: 0px 12px 32px 0px rgba(0, 0, 0, 0.1);
-}
-
-.animal__category__catalog__title {
   font-family: SF Pro Text;
   font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   color: #202223;
+}
+
+.animal__category__catalog__active {
+  opacity: 1;
+  border: 2px solid #008060;
+}
+
+.animal__category__catalog__active:hover {
+  color: var(--Icon-Highlight, #00a0ac);
+}
+
+.animal__category__catalog:hover {
+  box-shadow: 0px 12px 32px 0px rgba(0, 0, 0, 0.1),
+    0px 0px 2px 0px rgba(0, 0, 0, 0.06);
+  opacity: 1;
+  transition: 0.5 ease;
+  color: var(--Icon-Highlight, #00a0ac);
 }
 
 @media (max-width: 992px) {

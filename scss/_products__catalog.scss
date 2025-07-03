@@ -258,11 +258,16 @@
   padding: 8px 0px 8px 40px;
 }
 
-.products__catalog__products__list {
+.products__catalog__products__list__wrap {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  flex: 0 1 870px;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.products__catalog__products__list {
+  display: grid;
+  grid-template-columns: 270px 270px 270px;
+  grid-auto-rows: 1fr;
   gap: 24px 30px;
 }
 
@@ -275,7 +280,9 @@
   border-radius: 5px;
   padding: 8px 8px;
   max-width: 270px;
+  min-height: 420px;
   width: 100%;
+  height: 100%;
   transition: linear 0.3s;
 }
 
@@ -380,6 +387,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
   gap: 19px;
   white-space: nowrap;
 }
@@ -455,4 +463,59 @@
 .products__catalog__products__card__pay__btn:hover {
   background-color: #00a0ac;
   color: #ffffff;
+}
+
+.products__catalog__products__list__slider {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.products__catalog__products__list__slider__item__switch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.products__catalog__products__list__slider__item__switch__img {
+  display: flex;
+  align-items: center;
+}
+
+.products__catalog__products__list__slider__item__switch__txt {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #00A0AC;
+}
+
+.products__catalog__products__list__slider__pangination__wrap {
+  max-width: 180px;
+  overflow: hidden;
+}
+
+.products__catalog__products__list__slider__pangination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32px;
+  overflow-x: auto;
+}
+
+.products__catalog__products__list__slider__pangination__item {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #00A0AC;
+  cursor: pointer;
+}
+
+.products__catalog__products__list__slider__pangination__item__active {
+  color: #6D7175;
 }

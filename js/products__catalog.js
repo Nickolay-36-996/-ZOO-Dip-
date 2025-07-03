@@ -1,5 +1,8 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
+  const animalCategories = document.querySelectorAll(".animal__category__catalog");
+  let currentAnimalFilter = null;
+
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
   );
@@ -52,6 +55,87 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("products-list");
   let cardsData = [];
 
+  const paginationContainer = document.querySelector(
+    ".products__catalog__products__list__slider__pangination"
+  );
+  let currentPage = 1;
+  let cardsPerPage = 12;
+
+  const prevButton = document.querySelector(
+    ".products__catalog__products__list__slider__item__switch:first-child"
+  );
+  const nextButton = document.querySelector(
+    ".products__catalog__products__list__slider__item__switch:last-child"
+  );
+
+  function goToPrevPage() {
+    if (currentPage > 1) {
+      currentPage--;
+      updateCardsDisplay();
+      updatePaginationStyles();
+    }
+  }
+
+  function goToNextPage() {
+    const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      updateCardsDisplay();
+      updatePaginationStyles();
+    }
+  }
+
+  prevButton.addEventListener("click", goToPrevPage);
+  nextButton.addEventListener("click", goToNextPage);
+
+  function createPagination(totalPages) {
+    paginationContainer.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageItem = document.createElement("li");
+      pageItem.className =
+        "products__catalog__products__list__slider__pangination__item";
+
+      if (i === 1) {
+        pageItem.classList.add(
+          "products__catalog__products__list__slider__pangination__item__active"
+        );
+      }
+
+      pageItem.addEventListener("click", () => {
+        currentPage = i;
+        updateCardsDisplay();
+      });
+
+      pageItem.textContent = i;
+      paginationContainer.appendChild(pageItem);
+    }
+  }
+
+  function updatePaginationStyles() {
+    const items = document.querySelectorAll(
+      ".products__catalog__products__list__slider__pangination__item"
+    );
+    items.forEach((item) => {
+      item.classList.remove(
+        "products__catalog__products__list__slider__pangination__item__active"
+      );
+      if (parseInt(item.textContent) === currentPage) {
+        item.classList.add(
+          "products__catalog__products__list__slider__pangination__item__active"
+        );
+      }
+    });
+  }
+
+  function updateCardsDisplay() {
+    const startIndex = (currentPage - 1) * cardsPerPage;
+    const endIndex = startIndex + cardsPerPage;
+    const currentCards = cardsData.slice(startIndex, endIndex);
+    createCards(currentCards);
+    updatePaginationStyles();
+  }
+
   fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
     .then((response) => {
       if (!response.ok) {
@@ -79,7 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       cardsData = shuffleArray(cardsData);
-      createCards(cardsData);
+
+      const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+      createPagination(totalPages);
+      updateCardsDisplay();
+
+      const initialCards = cardsData.slice(0, cardsPerPage);
+      createCards(initialCards);
     })
     .catch((error) => {
       console.error("Ошибка загрузки:", error);
