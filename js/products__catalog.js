@@ -1,6 +1,8 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
-  const animalCategories = document.querySelectorAll(".animal__category__catalog");
+  const animalCategories = document.querySelectorAll(
+    ".animal__category__catalog"
+  );
   let currentAnimalFilter = null;
 
   const revealSelect = document.querySelector(
@@ -54,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const container = document.getElementById("products-list");
   let cardsData = [];
+  let filteredCardsData = [];
 
   const paginationContainer = document.querySelector(
     ".products__catalog__products__list__slider__pangination"
@@ -131,10 +134,31 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCardsDisplay() {
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
-    const currentCards = cardsData.slice(startIndex, endIndex);
+    const currentCards = (
+      currentAnimalFilter ? filteredCardsData : cardsData
+    ).slice(startIndex, endIndex);
     createCards(currentCards);
     updatePaginationStyles();
   }
+
+  document.addEventListener("filterProducts", (e) => {
+    currentAnimalFilter = e.detail.animalType;
+
+    if (currentAnimalFilter) {
+      filteredCardsData = cardsData.filter((product) =>
+        product.animal.some(
+          (animal) => animal.type.toLowerCase() === currentAnimalFilter
+        )
+      );
+    } else {
+      filteredCardsData = [...cardsData];
+    }
+
+    currentPage = 1;
+    const totalPages = Math.ceil(filteredCardsData.length / cardsPerPage);
+    createPagination(totalPages);
+    updateCardsDisplay();
+  });
 
   fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
     .then((response) => {
@@ -146,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       console.log("данные товаров", data);
       cardsData = data.results || [];
+      filteredCardsData = [...cardsData];
       container.innerHTML = "";
 
       if (cardsData.length === 0) {
@@ -163,13 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       cardsData = shuffleArray(cardsData);
+      filteredCardsData = [...cardsData];
 
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
       updateCardsDisplay();
-
-      const initialCards = cardsData.slice(0, cardsPerPage);
-      createCards(initialCards);
     })
     .catch((error) => {
       console.error("Ошибка загрузки:", error);
