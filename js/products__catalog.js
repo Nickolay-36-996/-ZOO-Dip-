@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("products-list");
   let cardsData = [];
   let filteredCardsData = [];
+  let previousAnimalFilter = null;
 
   const paginationContainer = document.querySelector(
     ".products__catalog__products__list__slider__pangination"
@@ -141,17 +142,41 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePaginationStyles();
   }
 
-  document.addEventListener("filterProducts", (e) => {
-    currentAnimalFilter = e.detail.animalType;
+  function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
 
-    if (currentAnimalFilter) {
-      filteredCardsData = cardsData.filter((product) =>
-        product.animal.some(
-          (animal) => animal.type.toLowerCase() === currentAnimalFilter
-        )
-      );
+  document.addEventListener("filterProducts", (e) => {
+    const newAnimalFilter = e.detail.animalType;
+
+    if (newAnimalFilter === previousAnimalFilter) {
+      cardsData = shuffleArray(cardsData);
+
+      filteredCardsData = newAnimalFilter
+        ? cardsData.filter((product) =>
+            product.animal.some(
+              (animal) => animal.type.toLowerCase() === newAnimalFilter
+            )
+          )
+        : [...cardsData];
     } else {
-      filteredCardsData = [...cardsData];
+      currentAnimalFilter = newAnimalFilter;
+      previousAnimalFilter = newAnimalFilter;
+
+      if (currentAnimalFilter) {
+        filteredCardsData = cardsData.filter((product) =>
+          product.animal.some(
+            (animal) => animal.type.toLowerCase() === currentAnimalFilter
+          )
+        );
+      } else {
+        filteredCardsData = [...cardsData];
+      }
     }
 
     currentPage = 1;
@@ -176,15 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cardsData.length === 0) {
         container.innerHTML = "<p>Товары не найдены</p>";
         return;
-      }
-
-      function shuffleArray(array) {
-        const newArray = [...array];
-        for (let i = newArray.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-        }
-        return newArray;
       }
 
       cardsData = shuffleArray(cardsData);
