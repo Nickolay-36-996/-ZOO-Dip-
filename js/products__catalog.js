@@ -57,13 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("products-list");
   let cardsData = [];
   let filteredCardsData = [];
-  let previousAnimalFilter = null;
 
   const paginationContainer = document.querySelector(
     ".products__catalog__products__list__slider__pangination"
   );
   let currentPage = 1;
-  let cardsPerPage = 12;
+  const cardsPerPage = 12;
 
   const prevButton = document.querySelector(
     ".products__catalog__products__list__slider__item__switch:first-child"
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function goToNextPage() {
-    const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+    const totalPages = Math.ceil(filteredCardsData.length / cardsPerPage);
     if (currentPage < totalPages) {
       currentPage++;
       updateCardsDisplay();
@@ -135,9 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCardsDisplay() {
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
-    const currentCards = (
-      currentAnimalFilter ? filteredCardsData : cardsData
-    ).slice(startIndex, endIndex);
+    const currentCards = filteredCardsData.slice(startIndex, endIndex);
     createCards(currentCards);
     updatePaginationStyles();
   }
@@ -152,36 +149,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.addEventListener("filterProducts", (e) => {
-    const newAnimalFilter = e.detail.animalType;
+    currentAnimalFilter = e.detail.animalType;
 
-    if (newAnimalFilter === previousAnimalFilter) {
-      cardsData = shuffleArray(cardsData);
-
-      filteredCardsData = newAnimalFilter
-        ? cardsData.filter((product) =>
-            product.animal.some(
-              (animal) => animal.type.toLowerCase() === newAnimalFilter
-            )
+    filteredCardsData = currentAnimalFilter
+      ? shuffleArray(
+          cardsData.filter((p) =>
+            p.animal.some((a) => a.type.toLowerCase() === currentAnimalFilter)
           )
-        : [...cardsData];
-    } else {
-      currentAnimalFilter = newAnimalFilter;
-      previousAnimalFilter = newAnimalFilter;
-
-      if (currentAnimalFilter) {
-        filteredCardsData = cardsData.filter((product) =>
-          product.animal.some(
-            (animal) => animal.type.toLowerCase() === currentAnimalFilter
-          )
-        );
-      } else {
-        filteredCardsData = [...cardsData];
-      }
-    }
+        )
+      : shuffleArray([...cardsData]);
 
     currentPage = 1;
-    const totalPages = Math.ceil(filteredCardsData.length / cardsPerPage);
-    createPagination(totalPages);
+    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
     updateCardsDisplay();
   });
 
@@ -195,16 +174,13 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       console.log("данные товаров", data);
       cardsData = data.results || [];
-      filteredCardsData = [...cardsData];
+      filteredCardsData = shuffleArray([...cardsData]);
       container.innerHTML = "";
 
       if (cardsData.length === 0) {
         container.innerHTML = "<p>Товары не найдены</p>";
         return;
       }
-
-      cardsData = shuffleArray(cardsData);
-      filteredCardsData = [...cardsData];
 
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
