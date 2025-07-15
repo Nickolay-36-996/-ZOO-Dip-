@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
               category.classList.remove("animal__category__catalog__active");
             }
             link.classList.add("animal__category__catalog__active");
+            loadProductsForFilters(animal.type.toLowerCase());
             filterProductsByAnimal(animal.type.toLowerCase());
           });
 
@@ -54,4 +55,83 @@ function filterProductsByAnimal(animalType) {
     }
   });
   document.dispatchEvent(event);
+  updateAnimalFilters(animalType);
+}
+
+function updateAnimalFilters(animalType) {
+
+  const mainAnimalLinks = document.querySelectorAll('.animal__category__catalog');
+  for (const categoryLink of mainAnimalLinks) {
+    const isActive = categoryLink.dataset.animalType === animalType;
+    categoryLink.classList.toggle('animal__category__catalog__active', isActive);
+  }
+
+  const filterIndicators = document.querySelectorAll('.products__catalog__filter__type__indicator');
+  const filterItems = document.querySelectorAll('.products__catalog__filter__type__list__item');
+  
+  for (const indicator of filterIndicators) {
+    indicator.classList.remove('products__catalog__filter__type__indicator__active');
+  }
+
+  for (const filterItem of filterItems) {
+    const itemTextElement = filterItem.querySelector('.products__catalog__filter__type__txt');
+    if (itemTextElement && itemTextElement.textContent.toLowerCase() === animalType) {
+      const currentIndicator = filterItem.querySelector('.products__catalog__filter__type__indicator');
+      if (currentIndicator) {
+        currentIndicator.classList.add('products__catalog__filter__type__indicator__active');
+      }
+      break;
+    }
+  }
+}
+
+function loadProductsForFilters(animalType) {
+  fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
+    .then(response => response.json())
+    .then(data => {
+      updateCategoryFilters(animalType, data.results || []);
+    })
+    .catch(error => console.error("Ошибка загрузки продуктов:", error));
+}
+
+function updateCategoryFilters(animalType, products) {
+  const filterTypeList = document.querySelector('.products__catalog__filter__type__list');
+  filterTypeList.innerHTML = '';
+
+  const categoriesMap = {};
+  
+  for (const product of products) {
+    let isForAnimal = false;
+    for (const animal of product.animal) {
+      if (animal.type.toLowerCase() === animalType) {
+        isForAnimal = true;
+        break;
+      }
+    }
+    
+    if (isForAnimal && product.category) {
+      const catId = product.category.id;
+      categoriesMap[catId] = categoriesMap[catId] || {
+        id: catId,
+        name: product.category.name,
+        count: 0
+      };
+      categoriesMap[catId].count++;
+    }
+  }
+
+  for (const category of Object.values(categoriesMap)) {
+    const listItem = document.createElement('li');
+    listItem.className = 'products__catalog__filter__type__list__item';
+    listItem.innerHTML = `
+      <div class="products__catalog__filter__type__indicator"></div>
+      <p class="products__catalog__filter__type__txt">${category.name}</p>
+      <span class="products__catalog__filter__type__count">(${category.count})</span>
+    `;
+
+    listItem.addEventListener('click', () => {
+      filterProductsByCategory(animalType, category.id);
+    });
+    filterTypeList.appendChild(listItem);
+  }
 }

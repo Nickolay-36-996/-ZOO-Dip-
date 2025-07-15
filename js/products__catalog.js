@@ -1,5 +1,53 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
+  const animalFilterType = document.querySelector(
+    ".products__catalog__filter__type__list"
+  );
+
+  animalFilterType.addEventListener("click", function (e) {
+    const itemType = e.target.closest(
+      ".products__catalog__filter__type__list__item"
+    );
+
+    if (itemType) {
+      const animalTypeElement = itemType.querySelector(
+        ".products__catalog__filter__type__txt"
+      );
+      const currentAnimalType = animalTypeElement.textContent.toLowerCase();
+
+      const allIndicators = document.querySelectorAll(
+        ".products__catalog__filter__type__indicator"
+      );
+
+      for (const indicator of allIndicators) {
+        indicator.classList.remove(
+          "products__catalog__filter__type__indicator__active"
+        );
+      }
+
+      const currentIndicator = itemType.querySelector(
+        ".products__catalog__filter__type__indicator"
+      );
+      currentIndicator.classList.add(
+        "products__catalog__filter__type__indicator__active"
+      );
+
+      filterProductsByAnimal(currentAnimalType);
+
+      const animalCategoryLinks = document.querySelectorAll(
+        ".animal__category__catalog"
+      );
+
+      for (const link of animalCategoryLinks) {
+        link.classList.remove("animal__category__catalog__active");
+
+        if (link.dataset.animalType === currentAnimalType) {
+          link.classList.add("animal__category__catalog__active");
+        }
+      }
+    }
+  });
+
   const animalCategories = document.querySelectorAll(
     ".animal__category__catalog"
   );
@@ -28,31 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "promotional__item__indicator__active"
     );
   });
-
-  document
-    .querySelector(".products__catalog__filter__type__list")
-    .addEventListener("click", function (e) {
-      const listItem = e.target.closest(
-        ".products__catalog__filter__type__list__item"
-      );
-      if (listItem) {
-        const indicator = listItem.querySelector(
-          ".products__catalog__filter__type__indicator"
-        );
-        if (indicator) {
-          document
-            .querySelectorAll(".products__catalog__filter__type__indicator")
-            .forEach((el) => {
-              el.classList.remove(
-                "products__catalog__filter__type__indicator__active"
-              );
-            });
-          indicator.classList.add(
-            "products__catalog__filter__type__indicator__active"
-          );
-        }
-      }
-    });
 
   const container = document.getElementById("products-list");
   let cardsData = [];
@@ -149,20 +172,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.addEventListener("filterProducts", (e) => {
-    currentAnimalFilter = e.detail.animalType;
+  if (e.detail.animalType) currentAnimalFilter = e.detail.animalType;
+  if (e.detail.categoryId) currentCategoryFilter = e.detail.categoryId;
 
-    filteredCardsData = currentAnimalFilter
-      ? shuffleArray(
-          cardsData.filter((p) =>
-            p.animal.some((a) => a.type.toLowerCase() === currentAnimalFilter)
-          )
-        )
-      : shuffleArray([...cardsData]);
+  filteredCardsData = [];
+  for (const product of cardsData) {
+    let animalMatch = !currentAnimalFilter;
+    if (currentAnimalFilter) {
+      for (const animal of product.animal) {
+        if (animal.type.toLowerCase() === currentAnimalFilter) {
+          animalMatch = true;
+          break;
+        }
+      }
+    }
+    
+    const categoryMatch = !currentCategoryFilter || 
+      (product.category && product.category.id == currentCategoryFilter);
+    
+    if (animalMatch && categoryMatch) {
+      filteredCardsData.push(product);
+    }
+  }
 
-    currentPage = 1;
-    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
-    updateCardsDisplay();
-  });
+  filteredCardsData = shuffleArray(filteredCardsData);
+  currentPage = 1;
+  createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
+  updateCardsDisplay();
+});
 
   fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
     .then((response) => {
