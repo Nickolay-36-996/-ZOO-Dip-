@@ -5,53 +5,35 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   animalFilterType.addEventListener("click", function (e) {
-    const itemType = e.target.closest(
-      ".products__catalog__filter__type__list__item"
-    );
+  const itemType = e.target.closest(".products__catalog__filter__type__list__item");
+  if (!itemType) return;
 
-    if (itemType) {
-      const animalTypeElement = itemType.querySelector(
-        ".products__catalog__filter__type__txt"
-      );
-      const currentAnimalType = animalTypeElement.textContent.toLowerCase();
+  const categoryId = itemType.dataset.categoryId; 
 
-      const allIndicators = document.querySelectorAll(
-        ".products__catalog__filter__type__indicator"
-      );
+  const allIndicators = document.querySelectorAll(".products__catalog__filter__type__indicator");
+  allIndicators.forEach(ind => ind.classList.remove("products__catalog__filter__type__indicator__active"));
 
-      for (const indicator of allIndicators) {
-        indicator.classList.remove(
-          "products__catalog__filter__type__indicator__active"
-        );
-      }
+  const currentIndicator = itemType.querySelector(".products__catalog__filter__type__indicator");
+  currentIndicator.classList.add("products__catalog__filter__type__indicator__active");
 
-      const currentIndicator = itemType.querySelector(
-        ".products__catalog__filter__type__indicator"
-      );
-      currentIndicator.classList.add(
-        "products__catalog__filter__type__indicator__active"
-      );
-
-      filterProductsByAnimal(currentAnimalType);
-
-      const animalCategoryLinks = document.querySelectorAll(
-        ".animal__category__catalog"
-      );
-
-      for (const link of animalCategoryLinks) {
-        link.classList.remove("animal__category__catalog__active");
-
-        if (link.dataset.animalType === currentAnimalType) {
-          link.classList.add("animal__category__catalog__active");
-        }
-      }
-    }
-  });
+  filterProductsByCategory(categoryId);
+});
 
   const animalCategories = document.querySelectorAll(
     ".animal__category__catalog"
   );
   let currentAnimalFilter = null;
+  let currentCategoryFilter = null;
+
+  function filterProductsByCategory(animalType, categoryId) {
+    const event = new CustomEvent("filterProducts", {
+      detail: {
+        animalType: animalType,
+        categoryId: categoryId,
+      },
+    });
+    document.dispatchEvent(event);
+  }
 
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
@@ -173,27 +155,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("filterProducts", (e) => {
   if (e.detail.animalType) currentAnimalFilter = e.detail.animalType;
-  if (e.detail.categoryId) currentCategoryFilter = e.detail.categoryId;
+  if (e.detail.categoryId !== undefined) currentCategoryFilter = e.detail.categoryId;
 
-  filteredCardsData = [];
-  for (const product of cardsData) {
-    let animalMatch = !currentAnimalFilter;
-    if (currentAnimalFilter) {
-      for (const animal of product.animal) {
-        if (animal.type.toLowerCase() === currentAnimalFilter) {
-          animalMatch = true;
-          break;
-        }
-      }
-    }
-    
+  filteredCardsData = cardsData.filter(product => {
+    const animalMatch = !currentAnimalFilter || 
+      product.animal.some(animal => animal.type.toLowerCase() === currentAnimalFilter);
+
     const categoryMatch = !currentCategoryFilter || 
       (product.category && product.category.id == currentCategoryFilter);
-    
-    if (animalMatch && categoryMatch) {
-      filteredCardsData.push(product);
-    }
-  }
+
+    return animalMatch && categoryMatch;
+  });
 
   filteredCardsData = shuffleArray(filteredCardsData);
   currentPage = 1;

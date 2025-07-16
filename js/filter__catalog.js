@@ -58,6 +58,21 @@ function filterProductsByAnimal(animalType) {
   updateAnimalFilters(animalType);
 }
 
+function filterProductsByCategory(categoryId) {
+  const activeAnimalLink = document.querySelector('.animal__category__catalog__active');
+  if (!activeAnimalLink) return; 
+
+  const animalType = activeAnimalLink.dataset.animalType;
+
+  const event = new CustomEvent('filterProducts', {
+    detail: {
+      animalType: animalType,  
+      categoryId: categoryId   
+    }
+  });
+  document.dispatchEvent(event);
+}
+
 function updateAnimalFilters(animalType) {
 
   const mainAnimalLinks = document.querySelectorAll('.animal__category__catalog');
@@ -97,9 +112,9 @@ function loadProductsForFilters(animalType) {
 function updateCategoryFilters(animalType, products) {
   const filterTypeList = document.querySelector('.products__catalog__filter__type__list');
   filterTypeList.innerHTML = '';
-
-  const categoriesMap = {};
   
+  const categoriesMap = {};
+
   for (const product of products) {
     let isForAnimal = false;
     for (const animal of product.animal) {
@@ -108,30 +123,39 @@ function updateCategoryFilters(animalType, products) {
         break;
       }
     }
-    
+
     if (isForAnimal && product.category) {
       const catId = product.category.id;
-      categoriesMap[catId] = categoriesMap[catId] || {
-        id: catId,
-        name: product.category.name,
-        count: 0
-      };
+      if (!categoriesMap[catId]) {
+        categoriesMap[catId] = {
+          id: catId,
+          name: product.category.name,
+          count: 0
+        };
+      }
       categoriesMap[catId].count++;
     }
   }
 
+  const allItem = document.createElement('li');
+  allItem.className = 'products__catalog__filter__type__list__item';
+  allItem.innerHTML = `
+    <div class="products__catalog__filter__type__indicator products__catalog__filter__type__indicator__active"></div>
+    <p class="products__catalog__filter__type__txt">Все</p>
+    <span class="products__catalog__filter__type__count">(${Object.values(categoriesMap).reduce((sum, cat) => sum + cat.count, 0)})</span>
+  `;
+  allItem.addEventListener('click', () => filterProductsByCategory(''));
+  filterTypeList.appendChild(allItem);
+
   for (const category of Object.values(categoriesMap)) {
-    const listItem = document.createElement('li');
-    listItem.className = 'products__catalog__filter__type__list__item';
-    listItem.innerHTML = `
+    const item = document.createElement('li');
+    item.className = 'products__catalog__filter__type__list__item';
+    item.innerHTML = `
       <div class="products__catalog__filter__type__indicator"></div>
       <p class="products__catalog__filter__type__txt">${category.name}</p>
       <span class="products__catalog__filter__type__count">(${category.count})</span>
     `;
-
-    listItem.addEventListener('click', () => {
-      filterProductsByCategory(animalType, category.id);
-    });
-    filterTypeList.appendChild(listItem);
+    item.addEventListener('click', () => filterProductsByCategory(category.id));
+    filterTypeList.appendChild(item);
   }
 }
