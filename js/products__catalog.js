@@ -4,19 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
     ".products__catalog__filter__type__list"
   );
 
-  animalFilterType.addEventListener("click", function (e) {
+ animalFilterType.addEventListener("click", function (e) {
   const itemType = e.target.closest(".products__catalog__filter__type__list__item");
   if (!itemType) return;
 
-  const categoryId = itemType.dataset.categoryId; 
+  const categoryId = itemType.dataset.categoryId;
 
-  const allIndicators = document.querySelectorAll(".products__catalog__filter__type__indicator");
-  allIndicators.forEach(ind => ind.classList.remove("products__catalog__filter__type__indicator__active"));
+  document.querySelectorAll(".products__catalog__filter__type__indicator").forEach(ind => {
+    ind.classList.remove("products__catalog__filter__type__indicator__active");
+  });
 
   const currentIndicator = itemType.querySelector(".products__catalog__filter__type__indicator");
-  currentIndicator.classList.add("products__catalog__filter__type__indicator__active");
+  if (currentIndicator) {
+    currentIndicator.classList.add("products__catalog__filter__type__indicator__active");
+  }
 
-  filterProductsByCategory(categoryId);
 });
 
   const animalCategories = document.querySelectorAll(
@@ -153,25 +155,47 @@ document.addEventListener("DOMContentLoaded", () => {
     return newArray;
   }
 
-  document.addEventListener("filterProducts", (e) => {
-  if (e.detail.animalType) currentAnimalFilter = e.detail.animalType;
-  if (e.detail.categoryId !== undefined) currentCategoryFilter = e.detail.categoryId;
+ document.addEventListener("filterProducts", (e) => {
+  const { animalType, categoryId } = e.detail;
+  
+  if (animalType) currentAnimalFilter = animalType;
+  if (categoryId !== undefined) currentCategoryFilter = categoryId;
 
   filteredCardsData = cardsData.filter(product => {
     const animalMatch = !currentAnimalFilter || 
-      product.animal.some(animal => animal.type.toLowerCase() === currentAnimalFilter);
-
+      product.animal.some(a => a.type.toLowerCase() === currentAnimalFilter);
+    
     const categoryMatch = !currentCategoryFilter || 
       (product.category && product.category.id == currentCategoryFilter);
-
+    
     return animalMatch && categoryMatch;
   });
 
+  updateActiveFilters();
   filteredCardsData = shuffleArray(filteredCardsData);
   currentPage = 1;
   createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
   updateCardsDisplay();
 });
+
+function updateActiveFilters() {
+  document.querySelectorAll('.animal__category__catalog').forEach(item => {
+    item.classList.toggle(
+      'animal__category__catalog__active',
+      item.dataset.animalType === currentAnimalFilter
+    );
+  });
+
+  document.querySelectorAll('.products__catalog__filter__type__list__item').forEach(item => {
+    const indicator = item.querySelector('.products__catalog__filter__type__indicator');
+    if (indicator) {
+      indicator.classList.toggle(
+        'products__catalog__filter__type__indicator__active',
+        item.dataset.categoryId == currentCategoryFilter
+      );
+    }
+  });
+}
 
   fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
     .then((response) => {

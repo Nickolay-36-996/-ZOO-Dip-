@@ -51,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function filterProductsByAnimal(animalType) {
   const event = new CustomEvent('filterProducts', {
     detail: {
-      animalType: animalType
+      animalType: animalType,
+      categoryId: null 
     }
   });
   document.dispatchEvent(event);
@@ -60,14 +61,14 @@ function filterProductsByAnimal(animalType) {
 
 function filterProductsByCategory(categoryId) {
   const activeAnimalLink = document.querySelector('.animal__category__catalog__active');
-  if (!activeAnimalLink) return; 
+  if (!activeAnimalLink) return;
 
   const animalType = activeAnimalLink.dataset.animalType;
 
   const event = new CustomEvent('filterProducts', {
     detail: {
-      animalType: animalType,  
-      categoryId: categoryId   
+      animalType: animalType,
+      categoryId: categoryId
     }
   });
   document.dispatchEvent(event);
@@ -116,14 +117,8 @@ function updateCategoryFilters(animalType, products) {
   const categoriesMap = {};
 
   for (const product of products) {
-    let isForAnimal = false;
-    for (const animal of product.animal) {
-      if (animal.type.toLowerCase() === animalType) {
-        isForAnimal = true;
-        break;
-      }
-    }
-
+    const isForAnimal = product.animal.some(a => a.type.toLowerCase() === animalType);
+    
     if (isForAnimal && product.category) {
       const catId = product.category.id;
       if (!categoriesMap[catId]) {
@@ -137,25 +132,18 @@ function updateCategoryFilters(animalType, products) {
     }
   }
 
-  const allItem = document.createElement('li');
-  allItem.className = 'products__catalog__filter__type__list__item';
-  allItem.innerHTML = `
-    <div class="products__catalog__filter__type__indicator products__catalog__filter__type__indicator__active"></div>
-    <p class="products__catalog__filter__type__txt">Все</p>
-    <span class="products__catalog__filter__type__count">(${Object.values(categoriesMap).reduce((sum, cat) => sum + cat.count, 0)})</span>
-  `;
-  allItem.addEventListener('click', () => filterProductsByCategory(''));
-  filterTypeList.appendChild(allItem);
-
   for (const category of Object.values(categoriesMap)) {
     const item = document.createElement('li');
     item.className = 'products__catalog__filter__type__list__item';
+    item.dataset.categoryId = category.id;
     item.innerHTML = `
       <div class="products__catalog__filter__type__indicator"></div>
       <p class="products__catalog__filter__type__txt">${category.name}</p>
       <span class="products__catalog__filter__type__count">(${category.count})</span>
     `;
-    item.addEventListener('click', () => filterProductsByCategory(category.id));
+    item.addEventListener('click', () => {
+      filterProductsByCategory(category.id);
+    });
     filterTypeList.appendChild(item);
   }
 }
