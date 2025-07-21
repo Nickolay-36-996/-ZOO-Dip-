@@ -174,40 +174,46 @@ function updateCategoryFilters(animalType, products) {
   const filterTypeList = document.querySelector(
     ".products__catalog__filter__type__list"
   );
+  
   filterTypeList.innerHTML = "";
 
-  const categoriesMap = {};
+  const categoryCounts = {};
 
   for (const product of products) {
-    const isForAnimal = product.animal.some(
-      (a) => a.type.toLowerCase() === animalType
+    const isForCurrentAnimal = product.animal.some(
+      animal => animal.type.toLowerCase() === animalType
     );
 
-    if (isForAnimal && product.category) {
-      const catId = product.category.id;
-      if (!categoriesMap[catId]) {
-        categoriesMap[catId] = {
-          id: catId,
+    if (isForCurrentAnimal && product.category) {
+      const categoryId = product.category.id;
+
+      if (!categoryCounts[categoryId]) {
+        categoryCounts[categoryId] = {
           name: product.category.name,
-          count: 0,
+          count: 0
         };
       }
-      categoriesMap[catId].count++;
+      categoryCounts[categoryId].count++;
     }
   }
 
-  for (const category of Object.values(categoriesMap)) {
+  for (const categoryId in categoryCounts) {
+    const categoryInfo = categoryCounts[categoryId];
+    
     const item = document.createElement("li");
     item.className = "products__catalog__filter__type__list__item";
-    item.dataset.categoryId = category.id;
+    item.dataset.categoryId = categoryId;
+
     item.innerHTML = `
       <div class="products__catalog__filter__type__indicator"></div>
-      <p class="products__catalog__filter__type__txt">${category.name}</p>
-      <span class="products__catalog__filter__type__count">(${category.count})</span>
+      <p class="products__catalog__filter__type__txt">${categoryInfo.name}</p>
+      <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
     `;
+
     item.addEventListener("click", () => {
-      filterProductsByCategory(category.id);
+      filterProductsByCategory(categoryId);
     });
+
     filterTypeList.appendChild(item);
   }
 }

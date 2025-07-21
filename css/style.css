@@ -3274,7 +3274,7 @@ body {
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0px;
-  color: #00A0AC;
+  color: #00a0ac;
 }
 
 .products__catalog__products__list__slider__pangination__wrap {
@@ -3296,10 +3296,17 @@ body {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0px;
-  color: #00A0AC;
+  color: #00a0ac;
   cursor: pointer;
 }
 
 .products__catalog__products__list__slider__pangination__item__active {
-  color: #6D7175;
+  color: #6d7175;
+}
+
+.products__catalog__filter__type__count {
+  font-family: "SF Pro Text";
+  color: #202223;
+  font-size: 14px;
+  align-self: center;
 }/*# sourceMappingURL=style.css.map */
