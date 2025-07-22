@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentAnimalFilter = null;
   let currentCategoryFilter = null;
   let currentPromotionalFilter = false;
+  let currentBrandFilter = null;
 
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
@@ -123,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const items = document.querySelectorAll(
       ".products__catalog__products__list__slider__pangination__item"
     );
-    items.forEach((item) => {
+    for (const item of items) {
       item.classList.remove(
         "products__catalog__products__list__slider__pangination__item__active"
       );
@@ -132,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "products__catalog__products__list__slider__pangination__item__active"
         );
       }
-    });
+    }
   }
 
   function updateCardsDisplay() {
@@ -217,6 +218,143 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
+  function loadBrandFilters(products) {
+    const brandList = document.querySelector(
+      ".products__catalog__filter__brand__list"
+    );
+    brandList.innerHTML = "";
+
+    const brandCounts = {};
+
+    for (const product of products) {
+      if (product.brand) {
+        const brandId = product.brand.id;
+        if (!brandCounts[brandId]) {
+          brandCounts[brandId] = {
+            name: product.brand.name,
+            count: 0,
+          };
+        }
+        brandCounts[brandId].count++;
+      }
+    }
+
+    for (const [brandId, brandInfo] of Object.entries(brandCounts)) {
+      const item = document.createElement("div");
+      item.className = "products__catalog__filter__brand__item";
+      item.dataset.brandId = brandId;
+
+      item.innerHTML = `
+        <div class="products__catalog__filter__brand__indicator"></div>
+        <p class="products__catalog__filter__brand__txt">${brandInfo.name}</p>
+        <span class="products__catalog__filter__brand__count">(${brandInfo.count})</span>
+      `;
+
+      item.addEventListener("click", () => {
+        const indicator = item.querySelector(
+          ".products__catalog__filter__brand__indicator"
+        );
+        const isActive = indicator.classList.contains(
+          "products__catalog__filter__brand__indicator__active"
+        );
+
+        const allIndicators = document.querySelectorAll(
+          ".products__catalog__filter__brand__indicator"
+        );
+        for (const el of allIndicators) {
+          el.classList.remove(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        }
+
+        if (!isActive) {
+          indicator.classList.add(
+            "products__catalog__filter__brand__indicator__active"
+          );
+          currentBrandFilter = brandId;
+        } else {
+          currentBrandFilter = null;
+        }
+
+        filterProductsByBrand();
+      });
+
+      brandList.appendChild(item);
+    }
+  }
+
+  function filterProductsByBrand() {
+    const activeAnimalLink = document.querySelector(
+      ".animal__category__catalog__active"
+    );
+    const animalType = activeAnimalLink
+      ? activeAnimalLink.dataset.animalType
+      : null;
+
+    const activeCategoryItem = document.querySelector(
+      ".products__catalog__filter__type__indicator__active"
+    );
+    const categoryId =
+      activeCategoryItem?.closest(
+        ".products__catalog__filter__type__list__item"
+      )?.dataset.categoryId || null;
+
+    const promotionalIndicator = document.querySelector(
+      ".promotional__item__indicator"
+    );
+    const promotionalOnly = promotionalIndicator.classList.contains(
+      "promotional__item__indicator__active"
+    );
+
+    const event = new CustomEvent("filterProducts", {
+      detail: {
+        animalType: animalType,
+        categoryId: categoryId,
+        promotionalOnly: promotionalOnly,
+        brandId: currentBrandFilter,
+      },
+    });
+    document.dispatchEvent(event);
+  }
+
+  document.addEventListener("filterProducts", (e) => {
+    const { animalType, categoryId, promotionalOnly, brandId } = e.detail;
+
+    if (animalType !== undefined) currentAnimalFilter = animalType;
+    if (categoryId !== undefined) currentCategoryFilter = categoryId;
+    if (promotionalOnly !== undefined)
+      currentPromotionalFilter = promotionalOnly;
+    if (brandId !== undefined) currentBrandFilter = brandId;
+
+    filteredCardsData = cardsData.filter((product) => {
+      const animalMatch =
+        !currentAnimalFilter ||
+        product.animal.some(
+          (a) => a.type.toLowerCase() === currentAnimalFilter
+        );
+
+      const categoryMatch =
+        !currentCategoryFilter ||
+        (product.category && product.category.id == currentCategoryFilter);
+
+      const promotionalMatch =
+        !currentPromotionalFilter || (product.sale && product.sale.percent > 0);
+
+      const brandMatch =
+        !currentBrandFilter ||
+        (product.brand && product.brand.id == currentBrandFilter);
+
+      return animalMatch && categoryMatch && promotionalMatch && brandMatch;
+    });
+
+    updateActiveFilters();
+    filteredCardsData = shuffleArray(filteredCardsData);
+    currentPage = 1;
+    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
+    updateCardsDisplay();
+  });
+
   fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
     .then((response) => {
       if (!response.ok) {
@@ -234,6 +372,8 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = "<p>Товары не найдены</p>";
         return;
       }
+
+      loadBrandFilters(cardsData);
 
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
@@ -342,16 +482,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantityElements = quantityBox.querySelectorAll(
           ".products__catalog__products__card__quantity"
         );
-        for (let element of quantityElements) {
+        for (const element of quantityElements) {
           element.addEventListener("click", function () {
             const isActive = this.classList.contains(
               "products__catalog__products__card__quantity__active"
             );
-            quantityElements.forEach((el) =>
+            for (const el of quantityElements) {
               el.classList.remove(
                 "products__catalog__products__card__quantity__active"
-              )
-            );
+              );
+            }
 
             if (!isActive) {
               this.classList.add(

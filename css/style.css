@@ -3309,4 +3309,49 @@ body {
   color: #202223;
   font-size: 14px;
   align-self: center;
+}
+
+.products__catalog__filter__brand__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.products__catalog__filter__brand__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.products__catalog__filter__brand__indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #8C9196;
+  border-radius: 4px;
+  position: relative;
+}
+
+.products__catalog__filter__brand__indicator__active {
+  background-image: url(../img/check.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #008060;
+  border-color: #008060;
+}
+
+.products__catalog__filter__brand__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #202223;
+}
+
+.products__catalog__filter__brand__count {
+  font-family: SF Pro Text;
+  font-size: 14px;
+  color: #6D7175;
+  margin-left: auto;
 }/*# sourceMappingURL=style.css.map */
