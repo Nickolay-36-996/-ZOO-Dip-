@@ -50,10 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function filterProductsByAnimal(animalType) {
+  const promotionalIndicator = document.querySelector(
+    ".promotional__item__indicator"
+  );
+  const promotionalOnly = promotionalIndicator.classList.contains(
+    "promotional__item__indicator__active"
+  );
+
   const event = new CustomEvent("filterProducts", {
     detail: {
       animalType: animalType,
       categoryId: null,
+      promotionalOnly: promotionalOnly,
     },
   });
   document.dispatchEvent(event);
@@ -69,11 +77,18 @@ function filterProductsByCategory(categoryId) {
   if (!activeAnimalLink) return;
 
   const animalType = activeAnimalLink.dataset.animalType;
+  const promotionalIndicator = document.querySelector(
+    ".promotional__item__indicator"
+  );
+  const promotionalOnly = promotionalIndicator.classList.contains(
+    "promotional__item__indicator__active"
+  );
 
   const event = new CustomEvent("filterProducts", {
     detail: {
       animalType: animalType,
       categoryId: categoryId,
+      promotionalOnly: promotionalOnly,
     },
   });
   document.dispatchEvent(event);
@@ -174,14 +189,14 @@ function updateCategoryFilters(animalType, products) {
   const filterTypeList = document.querySelector(
     ".products__catalog__filter__type__list"
   );
-  
+
   filterTypeList.innerHTML = "";
 
   const categoryCounts = {};
 
   for (const product of products) {
     const isForCurrentAnimal = product.animal.some(
-      animal => animal.type.toLowerCase() === animalType
+      (animal) => animal.type.toLowerCase() === animalType
     );
 
     if (isForCurrentAnimal && product.category) {
@@ -190,7 +205,7 @@ function updateCategoryFilters(animalType, products) {
       if (!categoryCounts[categoryId]) {
         categoryCounts[categoryId] = {
           name: product.category.name,
-          count: 0
+          count: 0,
         };
       }
       categoryCounts[categoryId].count++;
@@ -199,7 +214,7 @@ function updateCategoryFilters(animalType, products) {
 
   for (const categoryId in categoryCounts) {
     const categoryInfo = categoryCounts[categoryId];
-    
+
     const item = document.createElement("li");
     item.className = "products__catalog__filter__type__list__item";
     item.dataset.categoryId = categoryId;

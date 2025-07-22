@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   let currentAnimalFilter = null;
   let currentCategoryFilter = null;
+  let currentPromotionalFilter = false;
 
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
@@ -28,6 +29,33 @@ document.addEventListener("DOMContentLoaded", () => {
     promotionalIndicator.classList.toggle(
       "promotional__item__indicator__active"
     );
+    currentPromotionalFilter = promotionalIndicator.classList.contains(
+      "promotional__item__indicator__active"
+    );
+
+    const activeAnimalLink = document.querySelector(
+      ".animal__category__catalog__active"
+    );
+    const animalType = activeAnimalLink
+      ? activeAnimalLink.dataset.animalType
+      : null;
+
+    const activeCategoryItem = document.querySelector(
+      ".products__catalog__filter__type__indicator__active"
+    );
+    const categoryId =
+      activeCategoryItem?.closest(
+        ".products__catalog__filter__type__list__item"
+      )?.dataset.categoryId || null;
+
+    const event = new CustomEvent("filterProducts", {
+      detail: {
+        animalType: animalType,
+        categoryId: categoryId,
+        promotionalOnly: currentPromotionalFilter,
+      },
+    });
+    document.dispatchEvent(event);
   });
 
   const container = document.getElementById("products-list");
@@ -125,10 +153,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.addEventListener("filterProducts", (e) => {
-    const { animalType, categoryId } = e.detail;
+    const { animalType, categoryId, promotionalOnly } = e.detail;
 
-    if (animalType) currentAnimalFilter = animalType;
+    if (animalType !== undefined) currentAnimalFilter = animalType;
     if (categoryId !== undefined) currentCategoryFilter = categoryId;
+    if (promotionalOnly !== undefined)
+      currentPromotionalFilter = promotionalOnly;
 
     filteredCardsData = cardsData.filter((product) => {
       const animalMatch =
@@ -141,7 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
         !currentCategoryFilter ||
         (product.category && product.category.id == currentCategoryFilter);
 
-      return animalMatch && categoryMatch;
+      const promotionalMatch =
+        !currentPromotionalFilter || (product.sale && product.sale.percent > 0);
+
+      return animalMatch && categoryMatch && promotionalMatch;
     });
 
     updateActiveFilters();
