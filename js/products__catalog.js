@@ -226,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
     brandList.innerHTML = "";
 
     const brandCounts = {};
+    const brandHasSale = {};
 
     for (const product of products) {
       if (product.brand) {
@@ -234,9 +235,14 @@ document.addEventListener("DOMContentLoaded", () => {
           brandCounts[brandId] = {
             name: product.brand.name,
             count: 0,
+            hasSale: false,
           };
         }
         brandCounts[brandId].count++;
+
+        if (product.sale && product.sale.percent > 0) {
+          brandCounts[brandId].hasSale = true;
+        }
       }
     }
 
@@ -246,37 +252,39 @@ document.addEventListener("DOMContentLoaded", () => {
       item.dataset.brandId = brandId;
 
       item.innerHTML = `
-        <div class="products__catalog__filter__brand__indicator"></div>
-        <p class="products__catalog__filter__brand__txt">${brandInfo.name}</p>
-        <span class="products__catalog__filter__brand__count">(${brandInfo.count})</span>
-      `;
+      <div class="products__catalog__filter__brand__indicator"></div>
+      <p class="products__catalog__filter__brand__txt">${brandInfo.name}</p>
+      <span class="products__catalog__filter__brand__count">(${
+        brandInfo.count
+      })</span>
+      ${
+        brandInfo.hasSale
+          ? '<span class="products__catalog__filter__brand__sale">Акция</span>'
+          : ""
+      }
+    `;
 
       item.addEventListener("click", () => {
         const indicator = item.querySelector(
           ".products__catalog__filter__brand__indicator"
         );
-        const isActive = indicator.classList.contains(
+        indicator.classList.toggle(
           "products__catalog__filter__brand__indicator__active"
         );
 
-        const allIndicators = document.querySelectorAll(
-          ".products__catalog__filter__brand__indicator"
+        const selectedBrands = [];
+        const activeIndicators = document.querySelectorAll(
+          ".products__catalog__filter__brand__indicator__active"
         );
-        for (const el of allIndicators) {
-          el.classList.remove(
-            "products__catalog__filter__brand__indicator__active"
-          );
+
+        for (const indicator of activeIndicators) {
+          const brandId = indicator.closest(
+            ".products__catalog__filter__brand__item"
+          ).dataset.brandId;
+          selectedBrands.push(brandId);
         }
 
-        if (!isActive) {
-          indicator.classList.add(
-            "products__catalog__filter__brand__indicator__active"
-          );
-          currentBrandFilter = brandId;
-        } else {
-          currentBrandFilter = null;
-        }
-
+        currentBrandFilter = selectedBrands.length > 0 ? selectedBrands : null;
         filterProductsByBrand();
       });
 
@@ -312,22 +320,24 @@ document.addEventListener("DOMContentLoaded", () => {
         animalType: animalType,
         categoryId: categoryId,
         promotionalOnly: promotionalOnly,
-        brandId: currentBrandFilter,
+        brandIds: currentBrandFilter,
       },
     });
     document.dispatchEvent(event);
   }
 
   document.addEventListener("filterProducts", (e) => {
-    const { animalType, categoryId, promotionalOnly, brandId } = e.detail;
+    const { animalType, categoryId, promotionalOnly, brandIds } = e.detail;
 
     if (animalType !== undefined) currentAnimalFilter = animalType;
     if (categoryId !== undefined) currentCategoryFilter = categoryId;
     if (promotionalOnly !== undefined)
       currentPromotionalFilter = promotionalOnly;
-    if (brandId !== undefined) currentBrandFilter = brandId;
+    if (brandIds !== undefined) currentBrandFilter = brandIds;
 
-    filteredCardsData = cardsData.filter((product) => {
+    filteredCardsData = [];
+
+    for (const product of cardsData) {
       const animalMatch =
         !currentAnimalFilter ||
         product.animal.some(
@@ -343,10 +353,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const brandMatch =
         !currentBrandFilter ||
-        (product.brand && product.brand.id == currentBrandFilter);
+        (product.brand &&
+          currentBrandFilter.includes(String(product.brand.id)));
 
-      return animalMatch && categoryMatch && promotionalMatch && brandMatch;
-    });
+      if (animalMatch && categoryMatch && promotionalMatch && brandMatch) {
+        filteredCardsData.push(product);
+      }
+    }
 
     updateActiveFilters();
     filteredCardsData = shuffleArray(filteredCardsData);

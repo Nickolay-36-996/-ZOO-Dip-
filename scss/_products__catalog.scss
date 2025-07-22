@@ -221,6 +221,7 @@
   line-height: 20px;
   letter-spacing: 0px;
   color: #202223;
+  white-space: nowrap;
 }
 
 .products__catalog__filter__brand {
@@ -544,7 +545,7 @@
 .products__catalog__filter__brand__indicator {
   width: 18px;
   height: 18px;
-  border: 2px solid #8C9196;
+  border: 2px solid #8c9196;
   border-radius: 4px;
   position: relative;
 }
@@ -568,6 +569,23 @@
 .products__catalog__filter__brand__count {
   font-family: SF Pro Text;
   font-size: 14px;
-  color: #6D7175;
+  color: #6d7175;
+}
+
+.products__catalog__filter__brand__sale {
+  font-family: SF Pro Text;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #fd5749;
+  margin-left: auto;
+}
+
+.products__catalog__filter__type__sale {
+  font-family: SF Pro Text;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #fd5749;
   margin-left: auto;
 }

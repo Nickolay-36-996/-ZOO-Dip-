@@ -206,9 +206,14 @@ function updateCategoryFilters(animalType, products) {
         categoryCounts[categoryId] = {
           name: product.category.name,
           count: 0,
+          hasSale: false,
         };
       }
       categoryCounts[categoryId].count++;
+
+      if (product.sale && product.sale.percent > 0) {
+        categoryCounts[categoryId].hasSale = true;
+      }
     }
   }
 
@@ -222,7 +227,14 @@ function updateCategoryFilters(animalType, products) {
     item.innerHTML = `
       <div class="products__catalog__filter__type__indicator"></div>
       <p class="products__catalog__filter__type__txt">${categoryInfo.name}</p>
-      <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
+      <span class="products__catalog__filter__type__count">(${
+        categoryInfo.count
+      })</span>
+      ${
+        categoryInfo.hasSale
+          ? '<span class="products__catalog__filter__type__sale">Акция</span>'
+          : ""
+      }
     `;
 
     item.addEventListener("click", () => {
