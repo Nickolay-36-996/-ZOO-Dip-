@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentCategoryFilter = null;
   let currentPromotionalFilter = false;
   let currentBrandFilter = null;
+  let currentSortType = "date";
 
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
@@ -144,15 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePaginationStyles();
   }
 
-  function shuffleArray(array) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-  }
-
   document.addEventListener("filterProducts", (e) => {
     const { animalType, categoryId, promotionalOnly } = e.detail;
 
@@ -179,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     updateActiveFilters();
-    filteredCardsData = shuffleArray(filteredCardsData);
     currentPage = 1;
     createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
     updateCardsDisplay();
@@ -326,6 +317,105 @@ document.addEventListener("DOMContentLoaded", () => {
     document.dispatchEvent(event);
   }
 
+  function initSorting() {
+    const sortItems = document.querySelectorAll(
+      ".products__catalog__sort__select__list__item"
+    );
+
+    for (const item of sortItems) {
+      item.addEventListener("click", () => {
+        const sortText = item.querySelector(
+          ".products__catalog__sort__select__list__item__txt"
+        ).textContent;
+        document.querySelector(
+          ".products__catalog__sort__select__active"
+        ).textContent = sortText;
+
+        if (sortText.includes("названию: «от А до Я»")) {
+          currentSortType = "name_asc";
+        } else if (sortText.includes("названию: «от Я до А»")) {
+          currentSortType = "name_desc";
+        } else if (sortText.includes("цене по возр")) {
+          currentSortType = "price_asc";
+        } else if (sortText.includes("цене по убыв")) {
+          currentSortType = "price_desc";
+        } else if (sortText.includes("популярности")) {
+          currentSortType = "popularity";
+        } else {
+          currentSortType = "date";
+        }
+
+        applySorting();
+      });
+    }
+  }
+
+  function applySorting() {
+    if (!cardsData || cardsData.length === 0) return;
+    const sortedProducts = [...filteredCardsData];
+
+    switch (currentSortType) {
+      case "name_asc":
+        sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "name_desc":
+        sortedProducts.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "price_asc":
+        sortedProducts.sort((a, b) => {
+          const priceA =
+            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
+          const priceB =
+            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
+          return priceA - priceB;
+        });
+        break;
+      case "price_desc":
+        sortedProducts.sort((a, b) => {
+          const priceA =
+            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
+          const priceB =
+            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
+          return priceB - priceA;
+        });
+        break;
+      case "popularity":
+        sortedProducts.sort(
+          (a, b) => (b.sales_counter || 0) - (a.sales_counter || 0)
+        );
+        break;
+      case "date":
+      default:
+        sortedProducts.length = 0;
+        for (const product of cardsData) {
+          const animalMatch =
+            !currentAnimalFilter ||
+            product.animal.some(
+              (a) => a.type.toLowerCase() === currentAnimalFilter
+            );
+          const categoryMatch =
+            !currentCategoryFilter ||
+            (product.category && product.category.id == currentCategoryFilter);
+          const promotionalMatch =
+            !currentPromotionalFilter ||
+            (product.sale && product.sale.percent > 0);
+          const brandMatch =
+            !currentBrandFilter ||
+            (product.brand &&
+              currentBrandFilter.includes(String(product.brand.id)));
+
+          if (animalMatch && categoryMatch && promotionalMatch && brandMatch) {
+            sortedProducts.push(product);
+          }
+        }
+        break;
+    }
+
+    filteredCardsData = sortedProducts;
+    currentPage = 1;
+    updateCardsDisplay();
+  }
+
   document.addEventListener("filterProducts", (e) => {
     const { animalType, categoryId, promotionalOnly, brandIds } = e.detail;
 
@@ -362,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateActiveFilters();
-    filteredCardsData = shuffleArray(filteredCardsData);
+    applySorting();
     currentPage = 1;
     createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
     updateCardsDisplay();
@@ -378,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       console.log("данные товаров", data);
       cardsData = data.results || [];
-      filteredCardsData = shuffleArray([...cardsData]);
+      filteredCardsData = [...cardsData];
       container.innerHTML = "";
 
       if (cardsData.length === 0) {
@@ -387,6 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       loadBrandFilters(cardsData);
+      applySorting();
 
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
@@ -536,4 +627,5 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+  initSorting();
 });
