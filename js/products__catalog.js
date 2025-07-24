@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentPromotionalFilter = false;
   let currentBrandFilter = null;
   let currentSortType = "date";
+  let allBrandsData = [];
+  let searchTimeout;
 
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
@@ -215,10 +217,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ".products__catalog__filter__brand__list"
     );
     brandList.innerHTML = "";
+    allBrandsData = [];
 
     const brandCounts = {};
-    const brandHasSale = {};
-
     for (const product of products) {
       if (product.brand) {
         const brandId = product.brand.id;
@@ -230,14 +231,18 @@ document.addEventListener("DOMContentLoaded", () => {
           };
         }
         brandCounts[brandId].count++;
-
-        if (product.sale && product.sale.percent > 0) {
-          brandCounts[brandId].hasSale = true;
-        }
+        if (product.sale?.percent > 0) brandCounts[brandId].hasSale = true;
       }
     }
 
     for (const [brandId, brandInfo] of Object.entries(brandCounts)) {
+      allBrandsData.push({
+        id: brandId,
+        name: brandInfo.name,
+        count: brandInfo.count,
+        hasSale: brandInfo.hasSale,
+      });
+
       const item = document.createElement("div");
       item.className = "products__catalog__filter__brand__item";
       item.dataset.brandId = brandId;
@@ -269,10 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         for (const indicator of activeIndicators) {
-          const brandId = indicator.closest(
-            ".products__catalog__filter__brand__item"
-          ).dataset.brandId;
-          selectedBrands.push(brandId);
+          selectedBrands.push(
+            indicator.closest(".products__catalog__filter__brand__item").dataset
+              .brandId
+          );
         }
 
         currentBrandFilter = selectedBrands.length > 0 ? selectedBrands : null;
@@ -281,6 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       brandList.appendChild(item);
     }
+
+    initBrandSearch();
   }
 
   function filterProductsByBrand() {
@@ -315,6 +322,94 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     });
     document.dispatchEvent(event);
+  }
+
+  function initBrandSearch() {
+    const brandSearchInput = document.querySelector(
+      ".products__catalog__filter__brand__src__input"
+    );
+    brandSearchInput.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(
+        () => filterBrandsList(brandSearchInput.value),
+        300
+      );
+    });
+    addClearButton();
+  }
+
+  function filterBrandsList(searchText) {
+    const brandItems = document.querySelectorAll(
+      ".products__catalog__filter__brand__item"
+    );
+    let visibleCount = 0;
+    const searchLower = searchText.toLowerCase().trim();
+
+    for (const item of brandItems) {
+      const brandName = item
+        .querySelector(".products__catalog__filter__brand__txt")
+        .textContent.toLowerCase();
+
+      const isVisible =
+        searchLower === "" || checkBrandMatch(brandName, searchLower);
+      item.style.display = isVisible ? "flex" : "none";
+      if (isVisible) visibleCount++;
+    }
+
+    updateBrandsCounter(visibleCount);
+  }
+
+  function checkBrandMatch(brandName, searchText) {
+    const searchWords = searchText.split(" ");
+    const brandWords = brandName.split(" ");
+
+    for (const word of searchWords) {
+      let wordFound = false;
+
+      for (const brandWord of brandWords) {
+        if (brandWord.startsWith(word)) {
+          wordFound = true;
+          break;
+        }
+      }
+
+      if (!wordFound && !brandName.includes(word)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function updateBrandsCounter(count) {
+    let counter = document.querySelector(".brands-counter");
+    if (!counter) {
+      counter = document.createElement("div");
+      counter.className = "brands-counter";
+      document
+        .querySelector(".products__catalog__filter__brand")
+        .appendChild(counter);
+    }
+    counter.textContent = `Найдено брендов: ${count}`;
+  }
+
+  function addClearButton() {
+    const searchContainer = document.querySelector(
+      ".products__catalog__filter__brand__src"
+    );
+    if (document.querySelector(".clear-search")) return;
+
+    const clearBtn = document.createElement("span");
+    clearBtn.className = "clear-search";
+    clearBtn.innerHTML = "&times;";
+    clearBtn.addEventListener("click", () => {
+      const input = document.querySelector(
+        ".products__catalog__filter__brand__src__input"
+      );
+      input.value = "";
+      filterBrandsList("");
+    });
+    searchContainer.appendChild(clearBtn);
   }
 
   function initSorting() {
