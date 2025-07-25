@@ -589,3 +589,9 @@
   color: #fd5749;
   margin-left: auto;
 }
+
+@media(max-width: 992px) {
+  .products__catalog__title {
+    font-size: 34px;
+  }
+}
