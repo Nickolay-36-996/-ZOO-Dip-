@@ -76,6 +76,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+function updateCatalogTitle(animalType) {
+  const catalogTitle = document.querySelector(".products__catalog__title");
+  if (!catalogTitle) return;
+
+  if (animalType) {
+    const animalNames = {
+      кошки: "кошек",
+      собаки: "собак",
+      грызуны: "грызунов",
+      птицы: "птиц",
+      рыбы: "рыб",
+    };
+
+    const multipleName = animalNames[animalType] || animalType;
+    catalogTitle.textContent = `Каталог товаров для ${multipleName}`;
+  } else {
+    catalogTitle.textContent = "Каталог товаров";
+  }
+}
+
 function filterProductsByAnimal(animalType) {
   const promotionalIndicator = document.querySelector(
     ".promotional__item__indicator"
@@ -95,6 +115,7 @@ function filterProductsByAnimal(animalType) {
   updateAnimalFilters(animalType);
   loadProductsForFilters(animalType);
   updateFilterTitle(animalType);
+  updateCatalogTitle(animalType);
 }
 
 function filterProductsByCategory(categoryId) {

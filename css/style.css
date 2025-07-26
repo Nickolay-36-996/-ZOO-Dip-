@@ -3066,9 +3066,7 @@ body {
   background-color: white;
   border-radius: 5px;
   padding: 8px 8px;
-  max-width: 270px;
   min-height: 420px;
-  width: 100%;
   height: 100%;
   transition: linear 0.3s;
 }
@@ -3381,5 +3379,11 @@ body {
 @media (max-width: 992px) {
   .products__catalog__title {
     font-size: 34px;
+  }
+  .products__catalog__products__list {
+    grid-template-columns: 340px 340px 340px;
+  }
+  .products__catalog__products__filter {
+    display: none;
   }
 }/*# sourceMappingURL=style.css.map */
