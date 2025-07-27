@@ -6,11 +6,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchMobile = document.querySelector(".header__search__mobile");
   const basketMobile = document.querySelector(".header__low__basket__mobile");
   const transition = document.querySelector(".header__options__mobile");
+  const sideBar = document.querySelector(".products__catalog__products__filter");
 
   let isMenuOpen = false;
   let currentBurger = null;
 
   function toggleMenu() {
+
+    if (sideBar && sideBar.classList.contains("products__catalog__products__filter__active")) {
+      sideBar.classList.remove("products__catalog__products__filter__active");
+      closeMenu()
+      return;
+    }
+
     isMenuOpen = !isMenuOpen;
 
     if (isMenuOpen) {
