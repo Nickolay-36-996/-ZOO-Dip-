@@ -609,6 +609,10 @@
     display: block;
   }
 
+  .products__catalog__filter__mobile__img {
+    display: flex;
+  }
+
   .products__catalog__products__filter {
     position: absolute;
     z-index: 3;
@@ -664,6 +668,7 @@
     padding: 8px;
     width: 100%;
     background-color: white;
+    box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     border: 1px solid #babfc3;
   }

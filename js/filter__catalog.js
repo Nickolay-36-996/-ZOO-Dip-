@@ -132,14 +132,22 @@ function filterProductsByCategory(categoryId) {
     "promotional__item__indicator__active"
   );
 
-  const event = new CustomEvent("filterProducts", {
-    detail: {
-      animalType: animalType,
-      categoryId: categoryId,
-      promotionalOnly: promotionalOnly,
-    },
-  });
-  document.dispatchEvent(event);
+  if (window.innerWidth >= 993) {
+    const event = new CustomEvent("filterProducts", {
+      detail: {
+        animalType: animalType,
+        categoryId: categoryId,
+        promotionalOnly: promotionalOnly,
+      },
+    });
+    document.dispatchEvent(event);
+  } else {
+    document.dispatchEvent(
+      new CustomEvent("tempFilterChange", {
+        detail: { categoryId: categoryId },
+      })
+    );
+  }
   updateFilterTitle(animalType);
 }
 

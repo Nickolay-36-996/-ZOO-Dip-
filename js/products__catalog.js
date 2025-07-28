@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let allBrandsData = [];
   let searchTimeout;
 
+  let tempFilters = {
+    animalType: null,
+    categoryId: null,
+    promotionalOnly: false,
+    brandIds: null,
+  };
+
   const revealSelect = document.querySelector(
     ".products__catalog__sort__select"
   );
@@ -29,37 +36,43 @@ document.addEventListener("DOMContentLoaded", () => {
     ".promotional__item__indicator"
   );
   const promotional = document.querySelector(".promotional__item__lbl");
+
   promotional.addEventListener("click", function () {
     promotionalIndicator.classList.toggle(
       "promotional__item__indicator__active"
     );
-    currentPromotionalFilter = promotionalIndicator.classList.contains(
+    const isPromoActive = promotionalIndicator.classList.contains(
       "promotional__item__indicator__active"
     );
 
-    const activeAnimalLink = document.querySelector(
-      ".animal__category__catalog__active"
-    );
-    const animalType = activeAnimalLink
-      ? activeAnimalLink.dataset.animalType
-      : null;
+    if (window.innerWidth >= 993) {
+      currentPromotionalFilter = isPromoActive;
+      const activeAnimalLink = document.querySelector(
+        ".animal__category__catalog__active"
+      );
+      const animalType = activeAnimalLink
+        ? activeAnimalLink.dataset.animalType
+        : null;
 
-    const activeCategoryItem = document.querySelector(
-      ".products__catalog__filter__type__indicator__active"
-    );
-    const categoryId =
-      activeCategoryItem?.closest(
-        ".products__catalog__filter__type__list__item"
-      )?.dataset.categoryId || null;
+      const activeCategoryItem = document.querySelector(
+        ".products__catalog__filter__type__indicator__active"
+      );
+      const categoryId =
+        activeCategoryItem?.closest(
+          ".products__catalog__filter__type__list__item"
+        )?.dataset.categoryId || null;
 
-    const event = new CustomEvent("filterProducts", {
-      detail: {
-        animalType: animalType,
-        categoryId: categoryId,
-        promotionalOnly: currentPromotionalFilter,
-      },
-    });
-    document.dispatchEvent(event);
+      const event = new CustomEvent("filterProducts", {
+        detail: {
+          animalType: animalType,
+          categoryId: categoryId,
+          promotionalOnly: isPromoActive,
+        },
+      });
+      document.dispatchEvent(event);
+    } else {
+      tempFilters.promotionalOnly = isPromoActive;
+    }
   });
 
   const container = document.getElementById("products-list");
@@ -280,8 +293,14 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         }
 
-        currentBrandFilter = selectedBrands.length > 0 ? selectedBrands : null;
-        filterProductsByBrand();
+        if (window.innerWidth >= 993) {
+          currentBrandFilter =
+            selectedBrands.length > 0 ? selectedBrands : null;
+          filterProductsByBrand();
+        } else {
+          tempFilters.brandIds =
+            selectedBrands.length > 0 ? selectedBrands : null;
+        }
       });
 
       brandList.appendChild(item);
@@ -443,6 +462,44 @@ document.addEventListener("DOMContentLoaded", () => {
         applySorting();
       });
     }
+  }
+
+  const applyFiltersBtn = document.querySelector(".apply__filter__mobile");
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener("click", function () {
+      const activeAnimalLink = document.querySelector(
+        ".animal__category__catalog__active"
+      );
+      const animalType = activeAnimalLink
+        ? activeAnimalLink.dataset.animalType
+        : null;
+
+      currentAnimalFilter =
+        tempFilters.animalType !== null ? tempFilters.animalType : animalType;
+      currentCategoryFilter = tempFilters.categoryId;
+      currentPromotionalFilter = tempFilters.promotionalOnly;
+      currentBrandFilter = tempFilters.brandIds;
+
+      const event = new CustomEvent("filterProducts", {
+        detail: {
+          animalType: currentAnimalFilter,
+          categoryId: currentCategoryFilter,
+          promotionalOnly: currentPromotionalFilter,
+          brandIds: currentBrandFilter,
+        },
+      });
+      document.dispatchEvent(event);
+
+      const sideBar = document.querySelector(
+        ".products__catalog__products__filter"
+      );
+      const burgerMobile = document.querySelector(".burger__menu__mobile");
+      const burger = document.querySelector(".burger__menu");
+
+      sideBar.classList.remove("products__catalog__products__filter__active");
+      if (burgerMobile) burgerMobile.classList.remove("burger__active__mobile");
+      if (burger) burger.classList.remove("burger__active");
+    });
   }
 
   function applySorting() {
