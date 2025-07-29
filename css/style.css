@@ -3390,6 +3390,7 @@ body {
   }
   .products__catalog__products__list {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
   .products__catalog__fliter__mobile__wrap {
     display: block;
@@ -3501,5 +3502,10 @@ body {
   }
   .products__catalog__products__filter {
     top: 32px;
+  }
+}
+@media (max-width: 576px) {
+  .products__catalog__products__list {
+    grid-template-columns: repeat(1, 1fr);
   }
 }/*# sourceMappingURL=style.css.map */
