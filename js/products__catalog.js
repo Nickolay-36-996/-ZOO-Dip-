@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ".products__catalog__products__list__slider__pangination"
   );
   let currentPage = 1;
-  const cardsPerPage = 12;
+  const cardsPerPage = 15;
 
   const prevButton = document.querySelector(
     ".products__catalog__products__list__slider__item__switch:first-child"
@@ -610,16 +610,39 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCardsDisplay();
   });
 
-  fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP Error! status: ${response.status}`);
+  async function fetchAllProducts() {
+    let allProducts = [];
+    let nextUrl = "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          allProducts = [...allProducts, ...data.results];
+        }
+
+        nextUrl = data.next;
       }
-      return response.json();
-    })
+
+      console.log("Все товары загружены. Всего:", allProducts.length);
+      return allProducts;
+    } catch (error) {
+      console.error("Ошибка при загрузке товаров:", error);
+      throw error;
+    }
+  }
+
+  fetchAllProducts()
     .then((data) => {
       console.log("данные товаров", data);
-      cardsData = data.results || [];
+      cardsData = data || [];
       filteredCardsData = [...cardsData];
       container.innerHTML = "";
 

@@ -185,13 +185,32 @@ function updateAnimalFilters(animalType) {
   }
 }
 
-function loadProductsForFilters(animalType) {
-  fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
-    .then((response) => response.json())
-    .then((data) => {
-      updateCategoryFilters(animalType, data.results || []);
-    })
-    .catch((error) => console.error("Ошибка загрузки продуктов:", error));
+async function loadProductsForFilters(animalType) {
+  let allProducts = [];
+  let nextUrl =
+    "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+  try {
+    while (nextUrl) {
+      const response = await fetch(nextUrl);
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.results && data.results.length > 0) {
+        allProducts = [...allProducts, ...data.results];
+      }
+
+      nextUrl = data.next;
+    }
+
+    updateCategoryFilters(animalType, allProducts);
+  } catch (error) {
+    console.error("Ошибка загрузки продуктов:", error);
+  }
 }
 
 function initializeSidebarAnimalFilters(animals) {
