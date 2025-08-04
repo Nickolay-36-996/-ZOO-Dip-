@@ -1,96 +1,27 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
-  const animalCategories = document.querySelectorAll(
-    ".animal__category__catalog"
-  );
-  let currentAnimalFilter = null;
-  let currentCategoryFilter = null;
-  let currentPromotionalFilter = false;
-  let currentBrandFilter = null;
-  let currentSortType = "date";
-  let allBrandsData = [];
-  let searchTimeout;
-
-  let tempFilters = {
-    animalType: null,
-    categoryId: null,
-    promotionalOnly: false,
-    brandIds: null,
-  };
-
-  const revealSelect = document.querySelector(
-    ".products__catalog__sort__select"
-  );
-  const selectList = document.querySelector(
-    ".products__catalog__sort__select__list"
-  );
-  const revealSelectIndicator = document.querySelector(".select__icon");
-  revealSelect.addEventListener("click", function () {
-    selectList.classList.toggle(
-      "products__catalog__sort__select__list__active"
-    );
-    revealSelectIndicator.classList.toggle("select__icon__active");
-  });
-
-  const promotionalIndicator = document.querySelector(
-    ".promotional__item__indicator"
-  );
-  const promotional = document.querySelector(".promotional__item__lbl");
-
-  promotional.addEventListener("click", function () {
-    promotionalIndicator.classList.toggle(
-      "promotional__item__indicator__active"
-    );
-    const isPromoActive = promotionalIndicator.classList.contains(
-      "promotional__item__indicator__active"
-    );
-
-    if (window.innerWidth >= 993) {
-      currentPromotionalFilter = isPromoActive;
-      const activeAnimalLink = document.querySelector(
-        ".animal__category__catalog__active"
-      );
-      const animalType = activeAnimalLink
-        ? activeAnimalLink.dataset.animalType
-        : null;
-
-      const activeCategoryItem = document.querySelector(
-        ".products__catalog__filter__type__indicator__active"
-      );
-      const categoryId =
-        activeCategoryItem?.closest(
-          ".products__catalog__filter__type__list__item"
-        )?.dataset.categoryId || null;
-
-      const event = new CustomEvent("filterProducts", {
-        detail: {
-          animalType: animalType,
-          categoryId: categoryId,
-          promotionalOnly: isPromoActive,
-        },
-      });
-      document.dispatchEvent(event);
-    } else {
-      tempFilters.promotionalOnly = isPromoActive;
-    }
-  });
-
   const container = document.getElementById("products-list");
   let cardsData = [];
   let filteredCardsData = [];
+  let currentPage = 1;
+  let cardsPerPage = getCardsPerPage();
 
   const paginationContainer = document.querySelector(
     ".products__catalog__products__list__slider__pangination"
   );
-  let currentPage = 1;
-  const cardsPerPage = 15;
-
   const prevButton = document.querySelector(
     ".products__catalog__products__list__slider__item__switch:first-child"
   );
   const nextButton = document.querySelector(
     ".products__catalog__products__list__slider__item__switch:last-child"
   );
+
+  function getCardsPerPage() {
+    return window.innerWidth <= 992 ? 16 : 15;
+  }
+
+  prevButton.addEventListener("click", goToPrevPage);
+  nextButton.addEventListener("click", goToNextPage);
 
   function goToPrevPage() {
     if (currentPage > 1) {
@@ -108,9 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updatePaginationStyles();
     }
   }
-
-  prevButton.addEventListener("click", goToPrevPage);
-  nextButton.addEventListener("click", goToNextPage);
 
   function createPagination(totalPages) {
     paginationContainer.innerHTML = "";
@@ -153,515 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateCardsDisplay() {
+    cardsPerPage = getCardsPerPage();
     const startIndex = (currentPage - 1) * cardsPerPage;
     const endIndex = startIndex + cardsPerPage;
     const currentCards = filteredCardsData.slice(startIndex, endIndex);
     createCards(currentCards);
     updatePaginationStyles();
   }
-
-  document.addEventListener("filterProducts", (e) => {
-    const { animalType, categoryId, promotionalOnly } = e.detail;
-
-    if (animalType !== undefined) currentAnimalFilter = animalType;
-    if (categoryId !== undefined) currentCategoryFilter = categoryId;
-    if (promotionalOnly !== undefined)
-      currentPromotionalFilter = promotionalOnly;
-
-    filteredCardsData = cardsData.filter((product) => {
-      const animalMatch =
-        !currentAnimalFilter ||
-        product.animal.some(
-          (a) => a.type.toLowerCase() === currentAnimalFilter
-        );
-
-      const categoryMatch =
-        !currentCategoryFilter ||
-        (product.category && product.category.id == currentCategoryFilter);
-
-      const promotionalMatch =
-        !currentPromotionalFilter || (product.sale && product.sale.percent > 0);
-
-      return animalMatch && categoryMatch && promotionalMatch;
-    });
-
-    updateActiveFilters();
-    currentPage = 1;
-    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
-    updateCardsDisplay();
-  });
-
-  function updateActiveFilters() {
-    const animalCategories = document.querySelectorAll(
-      ".animal__category__catalog"
-    );
-    for (const item of animalCategories) {
-      item.classList.toggle(
-        "animal__category__catalog__active",
-        item.dataset.animalType === currentAnimalFilter
-      );
-    }
-
-    const filterItems = document.querySelectorAll(
-      ".products__catalog__filter__type__list__item"
-    );
-    for (const item of filterItems) {
-      const indicator = item.querySelector(
-        ".products__catalog__filter__type__indicator"
-      );
-      if (indicator) {
-        const isActive = item.dataset.categoryId
-          ? item.dataset.categoryId == currentCategoryFilter
-          : item.dataset.animalType === currentAnimalFilter ||
-            item
-              .querySelector(".products__catalog__filter__type__txt")
-              ?.textContent.toLowerCase() === currentAnimalFilter;
-
-        indicator.classList.toggle(
-          "products__catalog__filter__type__indicator__active",
-          isActive
-        );
-      }
-    }
-  }
-
-  function loadBrandFilters(products) {
-    const brandList = document.querySelector(
-      ".products__catalog__filter__brand__list"
-    );
-    brandList.innerHTML = "";
-    allBrandsData = [];
-
-    const brandCounts = {};
-    for (const product of products) {
-      if (product.brand) {
-        const brandId = product.brand.id;
-        if (!brandCounts[brandId]) {
-          brandCounts[brandId] = {
-            name: product.brand.name,
-            count: 0,
-            hasSale: false,
-          };
-        }
-        brandCounts[brandId].count++;
-        if (product.sale?.percent > 0) brandCounts[brandId].hasSale = true;
-      }
-    }
-
-    for (const [brandId, brandInfo] of Object.entries(brandCounts)) {
-      allBrandsData.push({
-        id: brandId,
-        name: brandInfo.name,
-        count: brandInfo.count,
-        hasSale: brandInfo.hasSale,
-      });
-
-      const item = document.createElement("div");
-      item.className = "products__catalog__filter__brand__item";
-      item.dataset.brandId = brandId;
-
-      item.innerHTML = `
-      <div class="products__catalog__filter__brand__indicator"></div>
-      <p class="products__catalog__filter__brand__txt">${brandInfo.name}</p>
-      <span class="products__catalog__filter__brand__count">(${
-        brandInfo.count
-      })</span>
-      ${
-        brandInfo.hasSale
-          ? '<span class="products__catalog__filter__brand__sale">Акция</span>'
-          : ""
-      }
-    `;
-
-      item.addEventListener("click", () => {
-        const indicator = item.querySelector(
-          ".products__catalog__filter__brand__indicator"
-        );
-        indicator.classList.toggle(
-          "products__catalog__filter__brand__indicator__active"
-        );
-
-        const selectedBrands = [];
-        const activeIndicators = document.querySelectorAll(
-          ".products__catalog__filter__brand__indicator__active"
-        );
-
-        for (const indicator of activeIndicators) {
-          selectedBrands.push(
-            indicator.closest(".products__catalog__filter__brand__item").dataset
-              .brandId
-          );
-        }
-
-        if (window.innerWidth >= 993) {
-          currentBrandFilter =
-            selectedBrands.length > 0 ? selectedBrands : null;
-          filterProductsByBrand();
-        } else {
-          tempFilters.brandIds =
-            selectedBrands.length > 0 ? selectedBrands : null;
-        }
-      });
-
-      brandList.appendChild(item);
-    }
-
-    initBrandSearch();
-  }
-
-  function filterProductsByBrand() {
-    const activeAnimalLink = document.querySelector(
-      ".animal__category__catalog__active"
-    );
-    const animalType = activeAnimalLink
-      ? activeAnimalLink.dataset.animalType
-      : null;
-
-    const activeCategoryItem = document.querySelector(
-      ".products__catalog__filter__type__indicator__active"
-    );
-    const categoryId =
-      activeCategoryItem?.closest(
-        ".products__catalog__filter__type__list__item"
-      )?.dataset.categoryId || null;
-
-    const promotionalIndicator = document.querySelector(
-      ".promotional__item__indicator"
-    );
-    const promotionalOnly = promotionalIndicator.classList.contains(
-      "promotional__item__indicator__active"
-    );
-
-    const event = new CustomEvent("filterProducts", {
-      detail: {
-        animalType: animalType,
-        categoryId: categoryId,
-        promotionalOnly: promotionalOnly,
-        brandIds: currentBrandFilter,
-      },
-    });
-    document.dispatchEvent(event);
-  }
-
-  function initBrandSearch() {
-    const brandSearchInput = document.querySelector(
-      ".products__catalog__filter__brand__src__input"
-    );
-    brandSearchInput.addEventListener("input", () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(
-        () => filterBrandsList(brandSearchInput.value),
-        300
-      );
-    });
-    addClearButton();
-  }
-
-  function filterBrandsList(searchText) {
-    const brandItems = document.querySelectorAll(
-      ".products__catalog__filter__brand__item"
-    );
-    let visibleCount = 0;
-    const searchLower = searchText.toLowerCase().trim();
-
-    for (const item of brandItems) {
-      const brandName = item
-        .querySelector(".products__catalog__filter__brand__txt")
-        .textContent.toLowerCase();
-
-      const isVisible =
-        searchLower === "" || checkBrandMatch(brandName, searchLower);
-      item.style.display = isVisible ? "flex" : "none";
-      if (isVisible) visibleCount++;
-    }
-
-    updateBrandsCounter(visibleCount);
-  }
-
-  function checkBrandMatch(brandName, searchText) {
-    const searchWords = searchText.split(" ");
-    const brandWords = brandName.split(" ");
-
-    for (const word of searchWords) {
-      let wordFound = false;
-
-      for (const brandWord of brandWords) {
-        if (brandWord.startsWith(word)) {
-          wordFound = true;
-          break;
-        }
-      }
-
-      if (!wordFound && !brandName.includes(word)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  function updateBrandsCounter(count) {
-    let counter = document.querySelector(".brands-counter");
-    if (!counter) {
-      counter = document.createElement("div");
-      counter.className = "brands-counter";
-      document
-        .querySelector(".products__catalog__filter__brand")
-        .appendChild(counter);
-    }
-    counter.textContent = `Найдено брендов: ${count}`;
-  }
-
-  function addClearButton() {
-    const searchContainer = document.querySelector(
-      ".products__catalog__filter__brand__src"
-    );
-    if (document.querySelector(".clear-search")) return;
-
-    const clearBtn = document.createElement("span");
-    clearBtn.className = "clear-search";
-    clearBtn.innerHTML = "&times;";
-    clearBtn.addEventListener("click", () => {
-      const input = document.querySelector(
-        ".products__catalog__filter__brand__src__input"
-      );
-      input.value = "";
-      filterBrandsList("");
-    });
-    searchContainer.appendChild(clearBtn);
-  }
-
-  function initSorting() {
-    const sortItems = document.querySelectorAll(
-      ".products__catalog__sort__select__list__item"
-    );
-
-    for (const item of sortItems) {
-      item.addEventListener("click", () => {
-        const sortText = item.querySelector(
-          ".products__catalog__sort__select__list__item__txt"
-        ).textContent;
-        document.querySelector(
-          ".products__catalog__sort__select__active"
-        ).textContent = sortText;
-
-        if (sortText.includes("названию: «от А до Я»")) {
-          currentSortType = "name_asc";
-        } else if (sortText.includes("названию: «от Я до А»")) {
-          currentSortType = "name_desc";
-        } else if (sortText.includes("цене по возр")) {
-          currentSortType = "price_asc";
-        } else if (sortText.includes("цене по убыв")) {
-          currentSortType = "price_desc";
-        } else if (sortText.includes("популярности")) {
-          currentSortType = "popularity";
-        } else {
-          currentSortType = "date";
-        }
-
-        applySorting();
-      });
-    }
-  }
-
-  const applyFiltersBtn = document.querySelector(".apply__filter__mobile");
-  if (applyFiltersBtn) {
-    applyFiltersBtn.addEventListener("click", function () {
-      const activeAnimalLink = document.querySelector(
-        ".animal__category__catalog__active"
-      );
-      const animalType = activeAnimalLink
-        ? activeAnimalLink.dataset.animalType
-        : null;
-
-      currentAnimalFilter =
-        tempFilters.animalType !== null ? tempFilters.animalType : animalType;
-      currentCategoryFilter = tempFilters.categoryId;
-      currentPromotionalFilter = tempFilters.promotionalOnly;
-      currentBrandFilter = tempFilters.brandIds;
-
-      const event = new CustomEvent("filterProducts", {
-        detail: {
-          animalType: currentAnimalFilter,
-          categoryId: currentCategoryFilter,
-          promotionalOnly: currentPromotionalFilter,
-          brandIds: currentBrandFilter,
-        },
-      });
-      document.dispatchEvent(event);
-
-      const sideBar = document.querySelector(
-        ".products__catalog__products__filter"
-      );
-      const burgerMobile = document.querySelector(".burger__menu__mobile");
-      const burger = document.querySelector(".burger__menu");
-
-      sideBar.classList.remove("products__catalog__products__filter__active");
-      if (burgerMobile) burgerMobile.classList.remove("burger__active__mobile");
-      if (burger) burger.classList.remove("burger__active");
-    });
-  }
-
-  function applySorting() {
-    if (!cardsData || cardsData.length === 0) return;
-    const sortedProducts = [...filteredCardsData];
-
-    switch (currentSortType) {
-      case "name_asc":
-        sortedProducts.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "name_desc":
-        sortedProducts.sort((a, b) => b.title.localeCompare(a.title));
-        break;
-      case "price_asc":
-        sortedProducts.sort((a, b) => {
-          const priceA =
-            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
-          const priceB =
-            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
-          return priceA - priceB;
-        });
-        break;
-      case "price_desc":
-        sortedProducts.sort((a, b) => {
-          const priceA =
-            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
-          const priceB =
-            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
-          return priceB - priceA;
-        });
-        break;
-      case "popularity":
-        sortedProducts.sort(
-          (a, b) => (b.sales_counter || 0) - (a.sales_counter || 0)
-        );
-        break;
-      case "date":
-      default:
-        sortedProducts.length = 0;
-        for (const product of cardsData) {
-          const animalMatch =
-            !currentAnimalFilter ||
-            product.animal.some(
-              (a) => a.type.toLowerCase() === currentAnimalFilter
-            );
-          const categoryMatch =
-            !currentCategoryFilter ||
-            (product.category && product.category.id == currentCategoryFilter);
-          const promotionalMatch =
-            !currentPromotionalFilter ||
-            (product.sale && product.sale.percent > 0);
-          const brandMatch =
-            !currentBrandFilter ||
-            (product.brand &&
-              currentBrandFilter.includes(String(product.brand.id)));
-
-          if (animalMatch && categoryMatch && promotionalMatch && brandMatch) {
-            sortedProducts.push(product);
-          }
-        }
-        break;
-    }
-
-    filteredCardsData = sortedProducts;
-    currentPage = 1;
-    updateCardsDisplay();
-  }
-
-  document.addEventListener("filterProducts", (e) => {
-    const { animalType, categoryId, promotionalOnly, brandIds } = e.detail;
-
-    if (animalType !== undefined) currentAnimalFilter = animalType;
-    if (categoryId !== undefined) currentCategoryFilter = categoryId;
-    if (promotionalOnly !== undefined)
-      currentPromotionalFilter = promotionalOnly;
-    if (brandIds !== undefined) currentBrandFilter = brandIds;
-
-    filteredCardsData = [];
-
-    for (const product of cardsData) {
-      const animalMatch =
-        !currentAnimalFilter ||
-        product.animal.some(
-          (a) => a.type.toLowerCase() === currentAnimalFilter
-        );
-
-      const categoryMatch =
-        !currentCategoryFilter ||
-        (product.category && product.category.id == currentCategoryFilter);
-
-      const promotionalMatch =
-        !currentPromotionalFilter || (product.sale && product.sale.percent > 0);
-
-      const brandMatch =
-        !currentBrandFilter ||
-        (product.brand &&
-          currentBrandFilter.includes(String(product.brand.id)));
-
-      if (animalMatch && categoryMatch && promotionalMatch && brandMatch) {
-        filteredCardsData.push(product);
-      }
-    }
-
-    updateActiveFilters();
-    applySorting();
-    currentPage = 1;
-    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
-    updateCardsDisplay();
-  });
-
-  async function fetchAllProducts() {
-    let allProducts = [];
-    let nextUrl = "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
-
-    try {
-      while (nextUrl) {
-        const response = await fetch(nextUrl);
-
-        if (!response.ok) {
-          throw new Error(`HTTP Error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          allProducts = [...allProducts, ...data.results];
-        }
-
-        nextUrl = data.next;
-      }
-
-      console.log("Все товары загружены. Всего:", allProducts.length);
-      return allProducts;
-    } catch (error) {
-      console.error("Ошибка при загрузке товаров:", error);
-      throw error;
-    }
-  }
-
-  fetchAllProducts()
-    .then((data) => {
-      console.log("данные товаров", data);
-      cardsData = data || [];
-      filteredCardsData = [...cardsData];
-      container.innerHTML = "";
-
-      if (cardsData.length === 0) {
-        container.innerHTML = "<p>Товары не найдены</p>";
-        return;
-      }
-
-      loadBrandFilters(cardsData);
-      applySorting();
-
-      const totalPages = Math.ceil(cardsData.length / cardsPerPage);
-      createPagination(totalPages);
-      updateCardsDisplay();
-    })
-    .catch((error) => {
-      console.error("Ошибка загрузки:", error);
-      container.innerHTML = `<p>Ошибка загрузки: ${error.message}</p>`;
-    });
 
   function createCards(cardsData) {
     container.innerHTML = "";
@@ -802,5 +228,130 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-  initSorting();
+
+  window.addEventListener("resize", () => {
+    const newCardsPerPage = getCardsPerPage();
+    if (newCardsPerPage !== cardsPerPage) {
+      cardsPerPage = newCardsPerPage;
+      currentPage = 1;
+      updateCardsDisplay();
+    }
+  });
+
+  async function fetchAllProducts() {
+    let allProducts = [];
+    let nextUrl =
+      "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok)
+          throw new Error(`HTTP Error! status: ${response.status}`);
+
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          allProducts = [...allProducts, ...data.results];
+        }
+
+        nextUrl = data.next;
+      }
+
+      console.log("Все товары загружены. Всего:", allProducts.length);
+      return allProducts;
+    } catch (error) {
+      console.error("Ошибка при загрузке товаров:", error);
+      throw error;
+    }
+  }
+
+  function sortProducts(sortType) {
+    if (!filteredCardsData || filteredCardsData.length === 0) return;
+
+    switch (sortType) {
+      case "name_asc":
+        filteredCardsData.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "name_desc":
+        filteredCardsData.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "price_asc":
+        filteredCardsData.sort((a, b) => {
+          const priceA =
+            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
+          const priceB =
+            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
+          return priceA - priceB;
+        });
+        break;
+      case "price_desc":
+        filteredCardsData.sort((a, b) => {
+          const priceA =
+            parseFloat(a.price) * (1 - (a.sale?.percent || 0) / 100);
+          const priceB =
+            parseFloat(b.price) * (1 - (b.sale?.percent || 0) / 100);
+          return priceB - priceA;
+        });
+        break;
+      case "popularity":
+        filteredCardsData.sort(
+          (a, b) => (b.sales_counter || 0) - (a.sales_counter || 0)
+        );
+        break;
+      case "date":
+      default:
+        break;
+    }
+
+    currentPage = 1;
+    updateCardsDisplay();
+  }
+
+  fetchAllProducts()
+    .then((data) => {
+      console.log("данные товаров", data);
+      cardsData = data || [];
+      filteredCardsData = [...cardsData];
+      container.innerHTML = "";
+
+      if (cardsData.length === 0) {
+        container.innerHTML = "<p>Товары не найдены</p>";
+        return;
+      }
+
+      const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+      createPagination(totalPages);
+      updateCardsDisplay();
+    })
+    .catch((error) => {
+      console.error("Ошибка загрузки:", error);
+      container.innerHTML = `<p>Ошибка загрузки: ${error.message}</p>`;
+    });
+
+  document.addEventListener("filterProducts", (e) => {
+    const { animalType, categoryId, promotionalOnly, brandIds } = e.detail;
+
+    filteredCardsData = cardsData.filter((product) => {
+      const animalMatch =
+        !animalType ||
+        product.animal.some((a) => a.type.toLowerCase() === animalType);
+      const categoryMatch =
+        !categoryId || (product.category && product.category.id == categoryId);
+      const promotionalMatch =
+        !promotionalOnly || (product.sale && product.sale.percent > 0);
+      const brandMatch =
+        !brandIds ||
+        (product.brand && brandIds.includes(String(product.brand.id)));
+
+      return animalMatch && categoryMatch && promotionalMatch && brandMatch;
+    });
+
+    currentPage = 1;
+    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
+    updateCardsDisplay();
+  });
+
+  document.addEventListener("sortProducts", (e) => {
+    sortProducts(e.detail.sortType);
+  });
 });
