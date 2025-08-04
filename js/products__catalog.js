@@ -300,10 +300,17 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "date":
       default:
+        const originalOrder = new Map(
+          cardsData.map((item, index) => [item.id, index])
+        );
+        filteredCardsData.sort(
+          (a, b) => originalOrder.get(a.id) - originalOrder.get(b.id)
+        );
         break;
     }
 
     currentPage = 1;
+    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
     updateCardsDisplay();
   }
 
@@ -329,7 +336,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   document.addEventListener("filterProducts", (e) => {
-    const { animalType, categoryId, promotionalOnly, brandIds } = e.detail;
+    const { animalType, categoryId, promotionalOnly, brandIds, sortType } =
+      e.detail;
 
     filteredCardsData = cardsData.filter((product) => {
       const animalMatch =
@@ -346,9 +354,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return animalMatch && categoryMatch && promotionalMatch && brandMatch;
     });
 
-    currentPage = 1;
-    createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
-    updateCardsDisplay();
+    if (sortType) {
+      sortProducts(sortType);
+    } else {
+      currentPage = 1;
+      createPagination(Math.ceil(filteredCardsData.length / cardsPerPage));
+      updateCardsDisplay();
+    }
   });
 
   document.addEventListener("sortProducts", (e) => {

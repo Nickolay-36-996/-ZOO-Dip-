@@ -125,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryId: null,
         promotionalOnly: promotionalOnly,
         brandIds: currentBrandFilter,
+        sortType: currentSortType,
       },
     });
     document.dispatchEvent(event);
@@ -154,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
           categoryId: categoryId,
           promotionalOnly: promotionalOnly,
           brandIds: currentBrandFilter,
+          sortType: currentSortType,
         },
       });
       document.dispatchEvent(event);
@@ -189,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryId: categoryId,
         promotionalOnly: promotionalOnly,
         brandIds: currentBrandFilter,
+        sortType: currentSortType,
       },
     });
     document.dispatchEvent(event);
@@ -640,6 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
           categoryId: categoryId,
           promotionalOnly: isPromoActive,
           brandIds: currentBrandFilter,
+          sortType: currentSortType,
         },
       });
       document.dispatchEvent(event);
@@ -690,6 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
           categoryId: currentCategoryFilter,
           promotionalOnly: currentPromotionalFilter,
           brandIds: currentBrandFilter,
+          sortType: currentSortType,
         },
       });
       document.dispatchEvent(event);
