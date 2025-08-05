@@ -3445,6 +3445,23 @@ body {
     padding: 12px 0px;
     gap: 8px;
   }
+  .products__catalog__filter__brand__list {
+    height: 375px;
+    overflow-y: auto;
+  }
+  .products__catalog__filter__brand__list::-webkit-scrollbar {
+    width: 7px;
+    background-color: #f9f9fd;
+  }
+  .products__catalog__filter__brand__list::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #18aaaa;
+  }
+  .products__catalog__filter__brand__list::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #f9f9fd;
+  }
   .products__catalog__filter__type__sale {
     margin-left: 0;
   }
@@ -3524,6 +3541,9 @@ body {
 }
 @media (max-width: 576px) {
   .products__catalog__products__list {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, 340px);
+  }
+  .products__catalog__products__list__slider__item__switch__txt {
+    display: none;
   }
 }/*# sourceMappingURL=style.css.map */
