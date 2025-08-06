@@ -354,10 +354,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     )})
                 </span>
                 ${
-            Object.values(foodCategories).some(cat => cat.hasSale) 
-            ? '<span class="products__catalog__filter__type__sale">Акция</span>' 
-            : ""
-        }
+                  Object.values(foodCategories).some((cat) => cat.hasSale)
+                    ? '<span class="products__catalog__filter__type__sale">Акция</span>'
+                    : ""
+                }
             </div>
             <div class="food__subcategories__list"></div>
         `;
@@ -365,6 +365,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const subCategoriesList = foodCategoryItem.querySelector(
         ".food__subcategories__list"
       );
+      const foodCategoryContain = foodCategoryItem.querySelector(
+        ".food__category__contain"
+      );
+      const foodCategoryIndicator = foodCategoryItem.querySelector(
+        ".products__catalog__filter__type__indicator"
+      );
+
+      foodCategoryContain.addEventListener("click", () => {
+        resetAllIndicators();
+
+        foodCategoryIndicator.classList.add(
+          "products__catalog__filter__type__indicator__active"
+        );
+
+        subCategoriesList
+          .querySelectorAll(".products__catalog__filter__brand__indicator")
+          .forEach((indicator) => {
+            indicator.classList.add(
+              "products__catalog__filter__brand__indicator__active"
+            );
+          });
+
+        filterProductsByCategory(null, Object.keys(foodCategories));
+      });
 
       for (const [categoryId, categoryInfo] of Object.entries(foodCategories)) {
         const subCategoryItem = document.createElement("div");
@@ -373,22 +397,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         subCategoryItem.innerHTML = `
                 <div class="products__catalog__filter__brand__indicator"></div>
-                <p class="products__catalog__filter__brand__txt">${
-                  categoryInfo.name
-                }</p>
-                <span class="products__catalog__filter__type__count">(${
-                  categoryInfo.count
-                })</span>
+                <p class="products__catalog__filter__brand__txt">${categoryInfo.name}</p>
+                <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
             `;
+
+        const subCategoryIndicator = subCategoryItem.querySelector(
+          ".products__catalog__filter__brand__indicator"
+        );
 
         subCategoryItem.addEventListener("click", (e) => {
           e.stopPropagation();
-          const indicator = subCategoryItem.querySelector(
-            ".products__catalog__filter__brand__indicator"
+
+          resetAllIndicators();
+
+          foodCategoryIndicator.classList.add(
+            "products__catalog__filter__type__indicator__active"
           );
-          indicator.classList.toggle(
+
+          subCategoryIndicator.classList.add(
             "products__catalog__filter__brand__indicator__active"
           );
+
           filterProductsByCategory(categoryId);
         });
 
@@ -418,23 +447,39 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         `;
 
-      item.addEventListener("click", () => {
-        document
-          .querySelectorAll(".products__catalog__filter__type__indicator")
-          .forEach((ind) =>
-            ind.classList.remove(
-              "products__catalog__filter__type__indicator__active"
-            )
-          );
+      const itemIndicator = item.querySelector(
+        ".products__catalog__filter__type__indicator"
+      );
 
-        item
-          .querySelector(".products__catalog__filter__type__indicator")
-          .classList.add("products__catalog__filter__type__indicator__active");
+      item.addEventListener("click", () => {
+        resetAllIndicators();
+
+        itemIndicator.classList.add(
+          "products__catalog__filter__type__indicator__active"
+        );
 
         filterProductsByCategory(categoryId);
       });
 
       filterTypeList.appendChild(item);
+    }
+
+    function resetAllIndicators() {
+      document
+        .querySelectorAll(".products__catalog__filter__type__indicator")
+        .forEach((indicator) => {
+          indicator.classList.remove(
+            "products__catalog__filter__type__indicator__active"
+          );
+        });
+
+      document
+        .querySelectorAll(".products__catalog__filter__brand__indicator")
+        .forEach((indicator) => {
+          indicator.classList.remove(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        });
     }
   }
 
