@@ -3402,6 +3402,25 @@ body {
   display: none;
 }
 
+.food__category__contain {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+}
+
+.food__subcategories__list {
+  padding-left: 20px;
+}
+
+.food__subcategory__item {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  gap: 4px;
+  cursor: pointer;
+}
+
 @media (max-width: 992px) {
   .products__catalog__title {
     font-size: 34px;

@@ -311,6 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
     filterTypeList.innerHTML = "";
 
     const categoryCounts = {};
+    const foodCategories = {};
 
     for (const product of products) {
       const isForCurrentAnimal = product.animal.some(
@@ -319,57 +320,116 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (isForCurrentAnimal && product.category) {
         const categoryId = product.category.id;
+        const categoryName = product.category.name;
+        const isFoodCategory = /корм/i.test(categoryName);
 
-        if (!categoryCounts[categoryId]) {
-          categoryCounts[categoryId] = {
-            name: product.category.name,
+        const targetObj = isFoodCategory ? foodCategories : categoryCounts;
+
+        if (!targetObj[categoryId]) {
+          targetObj[categoryId] = {
+            name: categoryName,
             count: 0,
             hasSale: false,
           };
         }
-        categoryCounts[categoryId].count++;
-
-        if (product.sale && product.sale.percent > 0) {
-          categoryCounts[categoryId].hasSale = true;
+        targetObj[categoryId].count++;
+        if (product.sale?.percent > 0) {
+          targetObj[categoryId].hasSale = true;
         }
       }
     }
 
-    for (const categoryId in categoryCounts) {
-      const categoryInfo = categoryCounts[categoryId];
+    if (Object.keys(foodCategories).length > 0) {
+      const foodCategoryItem = document.createElement("li");
+      foodCategoryItem.className = "food__category__item";
 
+      foodCategoryItem.innerHTML = `
+            <div class="food__category__contain">
+                <div class="products__catalog__filter__type__indicator"></div>
+                <p class="products__catalog__filter__type__txt">Корм</p>
+                <span class="products__catalog__filter__type__count">
+                    (${Object.values(foodCategories).reduce(
+                      (sum, cat) => sum + cat.count,
+                      0
+                    )})
+                </span>
+                ${
+            Object.values(foodCategories).some(cat => cat.hasSale) 
+            ? '<span class="products__catalog__filter__type__sale">Акция</span>' 
+            : ""
+        }
+            </div>
+            <div class="food__subcategories__list"></div>
+        `;
+
+      const subCategoriesList = foodCategoryItem.querySelector(
+        ".food__subcategories__list"
+      );
+
+      for (const [categoryId, categoryInfo] of Object.entries(foodCategories)) {
+        const subCategoryItem = document.createElement("div");
+        subCategoryItem.className = "food__subcategory__item";
+        subCategoryItem.dataset.categoryId = categoryId;
+
+        subCategoryItem.innerHTML = `
+                <div class="products__catalog__filter__brand__indicator"></div>
+                <p class="products__catalog__filter__brand__txt">${
+                  categoryInfo.name
+                }</p>
+                <span class="products__catalog__filter__type__count">(${
+                  categoryInfo.count
+                })</span>
+            `;
+
+        subCategoryItem.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const indicator = subCategoryItem.querySelector(
+            ".products__catalog__filter__brand__indicator"
+          );
+          indicator.classList.toggle(
+            "products__catalog__filter__brand__indicator__active"
+          );
+          filterProductsByCategory(categoryId);
+        });
+
+        subCategoriesList.appendChild(subCategoryItem);
+      }
+
+      filterTypeList.appendChild(foodCategoryItem);
+    }
+
+    for (const [categoryId, categoryInfo] of Object.entries(categoryCounts)) {
       const item = document.createElement("li");
       item.className = "products__catalog__filter__type__list__item";
       item.dataset.categoryId = categoryId;
 
       item.innerHTML = `
-        <div class="products__catalog__filter__type__indicator"></div>
-        <p class="products__catalog__filter__type__txt">${categoryInfo.name}</p>
-        <span class="products__catalog__filter__type__count">(${
-          categoryInfo.count
-        })</span>
-        ${
-          categoryInfo.hasSale
-            ? '<span class="products__catalog__filter__type__sale">Акция</span>'
-            : ""
-        }
-      `;
+            <div class="products__catalog__filter__type__indicator"></div>
+            <p class="products__catalog__filter__type__txt">${
+              categoryInfo.name
+            }</p>
+            <span class="products__catalog__filter__type__count">(${
+              categoryInfo.count
+            })</span>
+            ${
+              categoryInfo.hasSale
+                ? '<span class="products__catalog__filter__type__sale">Акция</span>'
+                : ""
+            }
+        `;
 
       item.addEventListener("click", () => {
-        const allItems = document.querySelectorAll(
-          ".products__catalog__filter__type__list__item"
-        );
-        for (const el of allItems) {
-          el.querySelector(
-            ".products__catalog__filter__type__indicator"
-          )?.classList.remove(
-            "products__catalog__filter__type__indicator__active"
+        document
+          .querySelectorAll(".products__catalog__filter__type__indicator")
+          .forEach((ind) =>
+            ind.classList.remove(
+              "products__catalog__filter__type__indicator__active"
+            )
           );
-        }
 
         item
           .querySelector(".products__catalog__filter__type__indicator")
-          ?.classList.add("products__catalog__filter__type__indicator__active");
+          .classList.add("products__catalog__filter__type__indicator__active");
 
         filterProductsByCategory(categoryId);
       });
