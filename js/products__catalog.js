@@ -344,7 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
         !animalType ||
         product.animal.some((a) => a.type.toLowerCase() === animalType);
       const categoryMatch =
-        !categoryId || (product.category && product.category.id == categoryId);
+        !categoryId ||
+        (product.category &&
+          (Array.isArray(categoryId)
+            ? categoryId.includes(String(product.category.id))
+            : categoryId == product.category.id));
       const promotionalMatch =
         !promotionalOnly || (product.sale && product.sale.percent > 0);
       const brandMatch =

@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateFilterTitle(animalType);
   }
 
-  function filterProductsByCategory(categoryId) {
+  function filterProductsByCategory(categoryIds) {
     const activeAnimalLink = document.querySelector(
       ".animal__category__catalog__active"
     );
@@ -148,11 +148,15 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (window.innerWidth >= 993) {
-      currentCategoryFilter = categoryId;
+      currentCategoryFilter = Array.isArray(categoryIds)
+        ? categoryIds
+        : categoryIds
+        ? [categoryIds]
+        : null;
       const event = new CustomEvent("filterProducts", {
         detail: {
           animalType: animalType,
-          categoryId: categoryId,
+          categoryId: currentCategoryFilter,
           promotionalOnly: promotionalOnly,
           brandIds: currentBrandFilter,
           sortType: currentSortType,
@@ -160,7 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       document.dispatchEvent(event);
     } else {
-      tempFilters.categoryId = categoryId;
+      tempFilters.categoryId = Array.isArray(categoryIds)
+        ? categoryIds
+        : categoryIds
+        ? [categoryIds]
+        : null;
     }
     updateFilterTitle(animalType);
   }
@@ -379,15 +387,20 @@ document.addEventListener("DOMContentLoaded", () => {
           "products__catalog__filter__type__indicator__active"
         );
 
-        subCategoriesList
-          .querySelectorAll(".products__catalog__filter__brand__indicator")
-          .forEach((indicator) => {
-            indicator.classList.add(
-              "products__catalog__filter__brand__indicator__active"
-            );
-          });
+        const subCategoryIndicators = subCategoriesList.querySelectorAll(
+          ".products__catalog__filter__brand__indicator"
+        );
+        subCategoryIndicators.forEach((indicator) => {
+          indicator.classList.add(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        });
 
-        filterProductsByCategory(null, Object.keys(foodCategories));
+        const allSubCategoryIds = Array.from(
+          subCategoriesList.querySelectorAll(".food__subcategory__item")
+        ).map((item) => item.dataset.categoryId);
+
+        filterProductsByCategory(allSubCategoryIds);
       });
 
       for (const [categoryId, categoryInfo] of Object.entries(foodCategories)) {
@@ -408,17 +421,43 @@ document.addEventListener("DOMContentLoaded", () => {
         subCategoryItem.addEventListener("click", (e) => {
           e.stopPropagation();
 
-          resetAllIndicators();
+          document
+            .querySelectorAll(".products__catalog__filter__type__indicator")
+            .forEach((indicator) => {
+              indicator.classList.remove(
+                "products__catalog__filter__type__indicator__active"
+              );
+            });
 
-          foodCategoryIndicator.classList.add(
-            "products__catalog__filter__type__indicator__active"
-          );
-
-          subCategoryIndicator.classList.add(
+          subCategoryIndicator.classList.toggle(
             "products__catalog__filter__brand__indicator__active"
           );
 
-          filterProductsByCategory(categoryId);
+          const selectedSubCategories = [];
+          document
+            .querySelectorAll(
+              ".products__catalog__filter__brand__indicator__active"
+            )
+            .forEach((indicator) => {
+              const item = indicator.closest(".food__subcategory__item");
+              if (item) {
+                selectedSubCategories.push(item.dataset.categoryId);
+              }
+            });
+
+          if (selectedSubCategories.length > 0) {
+            foodCategoryIndicator.classList.add(
+              "products__catalog__filter__type__indicator__active"
+            );
+          } else {
+            foodCategoryIndicator.classList.remove(
+              "products__catalog__filter__type__indicator__active"
+            );
+          }
+
+          filterProductsByCategory(
+            selectedSubCategories.length > 0 ? selectedSubCategories : null
+          );
         });
 
         subCategoriesList.appendChild(subCategoryItem);
@@ -470,6 +509,14 @@ document.addEventListener("DOMContentLoaded", () => {
         .forEach((indicator) => {
           indicator.classList.remove(
             "products__catalog__filter__type__indicator__active"
+          );
+        });
+
+      document
+        .querySelectorAll(".products__catalog__filter__brand__indicator")
+        .forEach((indicator) => {
+          indicator.classList.remove(
+            "products__catalog__filter__brand__indicator__active"
           );
         });
 
