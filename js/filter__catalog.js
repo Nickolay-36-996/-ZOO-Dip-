@@ -320,6 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const categoryCounts = {};
     const foodCategories = {};
+    const fillerCategories = {};
 
     for (const product of products) {
       if (!product.animal.some((a) => a.type.toLowerCase() === animalType))
@@ -328,8 +329,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const categoryId = product.category.id;
       const categoryName = product.category.name;
-      const isFood = categoryName.toLowerCase().includes("корм");
-      const target = isFood ? foodCategories : categoryCounts;
+      const isFood =
+        categoryName.toLowerCase().includes("корм") ||
+        (product.category.parent && product.category.parent === 2);
+      const isFiller =
+        ["древесный", "впитывающий", "комкующийся", "сено", "песок"].some((word) =>
+          categoryName.toLowerCase().includes(word)
+        ) ||
+        (product.category.parent && product.category.parent === 5);
+      const target = isFood
+        ? foodCategories
+        : isFiller
+        ? fillerCategories
+        : categoryCounts;
 
       if (!target[categoryId]) {
         target[categoryId] = {
@@ -443,6 +455,110 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       filterTypeList.appendChild(foodCategoryItem);
+    }
+
+    if (Object.keys(fillerCategories).length > 0) {
+      const fillerCategoryItem = document.createElement("li");
+      fillerCategoryItem.className = "food__category__item";
+
+      const totalCount = Object.values(fillerCategories).reduce(
+        (sum, cat) => sum + cat.count,
+        0
+      );
+      const hasSale = Object.values(fillerCategories).some(
+        (cat) => cat.hasSale
+      );
+
+      fillerCategoryItem.innerHTML = `
+    <div class="food__category__contain">
+      <div class="products__catalog__filter__type__indicator"></div>
+      <p class="products__catalog__filter__type__txt">Наполнители</p>
+      <span class="products__catalog__filter__type__count">(${totalCount})</span>
+      ${
+        hasSale
+          ? '<span class="products__catalog__filter__type__sale">Акция</span>'
+          : ""
+      }
+    </div>
+    <div class="food__subcategories__list"></div>
+  `;
+
+      const subCategoriesList = fillerCategoryItem.querySelector(
+        ".food__subcategories__list"
+      );
+      const fillerIndicator = fillerCategoryItem.querySelector(
+        ".products__catalog__filter__type__indicator"
+      );
+
+      fillerCategoryItem
+        .querySelector(".food__category__contain")
+        .addEventListener("click", () => {
+          resetAllIndicators();
+          fillerIndicator.classList.add(
+            "products__catalog__filter__type__indicator__active"
+          );
+
+          const subItems = subCategoriesList.querySelectorAll(
+            ".food__subcategory__item"
+          );
+          for (const subItem of subItems) {
+            subItem
+              .querySelector(".products__catalog__filter__brand__indicator")
+              .classList.add(
+                "products__catalog__filter__brand__indicator__active"
+              );
+          }
+
+          filterProductsByCategory(Object.keys(fillerCategories));
+        });
+
+      for (const [categoryId, categoryInfo] of Object.entries(
+        fillerCategories
+      )) {
+        const subItem = document.createElement("div");
+        subItem.className = "food__subcategory__item";
+        subItem.dataset.categoryId = categoryId;
+
+        subItem.innerHTML = `
+      <div class="products__catalog__filter__brand__indicator"></div>
+      <p class="products__catalog__filter__brand__txt">${categoryInfo.name}</p>
+      <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
+    `;
+
+        const subIndicator = subItem.querySelector(
+          ".products__catalog__filter__brand__indicator"
+        );
+
+        subItem.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          subIndicator.classList.toggle(
+            "products__catalog__filter__brand__indicator__active"
+          );
+
+          const activeSubs = subCategoriesList.querySelectorAll(
+            ".products__catalog__filter__brand__indicator__active"
+          );
+
+          fillerIndicator.classList.toggle(
+            "products__catalog__filter__type__indicator__active",
+            activeSubs.length > 0
+          );
+
+          const selectedIds = [];
+          for (const indicator of activeSubs) {
+            selectedIds.push(
+              indicator.closest(".food__subcategory__item").dataset.categoryId
+            );
+          }
+
+          filterProductsByCategory(selectedIds.length > 0 ? selectedIds : null);
+        });
+
+        subCategoriesList.appendChild(subItem);
+      }
+
+      filterTypeList.appendChild(fillerCategoryItem);
     }
 
     for (const [categoryId, categoryInfo] of Object.entries(categoryCounts)) {
