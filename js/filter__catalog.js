@@ -333,8 +333,8 @@ document.addEventListener("DOMContentLoaded", () => {
         categoryName.toLowerCase().includes("корм") ||
         (product.category.parent && product.category.parent === 2);
       const isFiller =
-        ["древесный", "впитывающий", "комкующийся", "сено", "песок"].some((word) =>
-          categoryName.toLowerCase().includes(word)
+        ["древесный", "впитывающий", "комкующийся", "сено", "песок"].some(
+          (word) => categoryName.toLowerCase().includes(word)
         ) ||
         (product.category.parent && product.category.parent === 5);
       const target = isFood
@@ -427,6 +427,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         subItem.addEventListener("click", (e) => {
           e.stopPropagation();
+
+          const allTypeIndicators = document.querySelectorAll(
+            ".products__catalog__filter__type__indicator"
+          );
+          for (const indicator of allTypeIndicators) {
+            indicator.classList.remove(
+              "products__catalog__filter__type__indicator__active"
+            );
+          }
 
           subIndicator.classList.toggle(
             "products__catalog__filter__brand__indicator__active"
@@ -531,6 +540,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         subItem.addEventListener("click", (e) => {
           e.stopPropagation();
+
+          const allTypeIndicators = document.querySelectorAll(
+            ".products__catalog__filter__type__indicator"
+          );
+          for (const indicator of allTypeIndicators) {
+            indicator.classList.remove(
+              "products__catalog__filter__type__indicator__active"
+            );
+          }
 
           subIndicator.classList.toggle(
             "products__catalog__filter__brand__indicator__active"
