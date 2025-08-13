@@ -12,26 +12,51 @@ document.addEventListener("DOMContentLoaded", () => {
   let saveTranslate = 0;
   let cardWidth = 0;
 
-  fetch("https://oliver1ck.pythonanywhere.com/api/get_products_list/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP Error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Данные товаров:", data);
-      container.innerHTML = "";
-      if (data.results && data.results.length > 0) {
-        cardsData = data.results;
-        function shuffleArray(array) {
-          for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-          }
-          return array;
+  function shuffleArray(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
+  async function fetchAllPopularProducts() {
+    let allProducts = [];
+    let nextUrl =
+      "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          allProducts = [...allProducts, ...data.results];
         }
-        shuffleArray(cardsData);
+        nextUrl = data.next;
+      }
+      return allProducts;
+    } catch (error) {
+      console.error("Error fetching all products:", error);
+      return [];
+    }
+  }
+
+  fetchAllPopularProducts()
+    .then((data) => {
+      console.log("Все товары загружены:", data);
+      container.innerHTML = "";
+
+      if (data && data.length > 0) {
+        cardsData = data.sort(
+          (a, b) => (b.sales_counter || 0) - (a.sales_counter || 0)
+        );
+
+        cardsData = shuffleArray(cardsData);
+        cardsData = cardsData.filter((product) => product.sales_counter > 0);
+
         createCards();
         if (container.children.length > 0) {
           cardWidth = container.children[0].clientWidth;
@@ -163,9 +188,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const isActive = this.classList.contains(
               "popular__products__card__quantity__active"
             );
-            quantityElements.forEach((el) =>
-              el.classList.remove("popular__products__card__quantity__active")
-            );
+            for (const el of quantityElements) {
+              el.classList.remove("popular__products__card__quantity__active");
+            }
 
             if (!isActive) {
               this.classList.add("popular__products__card__quantity__active");
@@ -196,43 +221,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
- function initSliderControls() {
-  let cardWidth, gap, widthAllElements, cardCount;
-  let saveTranslate = 0;
+  function initSliderControls() {
+    let cardWidth, gap, widthAllElements, cardCount;
+    let saveTranslate = 0;
 
-  function updateSizes() {
-    cardCount = container.children.length;
-    cardWidth = container.children[0].offsetWidth;
-    gap = parseInt(window.getComputedStyle(container).gap) || 30;
-    widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
-  }
-
-  updateSizes();
-
-  vectorLeft.addEventListener("click", function() {
-    updateSizes(); 
-    if (saveTranslate >= 0) {
-      saveTranslate = -widthAllElements + cardWidth;
-    } else {
-      saveTranslate = saveTranslate + (cardWidth + gap);
+    function updateSizes() {
+      cardCount = container.children.length;
+      cardWidth = container.children[0].offsetWidth;
+      gap = parseInt(window.getComputedStyle(container).gap) || 30;
+      widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
     }
-    container.style.transform = `translateX(${saveTranslate}px)`;
-  });
 
-  vectorRight.addEventListener("click", function() {
-    updateSizes(); 
-    if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
-      saveTranslate = saveTranslate - (cardWidth + gap);
-    } else {
-      saveTranslate = 0;
-    }
-    container.style.transform = `translateX(${saveTranslate}px)`;
-  });
-
-  window.addEventListener('resize', function() {
     updateSizes();
-    saveTranslate = 0;
-    container.style.transform = `translateX(0)`;
-  });
-}
+
+    vectorLeft.addEventListener("click", function () {
+      updateSizes();
+      if (saveTranslate >= 0) {
+        saveTranslate = -widthAllElements + cardWidth;
+      } else {
+        saveTranslate = saveTranslate + (cardWidth + gap);
+      }
+      container.style.transform = `translateX(${saveTranslate}px)`;
+    });
+
+    vectorRight.addEventListener("click", function () {
+      updateSizes();
+      if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
+        saveTranslate = saveTranslate - (cardWidth + gap);
+      } else {
+        saveTranslate = 0;
+      }
+      container.style.transform = `translateX(${saveTranslate}px)`;
+    });
+
+    window.addEventListener("resize", function () {
+      updateSizes();
+      saveTranslate = 0;
+      container.style.transform = `translateX(0)`;
+    });
+  }
 });

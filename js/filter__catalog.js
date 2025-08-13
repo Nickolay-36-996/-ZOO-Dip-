@@ -748,7 +748,6 @@ document.addEventListener("DOMContentLoaded", () => {
         300
       );
     });
-    addClearButton();
   }
 
   function filterBrandsList(searchText) {
@@ -767,8 +766,6 @@ document.addEventListener("DOMContentLoaded", () => {
       item.style.display = isVisible ? "flex" : "none";
       if (isVisible) visibleCount++;
     }
-
-    updateBrandsCounter(visibleCount);
   }
 
   function checkBrandMatch(brandName, searchText) {
@@ -793,35 +790,45 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-  function updateBrandsCounter(count) {
-    let counter = document.querySelector(".brands-counter");
-    if (!counter) {
-      counter = document.createElement("div");
-      counter.className = "brands-counter";
-      document
-        .querySelector(".products__catalog__filter__brand")
-        .appendChild(counter);
-    }
-    counter.textContent = `Найдено брендов: ${count}`;
-  }
-
-  function addClearButton() {
-    const searchContainer = document.querySelector(
-      ".products__catalog__filter__brand__src"
+  function updateBrandFilters(products) {
+    const brandList = document.querySelector(
+      ".products__catalog__filter__brand__list"
     );
-    if (document.querySelector(".clear-search")) return;
+    const allBrandItems = brandList.querySelectorAll(
+      ".products__catalog__filter__brand__item"
+    );
 
-    const clearBtn = document.createElement("span");
-    clearBtn.className = "clear-search";
-    clearBtn.innerHTML = "&times;";
-    clearBtn.addEventListener("click", () => {
-      const input = document.querySelector(
-        ".products__catalog__filter__brand__src__input"
+    const brandCounts = {};
+    for (const product of products) {
+      if (product.brand) {
+        const brandId = product.brand.id;
+        brandCounts[brandId] = (brandCounts[brandId] || 0) + 1;
+      }
+    }
+
+    for (const item of allBrandItems) {
+      const brandId = item.dataset.brandId;
+      const countElement = item.querySelector(
+        ".products__catalog__filter__brand__count"
       );
-      input.value = "";
-      filterBrandsList("");
-    });
-    searchContainer.appendChild(clearBtn);
+
+      if (brandCounts[brandId]) {
+        item.style.display = "flex";
+        if (countElement) {
+          countElement.textContent = `(${brandCounts[brandId]})`;
+        }
+      } else {
+        item.style.display = "none";
+        const indicator = item.querySelector(
+          ".products__catalog__filter__brand__indicator"
+        );
+        if (indicator) {
+          indicator.classList.remove(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        }
+      }
+    }
   }
 
   function initSorting() {
@@ -967,4 +974,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   initSorting();
+
+  document.addEventListener("updateBrandFilters", (e) => {
+    updateBrandFilters(e.detail.products);
+  });
 });

@@ -89,6 +89,54 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePaginationStyles();
   }
 
+  async function fetchAllProducts() {
+    let allProducts = [];
+    let nextUrl =
+      "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok)
+          throw new Error(`HTTP Error! status: ${response.status}`);
+
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          allProducts = [...allProducts, ...data.results];
+        }
+
+        nextUrl = data.next;
+      }
+
+      console.log("Все товары загружены. Всего:", allProducts.length);
+      return allProducts;
+    } catch (error) {
+      console.error("Ошибка при загрузке товаров:", error);
+      throw error;
+    }
+  }
+
+  fetchAllProducts()
+    .then((data) => {
+      console.log("данные товаров", data);
+      cardsData = data || [];
+      filteredCardsData = [...cardsData];
+      container.innerHTML = "";
+
+      if (cardsData.length === 0) {
+        container.innerHTML = "<p>Товары не найдены</p>";
+        return;
+      }
+
+      const totalPages = Math.ceil(cardsData.length / cardsPerPage);
+      createPagination(totalPages);
+      updateCardsDisplay();
+    })
+    .catch((error) => {
+      console.error("Ошибка загрузки:", error);
+      container.innerHTML = `<p>Ошибка загрузки: ${error.message}</p>`;
+    });
+
   function createCards(cardsData) {
     container.innerHTML = "";
 
@@ -238,33 +286,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  async function fetchAllProducts() {
-    let allProducts = [];
-    let nextUrl =
-      "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
-
-    try {
-      while (nextUrl) {
-        const response = await fetch(nextUrl);
-        if (!response.ok)
-          throw new Error(`HTTP Error! status: ${response.status}`);
-
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          allProducts = [...allProducts, ...data.results];
-        }
-
-        nextUrl = data.next;
-      }
-
-      console.log("Все товары загружены. Всего:", allProducts.length);
-      return allProducts;
-    } catch (error) {
-      console.error("Ошибка при загрузке товаров:", error);
-      throw error;
-    }
-  }
-
   function sortProducts(sortType) {
     if (!filteredCardsData || filteredCardsData.length === 0) return;
 
@@ -314,27 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCardsDisplay();
   }
 
-  fetchAllProducts()
-    .then((data) => {
-      console.log("данные товаров", data);
-      cardsData = data || [];
-      filteredCardsData = [...cardsData];
-      container.innerHTML = "";
-
-      if (cardsData.length === 0) {
-        container.innerHTML = "<p>Товары не найдены</p>";
-        return;
-      }
-
-      const totalPages = Math.ceil(cardsData.length / cardsPerPage);
-      createPagination(totalPages);
-      updateCardsDisplay();
-    })
-    .catch((error) => {
-      console.error("Ошибка загрузки:", error);
-      container.innerHTML = `<p>Ошибка загрузки: ${error.message}</p>`;
-    });
-
   document.addEventListener("filterProducts", (e) => {
     const { animalType, categoryId, promotionalOnly, brandIds, sortType } =
       e.detail;
@@ -357,6 +357,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       return animalMatch && categoryMatch && promotionalMatch && brandMatch;
     });
+
+    document.dispatchEvent(
+      new CustomEvent("updateBrandFilters", {
+        detail: { products: filteredCardsData },
+      })
+    );
 
     if (sortType) {
       sortProducts(sortType);
