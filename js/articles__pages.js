@@ -53,12 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (const article of articles) {
       const articleElement = document.createElement("div");
-      articleElement.classList = "articles__article";
+      articleElement.classList = "articles__article articles__article__for__pages";
       articleElement.innerHTML = `
       <a href="#" class="articles__article__link">
               <img src="${
                 article.image
-              }" class="articles__article__link__img" alt="${article.title}">
+              }" class="articles__article__link__img img__articles__pages" alt="${article.title}">
             </a>
             <div class="articles__article__info">
               <a href="#">

@@ -3612,6 +3612,11 @@ body {
   transition: all 0.3s ease;
 }
 
+.img__articles__pages {
+  max-width: none;
+  max-height: none;
+}
+
 @media (max-width: 992px) {
   .articles__pages__title {
     font-size: 36px;
@@ -3619,6 +3624,9 @@ body {
   }
   .articles__pages__wrap {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  .articles__article__for__pages {
+    max-width: none;
   }
   .articles__pages__show__more__btn {
     padding: 10px 22px;
@@ -3633,5 +3641,10 @@ body {
   .articles__pages__show__more__btn {
     align-self: stretch;
     padding: 8px 0px;
+  }
+}
+@media (max-width: 518px) {
+  .articles__pages__wrap {
+    grid-template-columns: repeat(1, minmax(340px, 1fr));
   }
 }/*# sourceMappingURL=style.css.map */
