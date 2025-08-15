@@ -31,85 +31,22 @@ document.addEventListener("DOMContentLoaded", () => {
     ".products__catalog__filter__title"
   );
 
-  const isCatalogPage = window.location.pathname.includes("catalog.html");
-  const animalsContainer = document.getElementById("animals-list");
+  document.addEventListener("animalFilterClicked", (e) => {
+    const { animalType } = e.detail;
+    currentAnimalFilter = animalType;
+    currentCategoryFilter = null;
+    loadProductsForFilters(animalType);
+    filterProductsByAnimal(animalType);
+    updateFilterTitle(animalType);
+  });
 
-  fetch("https://oliver1ck.pythonanywhere.com/api/get_animals_list/")
-    .then((response) => {
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Полученные данные:", data);
-      animalsContainer.innerHTML = "";
-
-      if (!data.results || data.results.length === 0) {
-        animalsContainer.innerHTML = "<p>Нет данных о категориях</p>";
-        return;
-      }
-
-      if (isCatalogPage) {
-        initializeSidebarAnimalFilters(data.results);
-
-        fetchAllProducts()
-          .then((allProducts) => {
-            loadBrandFilters(allProducts);
-          })
-          .catch(console.error);
-      }
-
-      for (const animal of data.results) {
-        const animalType = animal.type.toLowerCase();
-        const link = document.createElement("a");
-
-        link.href = isCatalogPage
-          ? `#${animalType}`
-          : `catalog.html?animal=${animalType}`;
-        link.className = "animal__category__catalog";
-        link.dataset.animalType = animalType;
-        link.innerHTML = `
-          <img src="${animal.image}" alt="${animal.type}">
-          <p class="animal__category__catalog__title">${animal.type}</p>
-        `;
-
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-
-          if (!isCatalogPage) {
-            window.location.href = link.href;
-            return;
-          }
-
-          const allCategories = document.querySelectorAll(
-            ".animal__category__catalog"
-          );
-          for (const category of allCategories) {
-            category.classList.remove("animal__category__catalog__active");
-          }
-          link.classList.add("animal__category__catalog__active");
-          loadProductsForFilters(animalType);
-          filterProductsByAnimal(animalType);
-        });
-
-        animalsContainer.appendChild(link);
-      }
-
-      if (isCatalogPage) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const animalParam = urlParams.get("animal");
-        if (animalParam) {
-          const activeLink = document.querySelector(
-            `[data-animal-type="${animalParam}"]`
-          );
-          if (activeLink) activeLink.click();
-        }
-      }
-    })
-    .catch((error) => {
-      console.error("Error loading animals:", error);
-      animalsContainer.innerHTML = `<p>Ошибка загрузки: ${error.message}</p>`;
-    });
+  document.addEventListener("loadBrandsRequest", () => {
+    fetchAllProducts()
+      .then((allProducts) => {
+        loadBrandFilters(allProducts);
+      })
+      .catch(console.error);
+  });
 
   function filterProductsByAnimal(animalType) {
     const promotionalOnly = promotionalIndicator.classList.contains(
@@ -132,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateAnimalFilters(animalType);
     loadProductsForFilters(animalType);
-    updateCatalogTitle(animalType);
     updateFilterTitle(animalType);
   }
 
@@ -240,23 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function updateCatalogTitle(animalType) {
-    const catalogTitle = document.querySelector(".products__catalog__title");
-    if (!catalogTitle) return;
-
-    const animalNames = {
-      кошки: "кошек",
-      собаки: "собак",
-      грызуны: "грызунов",
-      птицы: "птиц",
-      рыбы: "рыб",
-    };
-
-    catalogTitle.textContent = animalType
-      ? `Каталог товаров для ${animalNames[animalType] || animalType}`
-      : "Каталог товаров";
-  }
-
   function updateFilterTitle(animalType) {
     if (filterTitle) {
       filterTitle.textContent = animalType
@@ -271,44 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateCategoryFilters(animalType, allProducts);
     } catch (error) {
       console.error("Ошибка загрузки продуктов:", error);
-    }
-  }
-
-  function initializeSidebarAnimalFilters(animals) {
-    const filterTypeList = document.querySelector(
-      ".products__catalog__filter__type__list"
-    );
-    filterTypeList.innerHTML = "";
-
-    for (const animal of animals) {
-      const item = document.createElement("li");
-      item.className = "products__catalog__filter__type__list__item";
-      item.dataset.animalType = animal.type.toLowerCase();
-      item.innerHTML = `
-        <div class="products__catalog__filter__type__indicator"></div>
-        <p class="products__catalog__filter__type__txt">${animal.type}</p>
-      `;
-
-      item.addEventListener("click", () => {
-        const allItems = document.querySelectorAll(
-          ".products__catalog__filter__type__list__item"
-        );
-        for (const el of allItems) {
-          el.querySelector(
-            ".products__catalog__filter__type__indicator"
-          )?.classList.remove(
-            "products__catalog__filter__type__indicator__active"
-          );
-        }
-
-        item
-          .querySelector(".products__catalog__filter__type__indicator")
-          ?.classList.add("products__catalog__filter__type__indicator__active");
-
-        filterProductsByAnimal(animal.type.toLowerCase());
-      });
-
-      filterTypeList.appendChild(item);
     }
   }
 
