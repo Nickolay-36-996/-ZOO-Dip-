@@ -35,9 +35,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const { animalType } = e.detail;
     currentAnimalFilter = animalType;
     currentCategoryFilter = null;
-    loadProductsForFilters(animalType);
-    filterProductsByAnimal(animalType);
-    updateFilterTitle(animalType);
+
+    loadProductsForFilters(animalType).then(() => {
+      filterProductsByAnimal(animalType);
+      updateFilterTitle(animalType);
+
+      document.dispatchEvent(
+        new CustomEvent("updateBrandFilters", {
+          detail: { products: filteredProducts },
+        })
+      );
+    });
   });
 
   document.addEventListener("loadBrandsRequest", () => {
@@ -188,8 +196,10 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const allProducts = await fetchAllProducts();
       updateCategoryFilters(animalType, allProducts);
+      return allProducts;
     } catch (error) {
       console.error("Ошибка загрузки продуктов:", error);
+      return []
     }
   }
 

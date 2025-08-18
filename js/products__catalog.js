@@ -131,6 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
       updateCardsDisplay();
+      
+      document.dispatchEvent(new CustomEvent("productsLoaded"));
     })
     .catch((error) => {
       console.error("Ошибка загрузки:", error);
