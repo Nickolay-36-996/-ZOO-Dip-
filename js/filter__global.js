@@ -15,7 +15,40 @@ document.addEventListener("DOMContentLoaded", () => {
         `[data-animal-type="${animalParam}"]`
       );
       if (activeLink) {
-          activeLink.click();
+        activeLink.click();
+
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }
+
+  function resetFiltersOnPageLoad() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!urlParams.has("animal")) {
+      const activeLinks = document.querySelectorAll(
+        ".animal__category__catalog__active, " +
+          ".products__catalog__filter__type__indicator__active, " +
+          ".products__catalog__filter__brand__indicator__active"
+      );
+
+      for (const link of activeLinks) {
+        link.classList.remove(
+          "animal__category__catalog__active",
+          "products__catalog__filter__type__indicator__active",
+          "products__catalog__filter__brand__indicator__active"
+        );
+      }
+
+      const promoIndicator = document.querySelector(
+        ".promotional__item__indicator"
+      );
+      if (promoIndicator) {
+        promoIndicator.classList.remove("promotional__item__indicator__active");
+      }
+
+      if (catalogTitle) {
+        catalogTitle.textContent = "Каталог товаров";
       }
     }
   }

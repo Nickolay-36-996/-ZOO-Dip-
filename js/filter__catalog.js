@@ -39,12 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProductsForFilters(animalType).then(() => {
       filterProductsByAnimal(animalType);
       updateFilterTitle(animalType);
-
-      document.dispatchEvent(
-        new CustomEvent("updateBrandFilters", {
-          detail: { products: filteredProducts },
-        })
-      );
     });
   });
 
