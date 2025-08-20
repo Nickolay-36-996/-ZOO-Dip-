@@ -44,6 +44,25 @@
   max-height: none;
 }
 
+.no__articles {
+  display: flex;
+  justify-content: center;
+  h3 {
+    color: var(--Text-Default, #202223);
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: "SF Pro Text";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    margin-bottom: 40px;
+  }
+}
+
 @media (max-width: 992px) {
   .articles__pages__title {
     font-size: 36px;

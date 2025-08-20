@@ -2,7 +2,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const animalsContainer = document.getElementById("animals-list");
   const isCatalogPage = window.location.pathname.includes("catalog.html");
+  const isArticlesPage = window.location.pathname.includes(
+    "articles__pages.html"
+  );
   const catalogTitle = document.querySelector(".products__catalog__title");
+  const articlesTitle = document.querySelector(".articles__pages__title");
   const filterTypeList = document.querySelector(
     ".products__catalog__filter__type__list"
   );
@@ -76,13 +80,19 @@ document.addEventListener("DOMContentLoaded", () => {
       for (const animal of data.results) {
         const animalType = animal.type.toLowerCase();
         const link = createAnimalCategoryElement(animal);
-        handleAnimalCategoryClick(link, animalType);
+        handleAnimalCategoryClick(link, animalType, animal.id);
 
         if (animalsContainer) animalsContainer.appendChild(link);
       }
 
       if (isCatalogPage) {
         document.addEventListener("productsLoaded", handleUrlParamsAfterLoad, {
+          once: true,
+        });
+      }
+
+      if (isArticlesPage) {
+        document.addEventListener("articlesLoaded", handleUrlParamsAfterLoad, {
           once: true,
         });
       }
@@ -97,11 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const animalType = animal.type.toLowerCase();
     const link = document.createElement("a");
 
-    link.href = isCatalogPage
-      ? `#${animalType}`
-      : `catalog.html?animal=${animalType}`;
+    let targetPage = "catalog.html";
+
+    if (isArticlesPage) {
+      targetPage = "articles__pages.html";
+    }
+    if (isCatalogPage) {
+      targetPage = "catalog.html";
+    }
+
+    link.href =
+      isCatalogPage || isArticlesPage
+        ? `#${animalType}`
+        : `${targetPage}?animal=${animalType}`;
     link.className = "animal__category__catalog";
     link.dataset.animalType = animalType;
+    link.dataset.animalId = animal.id;
     link.innerHTML = `
       <img src="${animal.image}" alt="${animal.type}">
       <p class="animal__category__catalog__title">${animal.type}</p>
@@ -110,11 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return link;
   }
 
-  function handleAnimalCategoryClick(link, animalType) {
+  function handleAnimalCategoryClick(link, animalType, animalId) {
     link.addEventListener("click", (e) => {
       e.preventDefault();
 
-      if (!isCatalogPage) {
+      if (!isCatalogPage && !isArticlesPage) {
         window.location.href = link.href;
         return;
       }
@@ -127,13 +148,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       link.classList.add("animal__category__catalog__active");
 
-      document.dispatchEvent(
-        new CustomEvent("animalFilterClicked", {
-          detail: { animalType },
-        })
-      );
-
-      updateCatalogTitle(animalType);
+      if (isCatalogPage) {
+        document.dispatchEvent(
+          new CustomEvent("animalFilterClicked", {
+            detail: { animalType },
+          })
+        );
+        updateCatalogTitle(animalType);
+      } else if (isArticlesPage) {
+        document.dispatchEvent(
+          new CustomEvent("animalFilterClickedArticles", {
+            detail: { animalType, animalId },
+          })
+        );
+        updateArticlesTitle(animalType);
+      }
     });
   }
 
@@ -200,4 +229,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `Каталог товаров для ${animalNames[animalType] || animalType}`
       : "Каталог товаров";
   }
+
+  function updateArticlesTitle(animalType) {
+    if (!articlesTitle) return;
+
+    const animalNames = {
+      кошки: "кошках",
+      собаки: "собаках",
+      грызуны: "грызунах",
+      птицы: "птицах",
+      рыбы: "рыбок",
+    };
+
+    articlesTitle.textContent = animalType
+      ? `Статьи о ${animalNames[animalType] || animalType}`
+      : "Статьи";
+  }
+
+  resetFiltersOnPageLoad();
 });

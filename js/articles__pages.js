@@ -1,9 +1,10 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("articles-pages-wrap");
+  let allArticles = [];
+  let filteredArticles = [];
 
   async function fetchAllArticles() {
-    let allArticles = [];
     let nextUrl = "https://oliver1ck.pythonanywhere.com/api/get_articles_list";
 
     try {
@@ -28,7 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchAllArticles()
     .then((articles) => {
       console.log("Загружено статей:", articles.length);
-      createArticles(shuffleArray(articles));
+      allArticles = articles;
+      filteredArticles = shuffleArray([...allArticles]);
+      createArticles(filteredArticles);
+      document.dispatchEvent(new CustomEvent("articlesLoaded"));
     })
     .catch((error) => {
       console.error("Ошибка:", error);
@@ -47,18 +51,21 @@ document.addEventListener("DOMContentLoaded", () => {
   function createArticles(articles) {
     container.innerHTML = "";
     if (!articles || articles.length === 0) {
-      container.innerHTML = "<p>Статьи не найдены</p>";
+      container.innerHTML = `<div class="no__articles"><h3>Статей на данную тему нет</h3></div>`;
       return;
     }
 
     for (const article of articles) {
       const articleElement = document.createElement("div");
-      articleElement.classList = "articles__article articles__article__for__pages";
+      articleElement.classList =
+        "articles__article articles__article__for__pages";
       articleElement.innerHTML = `
       <a href="#" class="articles__article__link">
               <img src="${
                 article.image
-              }" class="articles__article__link__img img__articles__pages" alt="${article.title}">
+              }" class="articles__article__link__img img__articles__pages" alt="${
+        article.title
+      }">
             </a>
             <div class="articles__article__info">
               <a href="#">
@@ -86,7 +93,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 }</p>
               </div>
             </div>`;
-            container.appendChild(articleElement);
+      container.appendChild(articleElement);
     }
   }
+
+  function filterArticlesByAnimal(animalId) {
+    if (animalId) {
+      filteredArticles = allArticles.filter(
+        (article) => article.animal === animalId
+      );
+    } else {
+      filteredArticles = [...allArticles];
+    }
+
+    createArticles(filteredArticles);
+  }
+
+  document.addEventListener("animalFilterClickedArticles", (e) => {
+    const { animalId } = e.detail;
+    filterArticlesByAnimal(animalId);
+  });
+
+  document.dispatchEvent(new CustomEvent("articlesLoaded"));
 });
