@@ -1,8 +1,10 @@
-'use strict';
+"use strict";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("articles-slider-list");
   const vectorLeft = document.querySelector(".articles__slider__vector__left");
-  const vectorRight = document.querySelector(".articles__slider__vector__right");
+  const vectorRight = document.querySelector(
+    ".articles__slider__vector__right"
+  );
 
   let articlesData = [];
   let saveTranslate = 0;
@@ -31,11 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
           const articleWindow = document.createElement("div");
           articleWindow.className = "articles__article";
           articleWindow.innerHTML = `
-            <a href="#" class="articles__article__link">
-              <img src="${article.image}" class="articles__article__link__img" alt="${article.title}">
+            <a href="article__page.html?id=${
+              article.id
+            }" class="articles__article__link">
+              <img src="${
+                article.image
+              }" class="articles__article__link__img" alt="${article.title}">
             </a>
             <div class="articles__article__info">
-              <a href="#">
+              <a href="article__page.html?id=${article.id}">
                 <h3 class="articles__article__title">${article.title}</h3>
               </a>
               <div class="articles__article__txt">${article.text}</div>
@@ -45,7 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M8.0001 15.17C4.4713 15.17 1.6001 12.2988 1.6001 8.77002C1.6001 5.24122 4.4713 2.37002 8.0001 2.37002C11.5289 2.37002 14.4001 5.24122 14.4001 8.77002C14.4001 12.2988 11.5289 15.17 8.0001 15.17ZM9.8345 11.4044C9.6297 11.4044 9.4249 11.326 9.2689 11.17L7.4345 9.33562C7.2841 9.18602 7.2001 8.98202 7.2001 8.77002V5.57002C7.2001 5.12842 7.5577 4.77002 8.0001 4.77002C8.4425 4.77002 8.8001 5.12842 8.8001 5.57002V8.43882L10.4001 10.0388C10.7129 10.3516 10.7129 10.8572 10.4001 11.17C10.2441 11.326 10.0393 11.4044 9.8345 11.4044Z" fill="#8C9196"/>
                 </svg>
-                <p class="articles__article__reading__time">Время чтения: ${article.read_time}</p>
+                <p class="articles__article__reading__time">Время чтения: ${
+                  article.read_time
+                }</p>
               </div>
               <div class="articles__article__data__box">
                 <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function updateSizes() {
           cardCount = container.children.length;
-          if(cardCount > 0) {
+          if (cardCount > 0) {
             cardWidth = container.children[0].offsetWidth;
             gap = parseInt(window.getComputedStyle(container).gap) || 30;
             widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
@@ -76,26 +84,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         updateSizes();
 
-        vectorLeft.addEventListener('click', function() {
+        vectorLeft.addEventListener("click", function () {
           updateSizes();
-          if(saveTranslate >= 0) {
+          if (saveTranslate >= 0) {
             saveTranslate = -widthAllElements + cardWidth;
           } else {
             saveTranslate += cardWidth + gap;
           }
           container.style.transform = `translateX(${saveTranslate}px)`;
-        })
+        });
 
-        vectorRight.addEventListener('click', function() {
+        vectorRight.addEventListener("click", function () {
           updateSizes();
-          if(saveTranslate > -widthAllElements + (cardWidth + gap)) {
+          if (saveTranslate > -widthAllElements + (cardWidth + gap)) {
             saveTranslate -= cardWidth + gap;
           } else {
             saveTranslate = 0;
           }
           container.style.transform = `translateX(${saveTranslate}px)`;
         });
-        window.addEventListener('resize', function() {
+        window.addEventListener("resize", function () {
           updateSizes();
           saveTranslate = 0;
           container.style.transform = `translateX(0)`;

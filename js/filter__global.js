@@ -238,11 +238,11 @@ document.addEventListener("DOMContentLoaded", () => {
       собаки: "собаках",
       грызуны: "грызунах",
       птицы: "птицах",
-      рыбы: "рыбок",
+      рыбы: "рыбках",
     };
 
     articlesTitle.textContent = animalType
-      ? `Статьи о ${animalNames[animalType] || animalType}`
+      ? `Полезные статьи о ${animalNames[animalType] || animalType}`
       : "Статьи";
   }
 

@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       articleElement.classList =
         "articles__article articles__article__for__pages";
       articleElement.innerHTML = `
-      <a href="#" class="articles__article__link">
+      <a href="article__page.html?id=${article.id}" class="articles__article__link">
               <img src="${
                 article.image
               }" class="articles__article__link__img img__articles__pages" alt="${
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }">
             </a>
             <div class="articles__article__info">
-              <a href="#">
+              <a href="article__page.html?id=${article.id}">
                 <h3 class="articles__article__title">${article.title}</h3>
               </a>
               <div class="articles__article__txt">${article.text}</div>

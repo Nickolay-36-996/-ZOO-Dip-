@@ -47,6 +47,7 @@
 .no__articles {
   display: flex;
   justify-content: center;
+  grid-column: 1 / -1;
   h3 {
     color: var(--Text-Default, #202223);
     font-feature-settings: "clig" off, "liga" off;
