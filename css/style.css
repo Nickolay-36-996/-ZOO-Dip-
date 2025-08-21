@@ -2701,6 +2701,7 @@ body {
 .catalog__nav__list {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
@@ -3675,6 +3676,10 @@ body {
   padding: 16px 0px 72px 0px;
 }
 
+.catalog__nav__list__item__link__article {
+  color: #6d7175;
+}
+
 .catalog__nav__list__item__link_relevant__article {
   color: #202223;
 }
@@ -3747,4 +3752,52 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.no__article {
+  display: flex;
+  justify-content: center;
+}
+.no__article h3 {
+  color: var(--Text-Default, #202223);
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: "SF Pro Text";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 992px) {
+  .article__header__title {
+    font-size: 38px;
+  }
+}
+@media (max-width: 768px) {
+  .article__page__wrapper {
+    padding: 16px 0px 48px 0px;
+  }
+  .catalog__nav__list {
+    gap: 8px;
+  }
+  .article__header {
+    gap: 12px;
+  }
+  .article__header__title {
+    font-size: 24px;
+  }
+  .article__header__meta__param {
+    font-size: 15px;
+  }
+  .article__txt p {
+    font-size: 16px;
+  }
+  .article__wrap {
+    gap: 24px;
+  }
 }/*# sourceMappingURL=style.css.map */

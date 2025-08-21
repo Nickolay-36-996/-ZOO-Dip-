@@ -1,8 +1,23 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("article-wrap");
+  const nav = document.querySelector(".catalog__nav__list");
   const urlParams = new URLSearchParams(window.location.search);
   const articleId = parseInt(urlParams.get("id"));
+
+  function updateNavigation(articleTitle) {
+    if (!nav) return;
+    const articleNavItem = document.createElement("li");
+    articleNavItem.className = "catalog__nav__list__item";
+
+    articleNavItem.innerHTML = `
+    <a href="${window.location.href}" class="catalog__nav__list__item__link catalog__nav__list__item__link__article">
+      ${articleTitle}
+    </a>
+  `;
+
+    nav.appendChild(articleNavItem);
+  }
 
   if (!articleId) {
     container.innerHTML = "<p>Статья не найдена</p>";
@@ -23,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (findArticle) {
         createArticle(findArticle);
       } else {
-        container.innerHTML = "<p>Статья не найдена</p>";
+        container.innerHTML = `<div class="no__article"><h3>Статья не найдена</h3></div>`;
       }
     })
     .catch((error) => {
@@ -32,6 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   function createArticle(article) {
+    updateNavigation(article.title);
+
+    document.title = `${article.title}`;
+
     container.innerHTML = `
     <div class="article__header">
     <h1 class="article__header__title">${article.title}</h1>
