@@ -273,7 +273,8 @@ document.addEventListener("DOMContentLoaded", () => {
     brandProducts(product);
     packagingTitle(product);
     packaging(product);
-    price(product);
+    totalPrice(product);
+    updateTotalPrice(product);
   }
 
   function brandProducts(product) {
@@ -343,9 +344,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function price(product) {
+  function totalPrice(product) {
     const priceWrap = document.querySelector(".product__page__price__wrap");
     const basePrice = parseFloat(product.price) || 0;
+
     let weightType = "Общее кол-во:";
     let weightCount = 1;
     let weightUnit = "шт";
@@ -372,5 +374,59 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="total__price">${basePrice.toFixed(2)} BYN</div>
       <div class="total__weight">${weightType} ${weightCount} ${weightUnit}</div>     
     `;
+  }
+
+  function updateTotalPrice(product) {
+    const weightOptions = document.querySelectorAll(".weight__option");
+    const totalPriceElement = document.querySelector(".total__price");
+    const totalWeightElement = document.querySelector(".total__weight");
+
+    const basePrice = parseFloat(product.price) || 0;
+    let currentlySelected = null;
+
+    let weightType = "Общее кол-во:";
+
+    if (product.countitemproduct_set) {
+      for (const item of product.countitemproduct_set) {
+        if (item.unit.includes("кг")) {
+          weightType = "Общий вес:";
+          break;
+        }
+      }
+    }
+
+    for (const option of weightOptions) {
+      option.addEventListener("click", function () {
+        if (this === currentlySelected) {
+          this.classList.remove("weight__option__active");
+          currentlySelected = null;
+
+          totalPriceElement.textContent = basePrice.toFixed(2) + " BYN";
+
+          const firstOptionText =
+            weightOptions[0].querySelector(".weight__value").textContent;
+          const baseUnit = firstOptionText.split(" ")[1];
+          totalWeightElement.textContent = weightType + " 1 " + baseUnit;
+
+          return;
+        }
+
+        if (currentlySelected) {
+          currentlySelected.classList.remove("weight__option__active");
+        }
+
+        this.classList.add("weight__option__active");
+        currentlySelected = this;
+
+        const weightText = this.querySelector(".weight__value").textContent;
+        const weightValue = parseFloat(weightText);
+        const unit = weightText.split(" ")[1];
+
+        const newPrice = (basePrice * weightValue).toFixed(2);
+        totalPriceElement.textContent = newPrice + " BYN";
+        totalWeightElement.textContent =
+          weightType + " " + weightValue + " " + unit;
+      });
+    }
   }
 });

@@ -3880,7 +3880,7 @@ body {
   align-items: center;
   padding: 6px 16px;
   gap: 4px;
-  background-color: #E4E5E7;
+  background-color: #e4e5e7;
   border-radius: 2px;
   transition: linear 0.3s;
 }
@@ -3889,7 +3889,14 @@ body {
   background-color: #008060;
 }
 .weight__option:hover span {
-  color: #FFFFFF;
+  color: #ffffff;
+}
+
+.weight__option__active {
+  background-color: #008060;
+}
+.weight__option__active span {
+  color: #ffffff;
 }
 
 .weight__value {
@@ -3906,7 +3913,7 @@ body {
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 0px;
-  color: #6D7175;
+  color: #6d7175;
 }
 
 .product__page__pickup {
@@ -4050,7 +4057,7 @@ body {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0px;
-  color: #2C6ECB;
+  color: #2c6ecb;
 }
 
 .product__page__info__txt__wrap {
