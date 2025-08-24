@@ -275,6 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
     packaging(product);
     totalPrice(product);
     updateTotalPrice(product);
+    setWeight(product)
   }
 
   function brandProducts(product) {
@@ -427,6 +428,24 @@ document.addEventListener("DOMContentLoaded", () => {
         totalWeightElement.textContent =
           weightType + " " + weightValue + " " + unit;
       });
+    }
+  }
+
+  function setWeight(product) {
+    const weightContainer = document.querySelector(".product__page__weight");
+    const hasWeightOptions =
+      product.countitemproduct_set &&
+      product.countitemproduct_set.some((item) => item.unit.includes("кг"));
+
+    if (!weightContainer) return;
+
+    if (hasWeightOptions) {
+      const customWeightElement = document.createElement("p");
+      customWeightElement.className = "custom__weight__input";
+      customWeightElement.innerHTML = `
+      Задать свой вес
+      `;
+      weightContainer.appendChild(customWeightElement);
     }
   }
 });

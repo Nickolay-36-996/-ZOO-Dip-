@@ -3916,6 +3916,15 @@ body {
   color: #6d7175;
 }
 
+.custom__weight__input {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #2C6ECB;
+}
+
 .product__page__pickup {
   display: flex;
   flex-direction: row;
