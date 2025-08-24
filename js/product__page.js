@@ -271,6 +271,9 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
     `;
     brandProducts(product);
+    packagingTitle(product);
+    packaging(product);
+    price(product);
   }
 
   function brandProducts(product) {
@@ -286,5 +289,88 @@ document.addEventListener("DOMContentLoaded", () => {
     if (titleWrap) {
       titleWrap.appendChild(subtitle);
     }
+  }
+
+  function packagingTitle(product) {
+    const title = document.querySelector(".product__page__weight__title");
+    const hasWeight =
+      product.countitemproduct_set &&
+      product.countitemproduct_set.some((item) => item.unit === "кг");
+
+    if (hasWeight && title) {
+      title.textContent += " Выберите удобный вес";
+    }
+  }
+
+  function packaging(product) {
+    const packagingWrap = document.querySelector(
+      ".product__page__weight__option__wrap"
+    );
+
+    if (!packagingWrap) return;
+
+    packagingWrap.innerHTML = "";
+
+    if (
+      !product.countitemproduct_set ||
+      product.countitemproduct_set.length === 0
+    ) {
+      packagingWrap.innerHTML = "<p>Нет доступных вариантов фасовки</p>";
+      return;
+    }
+
+    for (const option of product.countitemproduct_set) {
+      const optionElement = document.createElement("div");
+      optionElement.className = "weight__option";
+
+      let unitText = option.unit;
+
+      if (unitText.includes("шт")) {
+        unitText = "шт.";
+      } else if (unitText.includes("кг")) {
+        unitText = "кг";
+      }
+
+      const basePrice = parseFloat(product.price) || 0;
+      const optionPrice = (basePrice * option.value).toFixed(2);
+
+      optionElement.innerHTML = `
+            <span class="weight__value">${option.value} ${unitText}</span>
+            <span class="weight__price">${optionPrice} BYN</span>
+        `;
+
+      packagingWrap.appendChild(optionElement);
+    }
+  }
+
+  function price(product) {
+    const priceWrap = document.querySelector(".product__page__price__wrap");
+    const basePrice = parseFloat(product.price) || 0;
+    let weightType = "Общее кол-во:";
+    let weightCount = 1;
+    let weightUnit = "шт";
+
+    if (!priceWrap) return;
+
+    if (product.countitemproduct_set) {
+      for (const item of product.countitemproduct_set) {
+        if (item.unit.includes("кг")) {
+          weightType = "Общий вес:";
+          weightCount = 1;
+          weightUnit = "кг";
+          break;
+        } else if (item.unit.includes("шт")) {
+          weightType = "Общее кол-во:";
+          weightCount = 1;
+          weightUnit = "шт";
+          break;
+        }
+      }
+    }
+
+    priceWrap.innerHTML = `
+      <div class="total__price">${basePrice.toFixed(2)} BYN</div>
+      <div class="total__weight">${weightType} ${weightCount} ${weightUnit}</div>     
+    `;
   }
 });

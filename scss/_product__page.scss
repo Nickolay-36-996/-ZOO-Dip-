@@ -63,7 +63,43 @@
 .product__page__weight__option__wrap {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 16px;
+}
+
+.weight__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 16px;
+  gap: 4px;
+  background-color: #E4E5E7;
+  border-radius: 2px;
+  transition: linear .3s;
+}
+
+.weight__option:hover {
+  background-color: #008060;
+  span {
+    color: #FFFFFF;
+  }
+}
+
+.weight__value {
+  font-family: SF Pro Text;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 120%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.weight__price {
+  font-family: SF Pro Display;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0px;
+  color: #6D7175;
 }
 
 .product__page__pickup {
@@ -102,9 +138,28 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding: 8px 16px;
   border-radius: 4px;
   background-color: #ffffff;
+}
+
+.total__price {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.total__weight {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #202223;
 }
 
 .product__page__pay {
