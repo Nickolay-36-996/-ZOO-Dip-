@@ -101,13 +101,13 @@
   }
 }
 
-@media(max-width: 992px) {
+@media (max-width: 992px) {
   .article__header__title {
     font-size: 38px;
   }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .article__page__wrapper {
     padding: 16px 0px 48px 0px;
   }
@@ -128,8 +128,11 @@
     font-size: 15px;
   }
 
-  .article__txt p {
-    font-size: 16px;
+  .article__txt {
+    gap: 16px;
+    p {
+      font-size: 16px;
+    }
   }
 
   .article__wrap {

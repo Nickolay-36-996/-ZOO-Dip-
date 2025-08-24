@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("new-products-cards");
   const vectorLeft = document.querySelector(
@@ -81,14 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="new__product__sale__badge">Акция</div>`
             : ""
         }
-          <a href class="new__products__card__photo__link">
+          <a href="product__page.html?id=${
+            product.id
+          }" class="new__products__card__photo__link">
             <img class="new__products__card__photo" src="${
               product.image_prev
             }" alt="${product.title}" />
           </a>
-          <a href="#" class="new__products__card__title__link">${
-            product.title
-          }</a>
+          <a href="product__page.html?id=${
+            product.id
+          }" class="new__products__card__title__link">${product.title}</a>
           ${
             product.sale?.percent > 0
               ? `
@@ -197,42 +199,42 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initSliderControls() {
-  let cardWidth, gap, widthAllElements, cardCount;
-  let saveTranslate = 0;
+    let cardWidth, gap, widthAllElements, cardCount;
+    let saveTranslate = 0;
 
-  function updateSizes() {
-    cardCount = container.children.length;
-    cardWidth = container.children[0].offsetWidth;
-    gap = parseInt(window.getComputedStyle(container).gap) || 30;
-    widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
-  }
-
-  updateSizes();
-
-  vectorLeft.addEventListener("click", function() {
-    updateSizes(); 
-    if (saveTranslate >= 0) {
-      saveTranslate = -widthAllElements + cardWidth;
-    } else {
-      saveTranslate = saveTranslate + (cardWidth + gap);
+    function updateSizes() {
+      cardCount = container.children.length;
+      cardWidth = container.children[0].offsetWidth;
+      gap = parseInt(window.getComputedStyle(container).gap) || 30;
+      widthAllElements = cardWidth * cardCount + gap * (cardCount - 1);
     }
-    container.style.transform = `translateX(${saveTranslate}px)`;
-  });
 
-  vectorRight.addEventListener("click", function() {
-    updateSizes(); 
-    if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
-      saveTranslate = saveTranslate - (cardWidth + gap);
-    } else {
-      saveTranslate = 0;
-    }
-    container.style.transform = `translateX(${saveTranslate}px)`;
-  });
-
-  window.addEventListener('resize', function() {
     updateSizes();
-    saveTranslate = 0;
-    container.style.transform = `translateX(0)`;
-  });
-}
+
+    vectorLeft.addEventListener("click", function () {
+      updateSizes();
+      if (saveTranslate >= 0) {
+        saveTranslate = -widthAllElements + cardWidth;
+      } else {
+        saveTranslate = saveTranslate + (cardWidth + gap);
+      }
+      container.style.transform = `translateX(${saveTranslate}px)`;
+    });
+
+    vectorRight.addEventListener("click", function () {
+      updateSizes();
+      if (!(saveTranslate <= -widthAllElements + (cardWidth + gap))) {
+        saveTranslate = saveTranslate - (cardWidth + gap);
+      } else {
+        saveTranslate = 0;
+      }
+      container.style.transform = `translateX(${saveTranslate}px)`;
+    });
+
+    window.addEventListener("resize", function () {
+      updateSizes();
+      saveTranslate = 0;
+      container.style.transform = `translateX(0)`;
+    });
+  }
 });

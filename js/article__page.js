@@ -24,16 +24,35 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  fetch("https://oliver1ck.pythonanywhere.com/api/get_articles_list/")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  async function fetchAllArticles() {
+    let allArticles = [];
+    let nextUrl = "https://oliver1ck.pythonanywhere.com/api/get_articles_list/";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          allArticles = [...allArticles, ...data.results];
+        }
+
+        nextUrl = data.next;
       }
-      return response.json();
-    })
-    .then((article) => {
-      console.log("All articles:", article);
-      const findArticle = article.results.find((item) => item.id === articleId);
+      return allArticles;
+    } catch (error) {
+      console.error("Ошибка при загрузке статей:", error);
+      throw error;
+    }
+  }
+
+  fetchAllArticles()
+    .then((allArticles) => {
+      console.log("Всего статей загружено:", allArticles.length);
+      const findArticle = allArticles.find((item) => item.id === articleId);
 
       if (findArticle) {
         createArticle(findArticle);

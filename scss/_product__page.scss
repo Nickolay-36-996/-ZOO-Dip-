@@ -1,0 +1,231 @@
+.product__page__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 0px 64px 0px;
+}
+
+.product__page__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.product__page__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+  max-width: 800px;
+  width: 100%;
+}
+
+.product__page__contain {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.product__page__img__main {
+  max-width: 470px;
+  max-height: 392px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.product__page__registration {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 0 1 501px;
+}
+
+.product__page__weight {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product__page__weight__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.product__page__weight__option__wrap {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.product__page__pickup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+}
+
+.product__page__pickup__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.product__page__pickup__info__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-style: 20px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.product__page__pickup__info__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #5c5c5c;
+}
+
+.product__page__price__wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.product__page__pay {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product__page__pay__add {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.product__page__pay__operator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #babfc3;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.product__page__pay__counter {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #babfc3;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.product__page__pay__add__to__basked {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  background-color: #00a0ac;
+  border-radius: 4px;
+  box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 0px 0px rgba(0, 0, 0, 0.08);
+  padding: 12px 24px;
+}
+
+.product__page__buy {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #2c6ecb;
+}
+
+.product__page__info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.product__page__info__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  color: #000000;
+}
+
+.product__page__info__txt__wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.product__page__info__txt__description {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.product__page__info__txt__block__first {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 670px;
+  gap: 24px;
+}
+
+.product__page__info__txt__block__second {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 470px;
+  gap: 24px;
+}
+
+.product__page__info__signing {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product__page__info__signing__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #000000;
+}
+
+.product__page__info__signing__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+}

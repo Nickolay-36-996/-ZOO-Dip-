@@ -106,14 +106,16 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="popular__product__sale__badge">Акция</div>`
             : ""
         }
-          <a href class="popular__products__card__photo__link">
+          <a href="product__page.html?id=${
+            product.id
+          }" class="popular__products__card__photo__link">
             <img class="popular__products__card__photo" src="${
               product.image_prev
             }" alt="${product.title}" />
           </a>
-          <a href="#" class="popular__products__card__title__link">${
-            product.title
-          }</a>
+          <a href="product__page.html?id=${
+            product.id
+          }" class="popular__products__card__title__link">${product.title}</a>
           ${
             product.sale?.percent > 0
               ? `

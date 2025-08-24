@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalPages = Math.ceil(cardsData.length / cardsPerPage);
       createPagination(totalPages);
       updateCardsDisplay();
-      
+
       document.dispatchEvent(new CustomEvent("productsLoaded"));
     })
     .catch((error) => {
@@ -174,14 +174,18 @@ document.addEventListener("DOMContentLoaded", () => {
             ? `<div class="products__catalog__products__card__sale__badge">Акция</div>`
             : ""
         }
-          <a href="#" class="products__catalog__products__card__photo__link">
+          <a href="product__page.html?id=${
+            product.id
+          }" class="products__catalog__products__card__photo__link">
             <img class="products__catalog__products__card__photo__img" src="${
               product.image_prev
             }" alt="${product.title}" />
           </a>
-          <a href="#" class="products__catalog__products__card__title__link">${
-            product.title
-          }</a>
+          <a href="product__page.html?id=${
+            product.id
+          }" class="products__catalog__products__card__title__link">${
+        product.title
+      }</a>
         </div>
         <div class="products__catalog__products__card__quantity__container">
           <div class="products__catalog__products__card__quantity__box">
