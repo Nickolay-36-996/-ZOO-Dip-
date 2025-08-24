@@ -3974,6 +3974,12 @@ body {
   gap: 24px;
 }
 
+.product__page__title__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .product__page__info__title {
   font-family: SF Pro Display;
   font-weight: 600;
@@ -3981,6 +3987,15 @@ body {
   line-height: 32px;
   letter-spacing: 0px;
   color: #000000;
+}
+
+.product__page__subtitle {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #2C6ECB;
 }
 
 .product__page__info__txt__wrap {

@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchAllProducts()
       .then((allProducts) => {
         loadBrandFilters(allProducts);
+        handleBrandFilterFromUrl();
       })
       .catch(console.error);
   });
@@ -193,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return allProducts;
     } catch (error) {
       console.error("Ошибка загрузки продуктов:", error);
-      return []
+      return [];
     }
   }
 
@@ -863,4 +864,29 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("updateBrandFilters", (e) => {
     updateBrandFilters(e.detail.products);
   });
+
+  function handleBrandFilterFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const brandIdFromUrl = urlParams.get("brand");
+
+    if (brandIdFromUrl) {
+      currentBrandFilter = [brandIdFromUrl];
+      const brandItem = document.querySelector(
+        `[data-brand-id="${brandIdFromUrl}"]`
+      );
+      if (brandItem) {
+        const indicator = brandItem.querySelector(
+          ".products__catalog__filter__brand__indicator"
+        );
+        if (indicator) {
+          indicator.classList.add(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        }
+      }
+      filterProductsByBrand();
+    }
+  }
+
+  handleBrandFilterFromUrl();
 });

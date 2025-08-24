@@ -1,12 +1,27 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("product-page-wrap");
+  const nav = document.querySelector(".catalog__nav__list");
   const urlParams = new URLSearchParams(window.location.search);
   const productId = parseInt(urlParams.get("id"));
 
   if (!productId) {
     container.innerHTML = "<p>Товар не найден</p>";
     return;
+  }
+
+  function updateNavigation(productTitle) {
+    if (!nav) return;
+    const articleNavItem = document.createElement("li");
+    articleNavItem.className = "catalog__nav__list__item";
+
+    articleNavItem.innerHTML = `
+    <a href="${window.location.href}" class="catalog__nav__list__item__link catalog__nav__list__item__link__article">
+      ${productTitle}
+    </a>
+  `;
+
+    nav.appendChild(articleNavItem);
   }
 
   async function fetchAllProducts() {
@@ -53,10 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function createProductPage(product) {
     document.title = `${product.title}`;
-    const hasKeyFeatures = product.key_features && product.key_features.trim().length > 0;
+    updateNavigation(product.title);
+    const hasKeyFeatures =
+      product.key_features && product.key_features.trim().length > 0;
     const hasCompound = product.compound && product.compound.trim().length > 0;
-    const hasGuarantedAnalysis = product.guaranteed_analysis && product.guaranteed_analysis.trim().length > 0;
-    const hasNutritionalSupplements = product.nutritional_supplements && product.nutritional_supplements.trim().length > 0;
+    const hasGuarantedAnalysis =
+      product.guaranteed_analysis &&
+      product.guaranteed_analysis.trim().length > 0;
+    const hasNutritionalSupplements =
+      product.nutritional_supplements &&
+      product.nutritional_supplements.trim().length > 0;
 
     container.innerHTML = `
     <div class="product__page__title__wrap">
@@ -64,7 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
     <div class="product__page__contain">
     <div class="product__page__img__wrap">
-    <img src="${product.image_prev}" alt="${product.image_prev}" class="product__page__img__main">
+    <img src="${product.image_prev}" alt="${
+      product.image_prev
+    }" class="product__page__img__main">
     </div>
     <div class="product__page__registration">
     <div class="product__page__weight">
@@ -198,36 +221,70 @@ document.addEventListener("DOMContentLoaded", () => {
     <h2 class="product__page__info__title">Описание</h2>
     <div class="product__page__info__txt__wrap">
     <div class="product__page__info__txt__block__first">
-    <div class="product__page__info__txt__description">${product.description || 'Описание отсутствует'}</div>
-    ${hasKeyFeatures ?`
+    <div class="product__page__info__txt__description">${
+      product.description || "Описание отсутствует"
+    }</div>
+    ${
+      hasKeyFeatures
+        ? `
     <div class="product__page__info__signing">
     <h3 class="product__page__info__signing__title">Ключевые особенности:</h3>
     <div class="product__page__info__signing__txt">${product.key_features}</div>
     </div>  
-      `:""}
-     ${hasCompound ?`
+      `
+        : ""
+    }
+     ${
+       hasCompound
+         ? `
     <div class="product__page__info__signing">
     <h3 class="product__page__info__signing__title">Состав:</h3>
     <div class="product__page__info__signing__txt">${product.compound}</div>
     </div>  
-      `:""}  
+      `
+         : ""
+     }  
     </div>
     <div class="product__page__info__txt__block__second">
-    ${hasGuarantedAnalysis ?`
+    ${
+      hasGuarantedAnalysis
+        ? `
     <div class="product__page__info__signing">
     <h3 class="product__page__info__signing__title">Гарантированный анализ:</h3>
     <div class="product__page__info__signing__txt">${product.guaranteed_analysis}</div>
     </div>  
-      `:""}
-      ${hasNutritionalSupplements ?`
+      `
+        : ""
+    }
+      ${
+        hasNutritionalSupplements
+          ? `
     <div class="product__page__info__signing">
     <h3 class="product__page__info__signing__title">Пищевые добавки:</h3>
     <div class="product__page__info__signing__txt">${product.nutritional_supplements}</div>
     </div>  
-      `:""}
+      `
+          : ""
+      }
     </div>
     </div>
     </div>
     `;
+    brandProducts(product);
+  }
+
+  function brandProducts(product) {
+    if (!product.brand) return;
+    const subtitle = document.createElement("span");
+    subtitle.className = "product__page__subtitle__wrap";
+
+    subtitle.innerHTML = `
+    <a href="catalog.html?brand=${product.brand.id}" class="product__page__subtitle">Смотреть все товары бренда ${product.brand.name}</a>
+    `;
+
+    const titleWrap = document.querySelector(".product__page__title__wrap");
+    if (titleWrap) {
+      titleWrap.appendChild(subtitle);
+    }
   }
 });
