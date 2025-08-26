@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
      <div class="product__page__price__wrap"></div>
     <div class="product__page__pay">
     <div class="product__page__pay__add">
-    <div class="product__page__pay__operator">
+    <button class="product__page__pay__operator" id="take-away">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_933_8222)">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M15 9H5C4.447 9 4 9.448 4 10C4 10.552 4.447 11 5 11H15C15.553 11 16 10.552 16 10C16 9.448 15.553 9 15 9Z" fill="#008060"/>
@@ -196,9 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
     </clipPath>
     </defs>
     </svg>
-    </div>
+    </button>
     <div class="product__page__pay__counter"></div>
-    <div class="product__page__pay__operator">
+    <button class="product__page__pay__operator" id="total-add">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_933_8230)">
     <path fill-rule="evenodd" clip-rule="evenodd" d="M17 9H11V3C11 2.448 10.553 2 10 2C9.447 2 9 2.448 9 3V9H3C2.447 9 2 9.448 2 10C2 10.552 2.447 11 3 11H9V17C9 17.552 9.447 18 10 18C10.553 18 11 17.552 11 17V11H17C17.553 11 18 10.552 18 10C18 9.448 17.553 9 17 9Z" fill="#008060"/>
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </clipPath>
     </defs>
     </svg>
-    </div>
+    </button>
     </div>
     <button class="product__page__pay__add__to__basked">Добавить в корзину</button>
     <p class="product__page__buy">Купить в 1 клик</p>
@@ -275,7 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
     packaging(product);
     totalPrice(product);
     updateTotalPrice(product);
-    setWeight(product)
+    setWeight(product);
+    addTotalWeight(product)
   }
 
   function brandProducts(product) {
@@ -446,6 +447,92 @@ document.addEventListener("DOMContentLoaded", () => {
       Задать свой вес
       `;
       weightContainer.appendChild(customWeightElement);
+
+      const setWeightElements = document.createElement("div");
+      setWeightElements.className = "set__weight";
+      setWeightElements.style.display = "none";
+      setWeightElements.innerHTML = `
+        <h3 class="set__weight__title">Задайте свой вес</h3>
+        <div class="set__weight__hide">
+        <input class="set__weight__input" placeholder="Например: 1,2 кг" maxlength="4">
+        <button class="set__weight__button" maxlength="4">Применить</button>
+        </div>
+        `;
+      weightContainer.appendChild(setWeightElements);
+
+      const weightInput = setWeightElements.querySelector(
+        ".set__weight__input"
+      );
+
+      weightInput.addEventListener("input", function (event) {
+        let value = event.target.value;
+
+        value = value.replace(/[^\d,.]/g, "");
+
+        const hasComma = value.includes(",");
+        const hasDot = value.includes(".");
+
+        if (hasComma && hasDot) {
+          const commaIndex = value.indexOf(",");
+          const dotIndex = value.indexOf(".");
+
+          if (commaIndex < dotIndex) {
+            value = value.replace(/\./g, "");
+          } else {
+            value = value.replace(/,/g, "");
+          }
+        }
+
+        event.target.value = value;
+      });
+
+      customWeightElement.addEventListener("click", () => {
+        if (setWeightElements.style.display === "none") {
+          setWeightElements.style.display = "flex";
+        } else {
+          setWeightElements.style.display = "none";
+        }
+      });
+      setWeightInput(product);
     }
+  }
+
+  function setWeightInput(product) {
+    const weightInput = document.querySelector(".set__weight__input");
+    const weightButton = document.querySelector(".set__weight__button");
+    const totalWeight = document.querySelector(".total__weight");
+    const totalPrice = document.querySelector(".total__price");
+    const basePrice = parseFloat(product.price) || 0;
+
+    if (!weightInput || !weightButton || !totalWeight || !totalPrice) return;
+
+    weightButton.addEventListener("click", function () {
+      const inputValue = weightInput.value;
+
+      const weightValue = parseFloat(inputValue.replace(",", "."));
+
+      if (!isNaN(weightValue) && weightValue > 0) {
+        totalWeight.textContent =
+          "Общий вес: " + weightValue.toFixed(2) + " кг";
+
+        const newPrice = (basePrice * weightValue).toFixed(2);
+        totalPrice.textContent = newPrice + " BYN";
+
+        weightInput.value = "";
+      }
+    });
+  }
+
+  function addTotalWeight(product) {
+    const add = document.getElementById("total-add");
+    const takeAway = document.getElementById("take-away");
+    const counter = document.querySelector(".product__page__pay__counter");
+    const totalWeight = document.querySelector(".total__weight");
+    const totalPrice = document.querySelector(".total__price");
+    const basePrice = parseFloat(product.price) || 0;
+
+    if (!add || !takeAway || !counter || !totalWeight || !totalPrice) return;
+
+    
   }
 });
