@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = parseInt(urlParams.get("id"));
 
+  let currentWeight = 1;
+  let currentPrice = 0;
+
   if (!productId) {
     container.innerHTML = "<p>Товар не найден</p>";
     return;
@@ -274,9 +277,9 @@ document.addEventListener("DOMContentLoaded", () => {
     packagingTitle(product);
     packaging(product);
     totalPrice(product);
-    updateTotalPrice(product);
+    const { totalPriceElement, totalWeightElement } = updateTotalPrice(product);
     setWeight(product);
-    addTotalWeight(product)
+    addTotalWeight(product, totalPriceElement, totalWeightElement);
   }
 
   function brandProducts(product) {
@@ -352,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let weightType = "Общее кол-во:";
     let weightCount = 1;
-    let weightUnit = "шт";
+    let weightUnit = "шт.";
 
     if (!priceWrap) return;
 
@@ -361,16 +364,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (item.unit.includes("кг")) {
           weightType = "Общий вес:";
           weightCount = 1;
-          weightUnit = "кг";
+          weightUnit = "кг.";
           break;
         } else if (item.unit.includes("шт")) {
           weightType = "Общее кол-во:";
           weightCount = 1;
-          weightUnit = "шт";
+          weightUnit = "шт.";
           break;
         }
       }
     }
+
+    currentWeight = weightCount;
+    currentPrice = basePrice;
 
     priceWrap.innerHTML = `
       <div class="total__price">${basePrice.toFixed(2)} BYN</div>
@@ -382,11 +388,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const weightOptions = document.querySelectorAll(".weight__option");
     const totalPriceElement = document.querySelector(".total__price");
     const totalWeightElement = document.querySelector(".total__weight");
-
     const basePrice = parseFloat(product.price) || 0;
     let currentlySelected = null;
-
     let weightType = "Общее кол-во:";
+
+    currentWeight = 1;
+    currentPrice = basePrice;
 
     if (product.countitemproduct_set) {
       for (const item of product.countitemproduct_set) {
@@ -403,13 +410,13 @@ document.addEventListener("DOMContentLoaded", () => {
           this.classList.remove("weight__option__active");
           currentlySelected = null;
 
-          totalPriceElement.textContent = basePrice.toFixed(2) + " BYN";
+          const newPrice = basePrice.toFixed(2);
+          totalPriceElement.textContent = newPrice + " BYN";
+          totalWeightElement.textContent =
+            weightType + " 1 " + (weightType.includes("вес") ? "кг" : "шт");
 
-          const firstOptionText =
-            weightOptions[0].querySelector(".weight__value").textContent;
-          const baseUnit = firstOptionText.split(" ")[1];
-          totalWeightElement.textContent = weightType + " 1 " + baseUnit;
-
+          currentWeight = 1;
+          currentPrice = parseFloat(newPrice);
           return;
         }
 
@@ -428,8 +435,12 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElement.textContent = newPrice + " BYN";
         totalWeightElement.textContent =
           weightType + " " + weightValue + " " + unit;
+
+        currentWeight = weightValue;
+        currentPrice = parseFloat(newPrice);
       });
     }
+    return { totalPriceElement, totalWeightElement };
   }
 
   function setWeight(product) {
@@ -508,7 +519,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     weightButton.addEventListener("click", function () {
       const inputValue = weightInput.value;
-
       const weightValue = parseFloat(inputValue.replace(",", "."));
 
       if (!isNaN(weightValue) && weightValue > 0) {
@@ -519,11 +529,14 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPrice.textContent = newPrice + " BYN";
 
         weightInput.value = "";
+
+        currentWeight = weightValue;
+        currentPrice = parseFloat(newPrice);
       }
     });
   }
 
-  function addTotalWeight(product) {
+  function addTotalWeight(product, totalPriceElement, totalWeightElement) {
     const add = document.getElementById("total-add");
     const takeAway = document.getElementById("take-away");
     const counter = document.querySelector(".product__page__pay__counter");
@@ -533,6 +546,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!add || !takeAway || !counter || !totalWeight || !totalPrice) return;
 
-    
+    let count = 1;
+    counter.textContent = count;
+
+    add.addEventListener("click", function () {
+      count++;
+
+      const totalWeightValue = currentWeight * count;
+      const totalPriceValue = currentPrice * count;
+
+      totalWeightElement.textContent = totalWeightElement.textContent.replace(
+        /\d+\.?\d*/,
+        totalWeightValue.toFixed(2)
+      );
+      totalPriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+      counter.textContent = count;
+    });
+
+    takeAway.addEventListener("click", function () {
+      if (count > 1) {
+        count--;
+
+        const totalWeightValue = currentWeight * count;
+        const totalPriceValue = currentPrice * count;
+
+        totalWeightElement.textContent = totalWeightElement.textContent.replace(
+          /\d+\.?\d*/,
+          totalWeightValue.toFixed(2)
+        );
+        totalPriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+        counter.textContent = count;
+      }
+    });
   }
 });
