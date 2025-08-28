@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentWeight = 1;
   let currentPrice = 0;
+  let count = 1;
 
   if (!productId) {
     container.innerHTML = "<p>Товар не найден</p>";
@@ -406,6 +407,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (const option of weightOptions) {
       option.addEventListener("click", function () {
+        const counter = document.querySelector(".product__page__pay__counter");
+        if (counter) {
+          count = 1;
+          counter.textContent = "1";
+        }
+
         if (this === currentlySelected) {
           this.classList.remove("weight__option__active");
           currentlySelected = null;
@@ -513,6 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const weightButton = document.querySelector(".set__weight__button");
     const totalWeight = document.querySelector(".total__weight");
     const totalPrice = document.querySelector(".total__price");
+    const counter = document.querySelector(".product__page__pay__counter");
     const basePrice = parseFloat(product.price) || 0;
 
     if (!weightInput || !weightButton || !totalWeight || !totalPrice) return;
@@ -522,6 +530,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const weightValue = parseFloat(inputValue.replace(",", "."));
 
       if (!isNaN(weightValue) && weightValue > 0) {
+        count = 1;
+        counter.textContent = "1";
+
         totalWeight.textContent =
           "Общий вес: " + weightValue.toFixed(2) + " кг";
 
@@ -540,13 +551,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const add = document.getElementById("total-add");
     const takeAway = document.getElementById("take-away");
     const counter = document.querySelector(".product__page__pay__counter");
-    const totalWeight = document.querySelector(".total__weight");
-    const totalPrice = document.querySelector(".total__price");
-    const basePrice = parseFloat(product.price) || 0;
 
-    if (!add || !takeAway || !counter || !totalWeight || !totalPrice) return;
+    if (
+      !add ||
+      !takeAway ||
+      !counter ||
+      !totalWeightElement ||
+      !totalPriceElement
+    )
+      return;
 
-    let count = 1;
     counter.textContent = count;
 
     add.addEventListener("click", function () {
@@ -560,14 +574,12 @@ document.addEventListener("DOMContentLoaded", () => {
         totalWeightValue.toFixed(2)
       );
       totalPriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
-
       counter.textContent = count;
     });
 
     takeAway.addEventListener("click", function () {
       if (count > 1) {
         count--;
-
         const totalWeightValue = currentWeight * count;
         const totalPriceValue = currentPrice * count;
 
