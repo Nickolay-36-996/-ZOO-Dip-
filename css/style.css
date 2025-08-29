@@ -3828,6 +3828,20 @@ body {
   width: 100%;
 }
 
+.sale__badge__page {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: white;
+  background-color: #fd5749;
+  padding: 0px 6px;
+  border-radius: 2px;
+  position: absolute;
+  right: 0px;
+}
+
 .product__page__contain {
   display: flex;
   flex-direction: row;
@@ -4017,6 +4031,33 @@ body {
 }
 
 .total__price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.base__price {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.old__price {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #8C9196;
+  text-decoration: line-through;
+  text-decoration-color: #D72C0D;
+}
+
+.promotion__price {
   font-family: SF Pro Display;
   font-weight: 700;
   font-size: 28px;
@@ -4107,6 +4148,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  position: relative;
 }
 
 .product__page__info__title {

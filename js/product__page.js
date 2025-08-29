@@ -83,9 +83,19 @@ document.addEventListener("DOMContentLoaded", () => {
       product.nutritional_supplements &&
       product.nutritional_supplements.trim().length > 0;
 
+    const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - promotion / 100);
+
     container.innerHTML = `
     <div class="product__page__title__wrap">
     <h1 class="product__page__title">${product.title}</h1>
+    ${
+      promotion > 0
+        ? `
+      <div class="sale__badge__page">Акция</div>`
+        : ""
+    }
     </div>
     <div class="product__page__contain">
     <div class="product__page__img__wrap">
@@ -339,7 +349,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const basePrice = parseFloat(product.price) || 0;
-      const optionPrice = (basePrice * option.value).toFixed(2);
+      let optionPrice = (basePrice * option.value).toFixed(2);
+
+      const promotion = product.sale?.percent || 0;
+      const discountedPrice = basePrice * (1 - promotion / 100);
+
+      if (promotion) {
+        optionPrice = (discountedPrice * option.value).toFixed(2);
+      }
 
       optionElement.innerHTML = `
             <span class="weight__value">${option.value} ${unitText}</span>
@@ -353,6 +370,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function totalPrice(product) {
     const priceWrap = document.querySelector(".product__page__price__wrap");
     const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - promotion / 100);
 
     let weightType = "Общее кол-во:";
     let weightCount = 1;
@@ -380,7 +399,18 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPrice = basePrice;
 
     priceWrap.innerHTML = `
-      <div class="total__price">${basePrice.toFixed(2)} BYN</div>
+      <div class="total__price">
+      ${
+        promotion > 0
+          ? `
+      <span class="old__price">${basePrice.toFixed(2)} BYN</span>
+      <span class="base__price">${discountedPrice.toFixed(2)} BYN</span>
+        `
+          : `
+      <span class="base__price">${basePrice.toFixed(2)} BYN</span>    
+          `
+      }
+      </div>
       <div class="total__weight">${weightType} ${weightCount} ${weightUnit}</div>     
     `;
   }
@@ -388,8 +418,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateTotalPrice(product) {
     const weightOptions = document.querySelectorAll(".weight__option");
     const totalPriceElement = document.querySelector(".total__price");
+    const basePriceElement = totalPriceElement.querySelector(".base__price");
     const totalWeightElement = document.querySelector(".total__weight");
     const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - promotion / 100);
+    const oldPriceElement = document.querySelector(".old__price");
     let currentlySelected = null;
     let weightType = "Общее кол-во:";
 
@@ -408,6 +442,8 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const option of weightOptions) {
       option.addEventListener("click", function () {
         const counter = document.querySelector(".product__page__pay__counter");
+        let newPrice = null;
+
         if (counter) {
           count = 1;
           counter.textContent = "1";
@@ -417,8 +453,14 @@ document.addEventListener("DOMContentLoaded", () => {
           this.classList.remove("weight__option__active");
           currentlySelected = null;
 
-          const newPrice = basePrice.toFixed(2);
-          totalPriceElement.textContent = newPrice + " BYN";
+          if (promotion) {
+            newPrice = discountedPrice.toFixed(2);
+            oldPriceElement.textContent = basePrice.toFixed(2) + "BYN";
+          } else {
+            newPrice = basePrice.toFixed(2);
+          }
+
+          basePriceElement.textContent = newPrice + " BYN";
           totalWeightElement.textContent =
             weightType + " 1 " + (weightType.includes("вес") ? "кг" : "шт");
 
@@ -438,8 +480,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const weightValue = parseFloat(weightText);
         const unit = weightText.split(" ")[1];
 
-        const newPrice = (basePrice * weightValue).toFixed(2);
-        totalPriceElement.textContent = newPrice + " BYN";
+        if (promotion) {
+          newPrice = (discountedPrice * weightValue).toFixed(2);
+          oldPriceElement.textContent = (basePrice * weightValue).toFixed(2) + "BYN";
+        } else {
+          newPrice = (basePrice * weightValue).toFixed(2);
+        }
+
+        basePriceElement.textContent = newPrice + " BYN";
         totalWeightElement.textContent =
           weightType + " " + weightValue + " " + unit;
 
@@ -519,9 +567,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const weightInput = document.querySelector(".set__weight__input");
     const weightButton = document.querySelector(".set__weight__button");
     const totalWeight = document.querySelector(".total__weight");
-    const totalPrice = document.querySelector(".total__price");
+    const totalPrice = document.querySelector(".base__price");
     const counter = document.querySelector(".product__page__pay__counter");
     const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - promotion / 100);
 
     if (!weightInput || !weightButton || !totalWeight || !totalPrice) return;
 
@@ -536,13 +586,19 @@ document.addEventListener("DOMContentLoaded", () => {
         totalWeight.textContent =
           "Общий вес: " + weightValue.toFixed(2) + " кг";
 
-        const newPrice = (basePrice * weightValue).toFixed(2);
-        totalPrice.textContent = newPrice + " BYN";
+        if (promotion) {
+          const newPrice = (discountedPrice * weightValue).toFixed(2);
+          totalPrice.textContent = newPrice + " BYN";
+          currentPrice = parseFloat(newPrice);
+        } else {
+          const newPrice = (basePrice * weightValue).toFixed(2);
+          totalPrice.textContent = newPrice + " BYN";
+          currentPrice = parseFloat(newPrice);
+        }
 
         weightInput.value = "";
 
         currentWeight = weightValue;
-        currentPrice = parseFloat(newPrice);
       }
     });
   }
