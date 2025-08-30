@@ -218,6 +218,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   padding: 8px 16px;
   border-radius: 4px;
   background-color: #ffffff;
@@ -245,9 +246,9 @@
   font-size: 28px;
   line-height: 130%;
   letter-spacing: 0px;
-  color: #8C9196;
+  color: #8c9196;
   text-decoration: line-through;
-  text-decoration-color: #D72C0D;
+  text-decoration-color: #d72c0d;
 }
 
 .promotion__price {
@@ -273,6 +274,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .product__page__pay__add {
@@ -414,4 +416,78 @@
   line-height: 20px;
   letter-spacing: 0px;
   color: #202223;
+}
+
+@media (max-width: 992px) {
+  .product__page__title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+
+  .product__page__weight__title {
+    font-size: 17px;
+    line-height: 24px;
+  }
+
+  .product__page__pay {
+    justify-content: center;
+    gap: 12px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product__page__title__wrap {
+    gap: 16px;
+  }
+
+  .product__page__contain {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .product__page__weight__option__wrap {
+    position: static;
+    gap: 8px;
+  }
+
+  .sale__badge__page {
+    position: static;
+    order: -1;
+    align-self: flex-start;
+  }
+
+  .custom__weight__input {
+    font-size: 17px;
+    line-height: 24px;
+  }
+
+  .header__top__page {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product__page__info {
+    gap: 16px;
+  }
+
+  .product__page__info__txt__wrap {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .product__page__info__txt__block__first {
+    gap: 16px;
+    flex: 0;
+  }
+
+  .product__page__info__txt__block__second {
+    gap: 16px;
+    flex: 0;
+  }
+
+  .product__page__wrapper {
+    padding: 16px 0px 40px 0px;;
+  }
 }

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentWeight = 1;
   let currentPrice = 0;
+  let oldPrice = 0;
   let count = 1;
 
   if (!productId) {
@@ -130,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="product__page__pickup__info">
     <h3 class="product__page__pickup__info__title">Самовывоз</h3>
     <p class="product__page__pickup__info__txt">В данный момент товар можно забрать только самовывозом из нашего уютного магазина по адресу:</p>
-    <div class="adress__header__top">
+    <div class="adress__header__top header__top__page">
                 <div class="adress__header__top__box">
                   <div>
                     <svg
@@ -288,9 +289,15 @@ document.addEventListener("DOMContentLoaded", () => {
     packagingTitle(product);
     packaging(product);
     totalPrice(product);
-    const { totalPriceElement, totalWeightElement } = updateTotalPrice(product);
+    const { totalWeightElement, basePriceElement, oldPriceElement } =
+      updateTotalPrice(product);
     setWeight(product);
-    addTotalWeight(product, totalPriceElement, totalWeightElement);
+    addTotalWeight(
+      product,
+      basePriceElement,
+      oldPriceElement,
+      totalWeightElement
+    );
   }
 
   function brandProducts(product) {
@@ -423,12 +430,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const basePrice = parseFloat(product.price) || 0;
     const promotion = product.sale?.percent || 0;
     const discountedPrice = basePrice * (1 - promotion / 100);
-    const oldPriceElement = document.querySelector(".old__price");
+    const oldPriceElement = totalPriceElement.querySelector(".old__price");
     let currentlySelected = null;
     let weightType = "Общее кол-во:";
 
     currentWeight = 1;
-    currentPrice = basePrice;
+    currentPrice = promotion > 0 ? discountedPrice : basePrice;
+    oldPrice = promotion > 0 ? basePrice : 0;
 
     if (product.countitemproduct_set) {
       for (const item of product.countitemproduct_set) {
@@ -455,7 +463,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (promotion) {
             newPrice = discountedPrice.toFixed(2);
-            oldPriceElement.textContent = basePrice.toFixed(2) + "BYN";
+            if (oldPriceElement) {
+              oldPriceElement.textContent = basePrice.toFixed(2) + " BYN";
+            }
           } else {
             newPrice = basePrice.toFixed(2);
           }
@@ -466,6 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           currentWeight = 1;
           currentPrice = parseFloat(newPrice);
+          oldPrice = promotion ? basePrice : 0;
           return;
         }
 
@@ -482,9 +493,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (promotion) {
           newPrice = (discountedPrice * weightValue).toFixed(2);
-          oldPriceElement.textContent = (basePrice * weightValue).toFixed(2) + "BYN";
+          const originalPrice = (basePrice * weightValue).toFixed(2);
+          if (oldPriceElement) {
+            oldPriceElement.textContent = originalPrice + " BYN";
+          }
+          oldPrice = parseFloat(originalPrice);
+          currentPrice = parseFloat(newPrice);
         } else {
           newPrice = (basePrice * weightValue).toFixed(2);
+          oldPrice = 0;
+          currentPrice = parseFloat(newPrice);
         }
 
         basePriceElement.textContent = newPrice + " BYN";
@@ -492,10 +510,9 @@ document.addEventListener("DOMContentLoaded", () => {
           weightType + " " + weightValue + " " + unit;
 
         currentWeight = weightValue;
-        currentPrice = parseFloat(newPrice);
       });
     }
-    return { totalPriceElement, totalWeightElement };
+    return { totalWeightElement, basePriceElement, oldPriceElement };
   }
 
   function setWeight(product) {
@@ -567,13 +584,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const weightInput = document.querySelector(".set__weight__input");
     const weightButton = document.querySelector(".set__weight__button");
     const totalWeight = document.querySelector(".total__weight");
-    const totalPrice = document.querySelector(".base__price");
+    const totalPriceElement = document.querySelector(".base__price");
     const counter = document.querySelector(".product__page__pay__counter");
+    const oldPriceElement = document.querySelector(".old__price");
     const basePrice = parseFloat(product.price) || 0;
     const promotion = product.sale?.percent || 0;
     const discountedPrice = basePrice * (1 - promotion / 100);
 
-    if (!weightInput || !weightButton || !totalWeight || !totalPrice) return;
+    if (!weightInput || !weightButton || !totalWeight || !totalPriceElement)
+      return;
 
     weightButton.addEventListener("click", function () {
       const inputValue = weightInput.value;
@@ -588,32 +607,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (promotion) {
           const newPrice = (discountedPrice * weightValue).toFixed(2);
-          totalPrice.textContent = newPrice + " BYN";
+          const originalPrice = (basePrice * weightValue).toFixed(2);
+          totalPriceElement.textContent = newPrice + " BYN";
+          if (oldPriceElement) {
+            oldPriceElement.textContent = originalPrice + " BYN";
+          }
           currentPrice = parseFloat(newPrice);
+          oldPrice = parseFloat(originalPrice);
         } else {
           const newPrice = (basePrice * weightValue).toFixed(2);
-          totalPrice.textContent = newPrice + " BYN";
+          totalPriceElement.textContent = newPrice + " BYN";
           currentPrice = parseFloat(newPrice);
+          oldPrice = 0;
         }
 
         weightInput.value = "";
-
         currentWeight = weightValue;
       }
     });
   }
 
-  function addTotalWeight(product, totalPriceElement, totalWeightElement) {
+  function addTotalWeight(
+    product,
+    basePriceElement,
+    oldPriceElement,
+    totalWeightElement
+  ) {
     const add = document.getElementById("total-add");
     const takeAway = document.getElementById("take-away");
     const counter = document.querySelector(".product__page__pay__counter");
+    const promotion = product.sale?.percent || 0;
 
     if (
       !add ||
       !takeAway ||
       !counter ||
       !totalWeightElement ||
-      !totalPriceElement
+      !basePriceElement
     )
       return;
 
@@ -624,12 +654,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const totalWeightValue = currentWeight * count;
       const totalPriceValue = currentPrice * count;
+      const oldTotalPriceValue = oldPrice * count;
 
       totalWeightElement.textContent = totalWeightElement.textContent.replace(
         /\d+\.?\d*/,
         totalWeightValue.toFixed(2)
       );
-      totalPriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+      if (promotion > 0 && oldPriceElement && oldPrice > 0) {
+        basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+        oldPriceElement.textContent = oldTotalPriceValue.toFixed(2) + " BYN";
+      } else {
+        basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+        if (oldPriceElement) {
+          oldPriceElement.style.display = "none";
+        }
+      }
+
       counter.textContent = count;
     });
 
@@ -638,12 +680,20 @@ document.addEventListener("DOMContentLoaded", () => {
         count--;
         const totalWeightValue = currentWeight * count;
         const totalPriceValue = currentPrice * count;
+        const oldTotalPriceValue = oldPrice * count;
 
         totalWeightElement.textContent = totalWeightElement.textContent.replace(
           /\d+\.?\d*/,
           totalWeightValue.toFixed(2)
         );
-        totalPriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+        if (promotion > 0 && oldPriceElement) {
+          basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+          oldPriceElement.textContent = oldTotalPriceValue.toFixed(2) + " BYN";
+        } else {
+          basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+        }
+
         counter.textContent = count;
       }
     });
