@@ -2,6 +2,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("basket-contain");
 
+  window.updateBasketDisplay = function () {
+    fetchAllProducts()
+      .then((allProducts) => {
+        const basketItems = getBsketItemIds();
+        if (basketItems.length > 0) {
+          showBasketItems(allProducts);
+        }
+        return;
+      })
+      .catch((error) => {
+        console.error("Ошибка обновления корзины:", error);
+      });
+  };
+
   async function fetchAllProducts() {
     let allProducts = [];
     let nextUrl =
@@ -99,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(myCart);
 
     createCartItem(allProducts, basketItems);
+    ItemRemove();
   }
 
   function createCartItem(allProducts, basketItems) {
@@ -117,13 +132,53 @@ document.addEventListener("DOMContentLoaded", () => {
       if (product) {
         const cartItem = document.createElement("div");
         cartItem.className = "my__cart__item";
+        cartItem.dataset.productID = product.id;
         cartItem.innerHTML = `
+      <div class="my__cart__item__wrap">
       <img src="${product.image_prev}" alt="${product.image_prev}" class="my__cart__item__img">
       <div class="my__cart__item__info">
       <h3 class="my__cart__item__info__title">${product.title}</h3>
       <div class="my__cart__item__info__options"></div>
       </div>
-      `;
+      </div>
+      <div class="my__cart__item__info__total__wrap">
+      <div class="my__cart__item__info__total">
+      <div class="product__page__pay__add">
+      <button class="product__page__pay__operator" id="take-away">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_933_8222)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M15 9H5C4.447 9 4 9.448 4 10C4 10.552 4.447 11 5 11H15C15.553 11 16 10.552 16 10C16 9.448 15.553 9 15 9Z" fill="#008060"/>
+      </g>
+      <defs>
+      <clipPath id="clip0_933_8222">
+      <rect width="20" height="20" fill="white"/>
+      </clipPath>
+      </defs>
+      </svg>
+      </button>
+      <div class="product__page__pay__counter"></div>
+      <button class="product__page__pay__operator" id="total-add">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_933_8230)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M17 9H11V3C11 2.448 10.553 2 10 2C9.447 2 9 2.448 9 3V9H3C2.447 9 2 9.448 2 10C2 10.552 2.447 11 3 11H9V17C9 17.552 9.447 18 10 18C10.553 18 11 17.552 11 17V11H17C17.553 11 18 10.552 18 10C18 9.448 17.553 9 17 9Z" fill="#008060"/>
+      </g>
+      <defs>
+      <clipPath id="clip0_933_8230">
+      <rect width="20" height="20" fill="white"/>
+      </clipPath>
+      </defs>
+      </svg>
+      </button>
+      </div>
+      <p class="my__cart__item__price"> BYN</p>
+      </div>
+      <button class="my__cart__item__remove">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 1.75C13.733 1.75 15.1492 3.10645 15.2449 4.81558L15.25 5H20.5C20.9142 5 21.25 5.33579 21.25 5.75C21.25 6.1297 20.9678 6.44349 20.6018 6.49315L20.5 6.5H19.704L18.4239 19.5192C18.2912 20.8683 17.1984 21.91 15.8626 21.9945L15.6871 22H8.31293C6.95734 22 5.81365 21.0145 5.59883 19.6934L5.57614 19.5192L4.295 6.5H3.5C3.1203 6.5 2.80651 6.21785 2.75685 5.85177L2.75 5.75C2.75 5.3703 3.03215 5.05651 3.39823 5.00685L3.5 5H8.75C8.75 3.20507 10.2051 1.75 12 1.75ZM18.197 6.5H5.802L7.06893 19.3724C7.12768 19.9696 7.60033 20.4343 8.18585 20.4936L8.31293 20.5H15.6871C16.2872 20.5 16.7959 20.0751 16.9123 19.4982L16.9311 19.3724L18.197 6.5ZM13.75 9.25C14.1297 9.25 14.4435 9.53215 14.4932 9.89823L14.5 10V17C14.5 17.4142 14.1642 17.75 13.75 17.75C13.3703 17.75 13.0565 17.4678 13.0068 17.1018L13 17V10C13 9.58579 13.3358 9.25 13.75 9.25ZM10.25 9.25C10.6297 9.25 10.9435 9.53215 10.9932 9.89823L11 10V17C11 17.4142 10.6642 17.75 10.25 17.75C9.8703 17.75 9.55651 17.4678 9.50685 17.1018L9.5 17V10C9.5 9.58579 9.83579 9.25 10.25 9.25ZM12 3.25C11.0818 3.25 10.3288 3.95711 10.2558 4.85647L10.25 5H13.75C13.75 4.0335 12.9665 3.25 12 3.25Z" fill="#D82C0D"/>
+      </svg>
+      </button>
+      </div>
+    `;
         cartItemsContainer.appendChild(cartItem);
 
         weightOptions(product, cartItem);
@@ -132,7 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function weightOptions(product, cartItem) {
-    const optionsContainer = cartItem.querySelector(".my__cart__item__info__options");
+    const optionsContainer = cartItem.querySelector(
+      ".my__cart__item__info__options"
+    );
 
     if (!optionsContainer) return;
 
@@ -152,6 +209,34 @@ document.addEventListener("DOMContentLoaded", () => {
       optionElement.innerHTML = `${option.value} ${option.unit}`;
 
       optionsContainer.appendChild(optionElement);
+    }
+  }
+
+  function ItemRemove() {
+    const removeButtons = document.querySelectorAll(".my__cart__item__remove");
+
+    for (const button of removeButtons) {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const cartItem = this.closest(".my__cart__item");
+        const cartID = parseInt(cartItem.dataset.productID);
+
+        let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+        let updateBasket = [];
+
+        for (const id of basketItems) {
+          if (id !== cartID) {
+            updateBasket.push(id);
+          }
+        }
+
+        localStorage.setItem("basketItem", JSON.stringify(updateBasket));
+        cartItem.remove();
+
+        console.log("Товар удален! ID:", productId);
+      });
     }
   }
 });
