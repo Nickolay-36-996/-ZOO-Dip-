@@ -51,6 +51,164 @@
   background-color: #347c84;
 }
 
+.my__cart {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.my__cart__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.my__cart__wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.my__cart__items {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 16px;
+  max-width: 770px;
+  width: 100%;
+}
+
+.my__cart__item {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.my__cart__item__img {
+  width: 56px;
+  height: 56px;
+}
+
+.my__cart__item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.my__cart__item__info__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.my__cart__item__info__options {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.my__cart__item__info__option {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  background-color: #E4E5E7;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.my__cart__total {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  gap: 24px;
+  padding: 16px 24px;
+  background-color: #008060;
+  border-radius: 8px;
+}
+
+.my__cart__total__wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.my__cart__total__price {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.my__cart__total__count {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #ffffff;
+}
+
+.my__cart__pickup {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.my__cart__pickup__txt {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.my__cart__pickup__txt__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: white;
+}
+
+.my__cart__pickup__txt__location {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.my__cart__pickup__txt__location__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: white;
+}
+
+.my__cart__btn {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  background-color: #ffffff;
+  padding: 12px 102px;
+  border-radius: 8px;
+  box-shadow: inset 0px -1px 0px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 0px 0px rgba(0, 0, 0, 0.08);
+}
+
 @media (max-width: 768px) {
   .empty__cart {
     gap: 24px;

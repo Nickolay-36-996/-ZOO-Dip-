@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsData = cardsData.filter((product) => product.sales_counter > 0);
 
         createCards();
+        addToBasket();
         if (container.children.length > 0) {
           cardWidth = container.children[0].clientWidth;
           initSliderControls();
@@ -146,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <p class="popular__products__card__pay__price__p">${displayPrice} BYN</p>
             `
             }
-            <button class="popular__products__card__basked__add">
+            <button class="popular__products__card__basked__add" data-product-id="${product.id}">
               <div class="popular__products__card__basket__img__box">
                 <svg class="popular__products__card__basket__img" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_7865_204)">
@@ -261,5 +262,25 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTranslate = 0;
       container.style.transform = `translateX(0)`;
     });
+  }
+
+  function addToBasket () {
+    const addToCartBtn = document.querySelectorAll('.popular__products__card__basked__add');
+
+    for (const cart of addToCartBtn) {
+      cart.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const card = this.closest('.popular__products__card');
+        const productId = this.getAttribute('data-product-id');
+
+        let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+        basketItems.push(parseInt(productId));
+        localStorage.setItem("basketItem", JSON.stringify(basketItems));
+
+        console.log("Товар добавлен в корзину! ID:", productId);
+      })
+    }
   }
 });
