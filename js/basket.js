@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.updateBasketDisplay = function () {
     fetchAllProducts()
       .then((allProducts) => {
-        const basketItems = getBsketItemIds();
+        const basketItems = getBasketItemIds();
         if (basketItems.length > 0) {
           showBasketItems(allProducts);
         }
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchAllProducts()
     .then((allProducts) => {
       console.log("Всего товаров загружено:", allProducts.length);
-      const basketItems = getBsketItemIds();
+      const basketItems = getBasketItemIds();
       console.log("Товар в корзине", basketItems.length);
 
       if (basketItems.length > 0) {
@@ -57,13 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Ошибка", error);
     });
 
-  function getBsketItemIds() {
+  function getBasketItemIds() {
     return JSON.parse(localStorage.getItem("basketItem")) || [];
   }
 
   function showBasketItems(allProducts) {
     container.innerHTML = "";
-    const basketItems = getBsketItemIds();
+    const basketItems = getBasketItemIds();
 
     const myCart = document.createElement("div");
     myCart.className = "my__cart";
@@ -121,15 +121,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cartItemsContainer.innerHTML = "";
 
-    for (const itemID of basketItems) {
+    for (const basketItem of basketItems) {
       let product = null;
       for (const currentProduct of allProducts) {
-        if (currentProduct.id === itemID) {
+        if (currentProduct.id === basketItem.productId) {
           product = currentProduct;
           break;
         }
       }
       if (product) {
+        const itemPrice = basketItem.price;
+
         const cartItem = document.createElement("div");
         cartItem.className = "my__cart__item";
         cartItem.dataset.productID = product.id;
@@ -170,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </svg>
       </button>
       </div>
-      <p class="my__cart__item__price"> BYN</p>
+      <p class="my__cart__item__price">${itemPrice.toFixed(2)} BYN</p>
       </div>
       <button class="my__cart__item__remove">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -226,9 +228,9 @@ document.addEventListener("DOMContentLoaded", () => {
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
         let updateBasket = [];
 
-        for (const id of basketItems) {
-          if (id !== cartID) {
-            updateBasket.push(id);
+        for (const item of basketItems) {
+          if (item.productId !== cartID) {
+            updateBasket.push(item);
           }
         }
 

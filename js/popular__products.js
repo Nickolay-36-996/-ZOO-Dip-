@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             <button class="popular__products__card__basked__add" data-product-id="${
               product.id
-            }">
+            }>
               <div class="popular__products__card__basket__img__box">
                 <svg class="popular__products__card__basket__img" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_7865_204)">
@@ -279,8 +279,30 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = this.closest(".popular__products__card");
         const productId = this.getAttribute("data-product-id");
 
+        const priceElement = card.querySelector(
+          ".popular__products__card__pay__price__p"
+        );
+        const oldPriceElement = card.querySelector(
+          ".popular__products__card__pay__price__old"
+        );
+
+        let price = 0;
+
+        if (oldPriceElement) {
+          const priceText = priceElement.textContent;
+          price = parseFloat(priceText.replace(" BYN", "").trim());
+        } else {
+          const priceText = priceElement.textContent;
+          price = parseFloat(priceText.replace(" BYN", "").trim());
+        }
+
+        const cardData = {
+          productId: parseInt(productId),
+          price: price,
+        };
+
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
-        basketItems.push(parseInt(productId));
+        basketItems.push(cardData);
         localStorage.setItem("basketItem", JSON.stringify(basketItems));
 
         console.log("Товар добавлен в корзину! ID:", productId);
