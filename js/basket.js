@@ -272,6 +272,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function weightInput() {}
+
   function ItemRemove() {
     const removeButtons = document.querySelectorAll(".my__cart__item__remove");
 
