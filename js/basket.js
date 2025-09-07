@@ -239,6 +239,19 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const optionText = this.textContent;
+        const isCurrentlyActive = this.classList.contains(
+          "my__cart__item__info__option__active"
+        );
+
+        if (isCurrentlyActive) {
+          for (const opt of weightOption) {
+            opt.classList.remove("my__cart__item__info__option__active");
+          }
+
+          priceCounter.textContent = `${basePrice.toFixed(2)} BYN`;
+          return;
+        }
+
         const weightValue = parseFloat(optionText.split(" ")[0]);
 
         for (const opt of weightOption) {
@@ -248,7 +261,6 @@ document.addEventListener("DOMContentLoaded", () => {
         this.classList.add("my__cart__item__info__option__active");
 
         let newPrice = 0;
-
         if (discountPercent > 0) {
           newPrice = (discountedPrice * weightValue).toFixed(2);
         } else {
