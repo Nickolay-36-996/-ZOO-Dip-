@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItemsContainer.appendChild(cartItem);
 
         weightOptions(product, cartItem, basketItem.packaging);
+        setWeightOptions(product, cartItem, basketItem.packaging, itemPrice);
       }
     }
   }
@@ -222,6 +223,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function setWeightOptions(product, cartItem, packaging, itemPrice) {
+    const weightOption = cartItem.querySelectorAll(
+      ".my__cart__item__info__option"
+    );
+    const priceCounter = cartItem.querySelector(".my__cart__item__price");
+    const basePrice = parseFloat(product.price);
+    const discountPercent = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - discountPercent / 100);
+
+    if (!weightOption.length) return;
+
+    for (const option of weightOption) {
+      option.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const optionText = this.textContent;
+        const weightValue = parseFloat(optionText.split(" ")[0]);
+
+        for (const opt of weightOption) {
+          opt.classList.remove("my__cart__item__info__option__active");
+        }
+
+        this.classList.add("my__cart__item__info__option__active");
+
+        let newPrice = 0;
+
+        if (discountPercent > 0) {
+          newPrice = (discountedPrice * weightValue).toFixed(2);
+        } else {
+          newPrice = (basePrice * weightValue).toFixed(2);
+        }
+
+        priceCounter.textContent = `${newPrice} BYN`;
+      });
+    }
+  }
+
   function ItemRemove() {
     const removeButtons = document.querySelectorAll(".my__cart__item__remove");
 
@@ -245,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("basketItem", JSON.stringify(updateBasket));
         cartItem.remove();
 
-        console.log("Товар удален! ID:", productId);
+        console.log("Товар удален! ID:", cartID);
       });
     }
   }
