@@ -285,8 +285,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const oldPriceElement = card.querySelector(
           ".popular__products__card__pay__price__old"
         );
+        const activeQuantity = card.querySelector(
+          ".popular__products__card__quantity__active"
+        );
 
         let price = 0;
+        let packaging = null;
+
+        if (activeQuantity) {
+          packaging = activeQuantity.textContent;
+        }
 
         if (oldPriceElement) {
           const priceText = priceElement.textContent;
@@ -299,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cardData = {
           productId: parseInt(productId),
           price: price,
+          packaging: packaging,
         };
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];

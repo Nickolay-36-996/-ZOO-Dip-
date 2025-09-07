@@ -137,7 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItem.dataset.productID = product.id;
         cartItem.innerHTML = `
       <div class="my__cart__item__wrap">
-      <img src="${product.image_prev}" alt="${product.image_prev}" class="my__cart__item__img">
+      <img src="${product.image_prev}" alt="${
+          product.image_prev
+        }" class="my__cart__item__img">
       <div class="my__cart__item__info">
       <h3 class="my__cart__item__info__title">${product.title}</h3>
       <div class="my__cart__item__info__options"></div>
@@ -183,12 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
         cartItemsContainer.appendChild(cartItem);
 
-        weightOptions(product, cartItem);
+        weightOptions(product, cartItem, basketItem.packaging);
       }
     }
   }
 
-  function weightOptions(product, cartItem) {
+  function weightOptions(product, cartItem, packaging) {
     const optionsContainer = cartItem.querySelector(
       ".my__cart__item__info__options"
     );
@@ -206,9 +208,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     for (const option of product.countitemproduct_set) {
+      const optionText = `${option.value} ${option.unit}`;
+
       const optionElement = document.createElement("span");
       optionElement.className = "my__cart__item__info__option";
-      optionElement.innerHTML = `${option.value} ${option.unit}`;
+      optionElement.textContent = optionText;
+
+      if (packaging && packaging.toString().trim() === optionText.trim()) {
+        optionElement.classList.add("my__cart__item__info__option__active");
+      }
 
       optionsContainer.appendChild(optionElement);
     }
