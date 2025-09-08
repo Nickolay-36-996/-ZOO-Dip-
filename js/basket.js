@@ -137,11 +137,15 @@ document.addEventListener("DOMContentLoaded", () => {
         cartItem.dataset.productID = product.id;
         cartItem.innerHTML = `
       <div class="my__cart__item__wrap">
+      <a href="product__page.html?id=${product.id}">
       <img src="${product.image_prev}" alt="${
           product.image_prev
         }" class="my__cart__item__img">
+      </a>
       <div class="my__cart__item__info">
+      <a href="product__page.html?id=${product.id}">
       <h3 class="my__cart__item__info__title">${product.title}</h3>
+      </a>
       <div class="my__cart__item__info__options"></div>
       </div>
       </div>
@@ -187,6 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         weightOptions(product, cartItem, basketItem.packaging);
         setWeightOptions(product, cartItem, basketItem.packaging, itemPrice);
+        weightInput(product, cartItem);
+        setWeightInput(product, cartItem);
       }
     }
   }
@@ -272,7 +278,116 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function weightInput() {}
+  function weightInput(product, cartItem) {
+    const weightContainer = cartItem.querySelector(".my__cart__item__info");
+    const hasWeightOptions =
+      product.countitemproduct_set &&
+      product.countitemproduct_set.some((item) => item.unit.includes("кг"));
+
+    if (!weightContainer) return;
+
+    if (hasWeightOptions) {
+      const customWeightElement = document.createElement("p");
+      customWeightElement.className = "custom__weight__input";
+      customWeightElement.innerHTML = `
+      Задать свой вес
+      `;
+      weightContainer.appendChild(customWeightElement);
+
+      const setWeightElements = document.createElement("div");
+      setWeightElements.className = "set__weight";
+      setWeightElements.style.display = "none";
+      setWeightElements.innerHTML = `
+        <h3 class="set__weight__title">Задайте свой вес</h3>
+        <div class="set__weight__hide">
+        <input class="set__weight__input" placeholder="Например: 1,2 кг" maxlength="4">
+        <button class="set__weight__button" maxlength="4">Применить</button>
+        </div>
+        `;
+      weightContainer.appendChild(setWeightElements);
+
+      const weightInput = setWeightElements.querySelector(
+        ".set__weight__input"
+      );
+
+      weightInput.addEventListener("input", function (event) {
+        let value = event.target.value;
+
+        value = value.replace(/[^\d,.]/g, "");
+
+        const hasComma = value.includes(",");
+        const hasDot = value.includes(".");
+
+        if (hasComma && hasDot) {
+          const commaIndex = value.indexOf(",");
+          const dotIndex = value.indexOf(".");
+
+          if (commaIndex < dotIndex) {
+            value = value.replace(/\./g, "");
+          } else {
+            value = value.replace(/,/g, "");
+          }
+        }
+
+        event.target.value = value;
+      });
+
+      customWeightElement.addEventListener("click", () => {
+        if (setWeightElements.style.display === "none") {
+          setWeightElements.style.display = "flex";
+        } else {
+          setWeightElements.style.display = "none";
+        }
+      });
+      setWeightInput(product, cartItem);
+    }
+  }
+
+  function setWeightInput(product, cartItem) {
+    const weightInput = cartItem.querySelector(".set__weight__input");
+    const weightButton = cartItem.querySelector(".set__weight__button");
+    const totalWeight = cartItem.querySelector(".total__weight");
+    const totalPriceElement = cartItem.querySelector(".my__cart__item__price");
+    const counter = cartItem.querySelector(".product__page__pay__counter");
+    const oldPriceElement = cartItem.querySelector(".old__price");
+
+    const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
+    const discountedPrice = basePrice * (1 - promotion / 100);
+
+    if (!weightInput || !weightButton || !totalPriceElement) return;
+
+    weightButton.addEventListener("click", function () {
+      const inputValue = weightInput.value;
+      const weightValue = parseFloat(inputValue.replace(",", "."));
+
+      if (!isNaN(weightValue) && weightValue > 0) {
+        if (counter) {
+          counter.textContent = "1";
+        }
+
+        if (totalWeight) {
+          totalWeight.textContent =
+            "Общий вес: " + weightValue.toFixed(2) + " кг";
+        }
+
+        if (promotion > 0) {
+          const newPrice = (discountedPrice * weightValue).toFixed(2);
+          const originalPrice = (basePrice * weightValue).toFixed(2);
+          totalPriceElement.textContent = newPrice + " BYN";
+
+          if (oldPriceElement) {
+            oldPriceElement.textContent = originalPrice + " BYN";
+          }
+        } else {
+          const newPrice = (basePrice * weightValue).toFixed(2);
+          totalPriceElement.textContent = newPrice + " BYN";
+        }
+
+        weightInput.value = "";
+      }
+    });
+  }
 
   function ItemRemove() {
     const removeButtons = document.querySelectorAll(".my__cart__item__remove");
