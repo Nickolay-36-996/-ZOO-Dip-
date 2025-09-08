@@ -351,6 +351,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const counter = cartItem.querySelector(".product__page__pay__counter");
     const oldPriceElement = cartItem.querySelector(".old__price");
 
+    const weightOptions = cartItem.querySelectorAll(
+      ".my__cart__item__info__option"
+    );
+
     const basePrice = parseFloat(product.price) || 0;
     const promotion = product.sale?.percent || 0;
     const discountedPrice = basePrice * (1 - promotion / 100);
@@ -362,6 +366,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const weightValue = parseFloat(inputValue.replace(",", "."));
 
       if (!isNaN(weightValue) && weightValue > 0) {
+        if (weightOptions.length > 0) {
+          for (const option of weightOptions) {
+            option.classList.remove("my__cart__item__info__option__active");
+          }
+        }
+
         if (counter) {
           counter.textContent = "1";
         }
@@ -385,6 +395,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         weightInput.value = "";
+
+        const setWeightElements = cartItem.querySelector(".set__weight");
+        if (setWeightElements) {
+          setWeightElements.style.display = "none";
+        }
       }
     });
   }
