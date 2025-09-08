@@ -2,6 +2,10 @@
   background-color: white;
 }
 
+.slider__basket {
+  padding: 10px;
+}
+
 .basket__wrapper {
   display: flex;
   flex-direction: column;
@@ -176,6 +180,24 @@
   display: flex;
   flex-direction: row;
   gap: 35px;
+  position: relative;
+}
+
+.popular__product__sale__badge__basket {
+  font-family: SF Pro Text;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  background-color: #ff733b;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 2px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
 }
 
 .my__cart__total {
