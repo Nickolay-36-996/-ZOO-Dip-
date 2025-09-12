@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setWeightOptions(product, cartItem, basketItem.packaging, itemPrice);
         weightInput(product, cartItem);
         setWeightInput(product, cartItem);
+        addTotalWeight(product, cartItem);
       }
     }
   }
@@ -414,6 +415,46 @@ document.addEventListener("DOMContentLoaded", () => {
         if (setWeightElements) {
           setWeightElements.style.display = "none";
         }
+      }
+    });
+  }
+
+  function addTotalWeight(product, cartItem) {
+    const add = cartItem.querySelector("#total-add");
+    const takeAway = cartItem.querySelector("#take-away");
+    const counter = cartItem.querySelector(".product__page__pay__counter");
+    const basePriceElement = cartItem.querySelector(".my__cart__item__price");
+
+    if (!add || !takeAway || !counter || !basePriceElement) return;
+
+    let count = 1;
+    counter.textContent = count;
+
+    add.addEventListener("click", function () {
+      count++;
+
+      const currentPrice = parseFloat(
+        basePriceElement.textContent.replace(" BYN", "")
+      );
+      const pricePerUnit = currentPrice / (count - 1);
+      const totalPriceValue = pricePerUnit * count;
+
+      basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+      counter.textContent = count;
+    });
+
+    takeAway.addEventListener("click", function () {
+      if (count > 1) {
+        count--;
+
+        const currentPrice = parseFloat(
+          basePriceElement.textContent.replace(" BYN", "")
+        );
+        const pricePerUnit = currentPrice / (count + 1);
+        const totalPriceValue = pricePerUnit * count;
+
+        basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+        counter.textContent = count;
       }
     });
   }
