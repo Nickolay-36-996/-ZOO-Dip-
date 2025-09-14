@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="my__cart__total">
     <div class="my__cart__total__wrap">
     <span class="my__cart__total__price">0 BYN</span>
+    <span class="my__cart__total__product">0 BYN</span>
     </div>
     <div class="my__cart__pickup">
     <div class="my__cart__pickup__img">
@@ -114,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     createCartItem(allProducts, basketItems);
     ItemRemove();
+    updateTotalCounter();
   }
 
   function createCartItem(allProducts, basketItems) {
@@ -289,6 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         priceCounter.textContent = `${newPrice} BYN`;
+        updateTotalCounter();
       });
     }
   }
@@ -403,10 +406,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (oldPriceElement) {
             oldPriceElement.textContent = originalPrice + " BYN";
+            updateTotalCounter();
           }
         } else {
           const newPrice = (basePrice * weightValue).toFixed(2);
           totalPriceElement.textContent = newPrice + " BYN";
+          updateTotalCounter();
         }
 
         weightInput.value = "";
@@ -441,6 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
       counter.textContent = count;
+      updateTotalCounter();
     });
 
     takeAway.addEventListener("click", function () {
@@ -455,8 +461,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
         counter.textContent = count;
+        updateTotalCounter();
       }
     });
+  }
+
+  function updateTotalCounter() {
+    const totalPriceElement = document.querySelector(".my__cart__total__price");
+    const totalProductElement = document.querySelector(
+      ".my__cart__total__product"
+    );
+    const cartItems = document.querySelectorAll(".my__cart__item");
+
+    let totalPrice = 0;
+    let totalProducts = 0;
+
+    for (const item of cartItems) {
+      const priceElement = item.querySelector(".my__cart__item__price");
+      const counterElement = item.querySelector(".product__page__pay__counter");
+
+      if (priceElement && counterElement) {
+        const price = parseFloat(priceElement.textContent.replace(" BYN", ""));
+        const quantity = parseInt(counterElement.textContent) || 1;
+
+        totalPrice += price;
+        totalProducts += quantity;
+      }
+    }
+
+    totalPriceElement.textContent = totalPrice.toFixed(2) + " BYN";
+
+    let productText = "товаров";
+    if (totalProducts === 1) {
+      productText = "товар";
+    } else if (totalProducts >= 2 && totalProducts <= 4) {
+      productText = "товара";
+    }
+    totalProductElement.textContent = totalProducts + " " + productText;
   }
 
   function ItemRemove() {
@@ -481,6 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         localStorage.setItem("basketItem", JSON.stringify(updateBasket));
         cartItem.remove();
+        updateTotalCounter();
 
         console.log("Товар удален! ID:", cartID);
       });
