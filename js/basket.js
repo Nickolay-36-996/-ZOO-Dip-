@@ -272,6 +272,7 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             priceCounter.textContent = `${basePrice.toFixed(2)} BYN`;
           }
+          updateTotalCounter();
           return;
         }
 
@@ -413,6 +414,8 @@ document.addEventListener("DOMContentLoaded", () => {
           totalPriceElement.textContent = newPrice + " BYN";
           updateTotalCounter();
         }
+
+        updateTotalCounter();
 
         weightInput.value = "";
 
