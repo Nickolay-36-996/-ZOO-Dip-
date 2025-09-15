@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="my__cart__total">
     <div class="my__cart__total__wrap">
     <span class="my__cart__total__price">0 BYN</span>
-    <span class="my__cart__total__product">0 BYN</span>
+    <span class="my__cart__total__product">0 товаров</span>
     </div>
     <div class="my__cart__pickup">
     <div class="my__cart__pickup__img">
