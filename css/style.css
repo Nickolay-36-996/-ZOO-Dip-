@@ -4517,6 +4517,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .my__cart__total__price {
@@ -4526,6 +4527,17 @@ body {
   line-height: 32px;
   letter-spacing: 0px;
   color: #ffffff;
+}
+
+.my__cart__old__total__price {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  text-decoration: line-through;
+  text-decoration-color: #D72C0D;
 }
 
 .my__cart__total__product {

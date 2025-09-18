@@ -477,18 +477,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartItems = document.querySelectorAll(".my__cart__item");
 
     let totalPrice = 0;
-    let totalProducts = 0;
+    let totalProducts = cartItems.length;
 
     for (const item of cartItems) {
       const priceElement = item.querySelector(".my__cart__item__price");
-      const counterElement = item.querySelector(".product__page__pay__counter");
 
-      if (priceElement && counterElement) {
+      if (priceElement) {
         const price = parseFloat(priceElement.textContent.replace(" BYN", ""));
-        const quantity = parseInt(counterElement.textContent) || 1;
-
         totalPrice += price;
-        totalProducts += quantity;
       }
     }
 
