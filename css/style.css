@@ -4538,6 +4538,7 @@ body {
   color: #ffffff;
   text-decoration: line-through;
   text-decoration-color: #D72C0D;
+  order: -1;
 }
 
 .my__cart__total__product {

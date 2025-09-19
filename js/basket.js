@@ -2,6 +2,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("basket-contain");
 
+  let fullPrice = 0;
+  let fullOldPrice = 0;
+
   window.updateBasketDisplay = function () {
     fetchAllProducts()
       .then((allProducts) => {
@@ -65,6 +68,26 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = "";
     const basketItems = getBasketItemIds();
 
+    fullPrice = 0;
+    fullOldPrice = 0;
+
+    for (const basketItem of basketItems) {
+      const product = allProducts.find((p) => p.id === basketItem.productId);
+      if (product) {
+        const basePrice = parseFloat(product.price) || 0;
+        const promotion = product.sale?.percent || 0;
+
+        fullPrice += basketItem.price;
+
+        if (promotion > 0) {
+          const originalPrice = basketItem.price / (1 - promotion / 100);
+          fullOldPrice += originalPrice;
+        } else {
+          fullOldPrice += basketItem.price;
+        }
+      }
+    }
+
     const myCart = document.createElement("div");
     myCart.className = "my__cart";
     myCart.innerHTML = `
@@ -114,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     container.appendChild(myCart);
 
     createCartItem(allProducts, basketItems);
-    ItemRemove();
+    ItemRemove(allProducts);
     updateTotalCounter();
   }
 
@@ -262,16 +285,32 @@ document.addEventListener("DOMContentLoaded", () => {
           "my__cart__item__info__option__active"
         );
 
+        const currentPrice = parseFloat(
+          priceCounter.textContent.replace(" BYN", "")
+        );
+
         if (isCurrentlyActive) {
           for (const opt of weightOption) {
             opt.classList.remove("my__cart__item__info__option__active");
           }
 
+          let newPrice = 0;
           if (discountPercent) {
-            priceCounter.textContent = `${discountedPrice.toFixed(2)} BYN`;
+            newPrice = discountedPrice;
           } else {
-            priceCounter.textContent = `${basePrice.toFixed(2)} BYN`;
+            newPrice = basePrice;
           }
+
+          priceCounter.textContent = `${newPrice.toFixed(2)} BYN`;
+
+          fullPrice = fullPrice - currentPrice + newPrice;
+
+          if (discountPercent > 0) {
+            fullOldPrice = fullOldPrice - basePrice + basePrice;
+          } else {
+            fullOldPrice = fullOldPrice - currentPrice + newPrice;
+          }
+
           updateTotalCounter();
           return;
         }
@@ -286,12 +325,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let newPrice = 0;
         if (discountPercent > 0) {
-          newPrice = (discountedPrice * weightValue).toFixed(2);
+          newPrice = discountedPrice * weightValue;
         } else {
-          newPrice = (basePrice * weightValue).toFixed(2);
+          newPrice = basePrice * weightValue;
         }
 
-        priceCounter.textContent = `${newPrice} BYN`;
+        priceCounter.textContent = `${newPrice.toFixed(2)} BYN`;
+
+        fullPrice = fullPrice - currentPrice + newPrice;
+
+        if (discountPercent > 0) {
+          const oldPriceValue = basePrice * weightValue;
+          fullOldPrice = fullOldPrice - currentPrice + oldPriceValue;
+        } else {
+          fullOldPrice = fullOldPrice - currentPrice + newPrice;
+        }
+
         updateTotalCounter();
       });
     }
@@ -365,14 +414,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function setWeightInput(product, cartItem) {
     const weightInput = cartItem.querySelector(".set__weight__input");
     const weightButton = cartItem.querySelector(".set__weight__button");
-    const totalWeight = cartItem.querySelector(".total__weight");
     const totalPriceElement = cartItem.querySelector(".my__cart__item__price");
     const counter = cartItem.querySelector(".product__page__pay__counter");
-    const oldPriceElement = cartItem.querySelector(".old__price");
-
-    const weightOptions = cartItem.querySelectorAll(
-      ".my__cart__item__info__option"
-    );
 
     const basePrice = parseFloat(product.price) || 0;
     const promotion = product.sale?.percent || 0;
@@ -385,44 +428,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const weightValue = parseFloat(inputValue.replace(",", "."));
 
       if (!isNaN(weightValue) && weightValue > 0) {
+        const currentPrice = parseFloat(
+          totalPriceElement.textContent.replace(" BYN", "")
+        );
+
+        const weightOptions = cartItem.querySelectorAll(
+          ".my__cart__item__info__option"
+        );
         if (weightOptions.length > 0) {
           for (const option of weightOptions) {
             option.classList.remove("my__cart__item__info__option__active");
           }
         }
 
-        if (counter) {
-          counter.textContent = "1";
-        }
-
-        if (totalWeight) {
-          totalWeight.textContent =
-            "Общий вес: " + weightValue.toFixed(2) + " кг";
-        }
+        let newPrice = 0;
+        let newOldPrice = 0;
 
         if (promotion > 0) {
-          const newPrice = (discountedPrice * weightValue).toFixed(2);
-          const originalPrice = (basePrice * weightValue).toFixed(2);
-          totalPriceElement.textContent = newPrice + " BYN";
-
-          if (oldPriceElement) {
-            oldPriceElement.textContent = originalPrice + " BYN";
-            updateTotalCounter();
-          }
+          newPrice = discountedPrice * weightValue;
+          newOldPrice = basePrice * weightValue;
         } else {
-          const newPrice = (basePrice * weightValue).toFixed(2);
-          totalPriceElement.textContent = newPrice + " BYN";
-          updateTotalCounter();
+          newPrice = basePrice * weightValue;
+          newOldPrice = newPrice;
         }
+
+        totalPriceElement.textContent = newPrice.toFixed(2) + " BYN";
+
+        fullPrice = fullPrice - currentPrice + newPrice;
+        fullOldPrice = fullOldPrice - currentPrice + newOldPrice;
 
         updateTotalCounter();
 
         weightInput.value = "";
-
         const setWeightElements = cartItem.querySelector(".set__weight");
-        if (setWeightElements) {
-          setWeightElements.style.display = "none";
-        }
+        if (setWeightElements) setWeightElements.style.display = "none";
       }
     });
   }
@@ -438,32 +477,57 @@ document.addEventListener("DOMContentLoaded", () => {
     let count = 1;
     counter.textContent = count;
 
-    add.addEventListener("click", function () {
-      count++;
+    const basePrice = parseFloat(product.price) || 0;
+    const promotion = product.sale?.percent || 0;
 
+    add.addEventListener("click", function () {
       const currentPrice = parseFloat(
         basePriceElement.textContent.replace(" BYN", "")
       );
+
+      count++;
       const pricePerUnit = currentPrice / (count - 1);
       const totalPriceValue = pricePerUnit * count;
-
       basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
       counter.textContent = count;
+
+      fullPrice = fullPrice - currentPrice + totalPriceValue;
+
+      if (promotion > 0) {
+        const oldPricePerUnit = basePrice;
+        const totalOldPriceValue = oldPricePerUnit * count;
+        fullOldPrice =
+          fullOldPrice - basePrice * (count - 1) + totalOldPriceValue;
+      } else {
+        fullOldPrice = fullOldPrice - currentPrice + totalPriceValue;
+      }
+
       updateTotalCounter();
     });
 
     takeAway.addEventListener("click", function () {
       if (count > 1) {
-        count--;
-
         const currentPrice = parseFloat(
           basePriceElement.textContent.replace(" BYN", "")
         );
+
+        count--;
         const pricePerUnit = currentPrice / (count + 1);
         const totalPriceValue = pricePerUnit * count;
-
         basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
         counter.textContent = count;
+
+        fullPrice = fullPrice - currentPrice + totalPriceValue;
+
+        if (promotion > 0) {
+          const oldPricePerUnit = basePrice;
+          const totalOldPriceValue = oldPricePerUnit * count;
+          fullOldPrice =
+            fullOldPrice - basePrice * (count + 1) + totalOldPriceValue;
+        } else {
+          fullOldPrice = fullOldPrice - currentPrice + totalPriceValue;
+        }
+
         updateTotalCounter();
       }
     });
@@ -474,32 +538,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalProductElement = document.querySelector(
       ".my__cart__total__product"
     );
+    const totalPriceContainer = document.querySelector(
+      ".my__cart__total__wrap"
+    );
     const cartItems = document.querySelectorAll(".my__cart__item");
 
-    let totalPrice = 0;
-    let totalProducts = cartItems.length;
+    const totalProducts = cartItems.length;
 
-    for (const item of cartItems) {
-      const priceElement = item.querySelector(".my__cart__item__price");
+    totalPriceElement.textContent = fullPrice.toFixed(0) + " BYN";
 
-      if (priceElement) {
-        const price = parseFloat(priceElement.textContent.replace(" BYN", ""));
-        totalPrice += price;
+    let oldPriceElement = document.querySelector(
+      ".my__cart__old__total__price"
+    );
+    if (fullOldPrice > fullPrice) {
+      if (!oldPriceElement) {
+        oldPriceElement = document.createElement("span");
+        oldPriceElement.className = "my__cart__old__total__price";
+        totalPriceElement.after(oldPriceElement);
       }
+      oldPriceElement.textContent = fullOldPrice.toFixed(0) + " BYN";
+      oldPriceElement.style.display = "block";
+    } else if (oldPriceElement) {
+      oldPriceElement.style.display = "none";
     }
-
-    totalPriceElement.textContent = totalPrice.toFixed(2) + " BYN";
 
     let productText = "товаров";
-    if (totalProducts === 1) {
-      productText = "товар";
-    } else if (totalProducts >= 2 && totalProducts <= 4) {
-      productText = "товара";
-    }
+    if (totalProducts === 1) productText = "товар";
+    else if (totalProducts >= 2 && totalProducts <= 4) productText = "товара";
+
     totalProductElement.textContent = totalProducts + " " + productText;
   }
 
-  function ItemRemove() {
+  function ItemRemove(allProducts) {
     const removeButtons = document.querySelectorAll(".my__cart__item__remove");
 
     for (const button of removeButtons) {
@@ -509,6 +579,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const cartItem = this.closest(".my__cart__item");
         const cartID = parseInt(cartItem.dataset.productID);
+        const itemPrice = parseFloat(
+          cartItem
+            .querySelector(".my__cart__item__price")
+            .textContent.replace(" BYN", "")
+        );
+
+        const product = allProducts.find((p) => p.id === cartID);
+        const discountPercent = product ? product.sale?.percent || 0 : 0;
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
         let updateBasket = [];
@@ -520,6 +598,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         localStorage.setItem("basketItem", JSON.stringify(updateBasket));
+
+        fullPrice -= itemPrice;
+
+        if (discountPercent > 0) {
+          const originalPrice = itemPrice / (1 - discountPercent / 100);
+          fullOldPrice -= originalPrice;
+        } else {
+          fullOldPrice -= itemPrice;
+        }
+
         cartItem.remove();
         updateTotalCounter();
 
