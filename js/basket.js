@@ -54,6 +54,19 @@ document.addEventListener("DOMContentLoaded", () => {
         showBasketItems(allProducts);
       } else {
         console.log("Корзина пуста");
+        container.innerHTML = `
+        <div class="empty__cart">
+              <div class="empty__img">
+                <img src="./img/image 23 empty.jpg" alt="empty-cart" />
+              </div>
+              <h3 class="empty__cart__title">
+                В корзине нет товаров. Выберите нужные товары в нашем каталоге
+              </h3>
+              <a href="./catalog.html" class="go__to__catalog"
+                >Перейти в каталог товаров</a
+              >
+            </div>
+        `;
       }
     })
     .catch((error) => {
@@ -609,7 +622,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         cartItem.remove();
-        updateTotalCounter();
+
+        const remainingItems = document.querySelectorAll(".my__cart__item");
+
+        if (remainingItems.length === 0) {
+          container.innerHTML = `
+              <div class="empty__cart">
+              <div class="empty__img">
+              <img src="./img/image 23 empty.jpg" alt="empty-cart" />
+              </div>
+              <h3 class="empty__cart__title">
+              В корзине нет товаров. Выберите нужные товары в нашем каталоге
+              </h3>
+              <a href="./catalog.html" class="go__to__catalog"
+              >Перейти в каталог товаров</a>
+              </div>
+              `;
+        } else {
+          updateTotalCounter();
+        }
 
         console.log("Товар удален! ID:", cartID);
       });
