@@ -222,9 +222,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="my__cart__item__price__container">
       <p class="my__cart__item__price">${itemPrice.toFixed(2)} BYN</p>
-      ${promotion > 0 ? `
-      <p class="my__cart__item__old__price">${(basePrice).toFixed(2)} BYN</p>
-        ` : ""}
+      ${
+        promotion > 0
+          ? `
+      <p class="my__cart__item__old__price">${basePrice.toFixed(2)} BYN</p>
+        `
+          : ""
+      }
       </div>
       </div>
       <button class="my__cart__item__remove">
@@ -568,6 +572,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let oldPriceElement = document.querySelector(
       ".my__cart__old__total__price"
     );
+
+    const hasDiscountItems = Array.from(cartItems).some((item) => {
+      return item.querySelector(".popular__product__sale__badge__basket");
+    });
+
     if (fullOldPrice > fullPrice) {
       if (!oldPriceElement) {
         oldPriceElement = document.createElement("span");
