@@ -184,6 +184,18 @@
   color: #202223;
 }
 
+.my__cart__item__old__price {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #8C9196;
+  text-decoration: line-through;
+  text-decoration-color: #D72C0D;
+  display: none;
+}
+
 .my__cart__item__remove {
   width: 24px;
   height: 24px;
@@ -377,5 +389,9 @@
 
   .popular__product__sale__badge__basket {
     bottom: 180px;
+  }
+
+  .my__cart__item__old__price {
+    display: block;
   }
 }

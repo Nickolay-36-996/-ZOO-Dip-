@@ -220,7 +220,12 @@ document.addEventListener("DOMContentLoaded", () => {
       </svg>
       </button>
       </div>
+      <div class="my__cart__item__price__container">
       <p class="my__cart__item__price">${itemPrice.toFixed(2)} BYN</p>
+      ${promotion > 0 ? `
+      <p class="my__cart__item__old__price">${(basePrice).toFixed(2)} BYN</p>
+        ` : ""}
+      </div>
       </div>
       <button class="my__cart__item__remove">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
