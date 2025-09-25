@@ -530,7 +530,30 @@ document.addEventListener("DOMContentLoaded", () => {
         basePriceElement.textContent.replace(" BYN", "")
       );
 
+      let currentWeight = 1;
+
+      const activeOption = cartItem.querySelector(
+        ".my__cart__item__info__option__active"
+      );
+      if (activeOption) {
+        const optionText = activeOption.textContent;
+        const weightValue = parseFloat(optionText.split(" ")[0]);
+        if (!isNaN(weightValue)) {
+          currentWeight = weightValue;
+        }
+      }
+
+      const weightInput = cartItem.querySelector(".set__weight__input");
+      if (weightInput && weightInput.value) {
+        const inputValue = parseFloat(weightInput.value.replace(",", "."));
+        if (!isNaN(inputValue) && inputValue > 0) {
+          currentWeight = inputValue;
+        }
+      }
+
       count++;
+
+      const totalWeight = currentWeight * count;
 
       const pricePerUnit = currentTotalPrice / (count - 1);
       const newTotalPrice = pricePerUnit * count;
@@ -565,7 +588,30 @@ document.addEventListener("DOMContentLoaded", () => {
           basePriceElement.textContent.replace(" BYN", "")
         );
 
+        let currentWeight = 1;
+
+        const activeOption = cartItem.querySelector(
+          ".my__cart__item__info__option__active"
+        );
+        if (activeOption) {
+          const optionText = activeOption.textContent;
+          const weightValue = parseFloat(optionText.split(" ")[0]);
+          if (!isNaN(weightValue)) {
+            currentWeight = weightValue;
+          }
+        }
+
+        const weightInput = cartItem.querySelector(".set__weight__input");
+        if (weightInput && weightInput.value) {
+          const inputValue = parseFloat(weightInput.value.replace(",", "."));
+          if (!isNaN(inputValue) && inputValue > 0) {
+            currentWeight = inputValue;
+          }
+        }
+
         count--;
+
+        const totalWeight = currentWeight * count;
 
         const pricePerUnit = currentTotalPrice / (count + 1);
         const newTotalPrice = pricePerUnit * count;
