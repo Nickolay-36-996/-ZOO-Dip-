@@ -1,0 +1,35 @@
+.nav__order {
+  color: #202223;
+}
+
+.order__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding: 16px 0px 64px 0px;
+}
+
+.registration__order {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  gap: 32px;
+}
+
+.registration__order__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.registration__window {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px 32px;
+  gap: 24px;
+}

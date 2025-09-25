@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Корзина</title>
+    <title>Оформление заказа</title>
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/null.css" />
   </head>
@@ -487,10 +487,9 @@
         </div>
       </div>
     </header>
-    <script src="./js/basket.js"></script>
-    <section class="basket">
+    <section class="order">
       <div class="container">
-        <div class="basket__wrapper">
+        <div class="order__wrapper">
           <nav class="catalog__nav">
             <ul class="catalog__nav__list">
               <li class="catalog__nav__list__item">
@@ -517,165 +516,39 @@
               <li class="catalog__nav__list__item">
                 <a
                   href="basket.html"
-                  class="catalog__nav__list__item__link_relevant"
+                  class="catalog__nav__list__item__link_relevant nav__order"
                   >Корзина</a
+                >
+              </li>
+              <li class="catalog__nav__list__item">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7.99976 16C7.74376 16 7.48776 15.902 7.29276 15.707C6.90176 15.316 6.90176 14.684 7.29276 14.293L11.5858 10L7.29276       5.707C6.90176 5.316 6.90176 4.684 7.29276 4.293C7.68376 3.902 8.31576 3.902 8.70676 4.293L13.7068 9.293C14.0978 9.684 14.0978 10.316 13.7068 10.707L8.70676 15.707C8.51176 15.902 8.25576 16 7.99976 16Z"
+                    fill="#5C5F62"
+                  />
+                </svg>
+              </li>
+              <li class="catalog__nav__list__item">
+                <a
+                  href="order.html"
+                  class="catalog__nav__list__item__link_relevant"
+                  >Оформление заказа</a
                 >
               </li>
             </ul>
           </nav>
-          <div class="basket__contain" id="basket-contain">
-            <div class="empty__cart">
-              <div class="empty__img">
-                <img src="./img/image 23 empty.jpg" alt="empty-cart" />
-              </div>
-              <h3 class="empty__cart__title">
-                В корзине нет товаров. Выберите нужные товары в нашем каталоге
-              </h3>
-              <a href="./catalog.html" class="go__to__catalog"
-                >Перейти в каталог товаров</a
-              >
-            </div>
+          <div class="registration__order">
+            <h1 class="registration__order__title">Оформление заказа</h1>
+            <form action="" class="registration__window"></form>
           </div>
-        </div>
-      </div>
-    </section>
-    <script src="./js/popular__products.js"></script>
-    <div class="container">
-      <div class="popular__products__slider slider__basket">
-        <div class="popular__products__slider__title__box">
-          <h2 class="popular__products__slider__title">Популярные товары</h2>
-          <div class="popular__products__slider__buttons">
-            <button class="popular__products__slider__vector__left">
-              <svg
-                width="7"
-                height="13"
-                viewBox="0 0 7 13"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M5.99976 12.1299C5.74376 12.1299 5.48776 12.0319 5.29276 11.8369L0.292762 6.83689C-0.0982383 6.44589 -0.0982383 5.81389 0.292762 5.42289L5.29276 0.422889C5.68376 0.0318887 6.31576 0.0318887 6.70676 0.422889C7.09776 0.813889 7.09776 1.44589 6.70676 1.83689L2.41376 6.12989L6.70676 10.4229C7.09776 10.8139 7.09776 11.4459 6.70676 11.8369C6.51176 12.0319 6.25576 12.1299 5.99976 12.1299Z"
-                  fill="#5C5F62"
-                />
-              </svg>
-            </button>
-            <button class="popular__products__slider__vector__right">
-              <svg
-                width="7"
-                height="13"
-                viewBox="0 0 7 13"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M0.999762 12.1299C0.743762 12.1299 0.487762 12.0319 0.292762 11.8369C-0.0982383 11.4459 -0.0982383 10.8139 0.292762 10.4229L4.58576 6.12989L0.292762 1.83689C-0.0982383 1.44589 -0.0982383 0.813889 0.292762 0.422889C0.683762 0.0318887 1.31576 0.0318887 1.70676 0.422889L6.70676 5.42289C7.09776 5.81389 7.09776 6.44589 6.70676 6.83689L1.70676 11.8369C1.51176 12.0319 1.25576 12.1299 0.999762 12.1299Z"
-                  fill="#5C5F62"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="popular__products__cards" id="popular-products-cards"></div>
-        <a
-          href="./catalog.html"
-          class="popular__products__watch__more__products"
-          >Смотреть больше товаров</a
-        >
-      </div>
-    </div>
-    <script src="./js/new__products.js"></script>
-    <div class="container">
-      <div class="new__products__slider slider__basket">
-        <div class="new__products__slider__title__box">
-          <h2 class="new__products__slider__title">Новинки</h2>
-          <div class="new__products__slider__buttons">
-            <button class="new__products__slider__vector__left">
-              <svg
-                width="7"
-                height="13"
-                viewBox="0 0 7 13"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M5.99976 12.1299C5.74376 12.1299 5.48776 12.0319 5.29276 11.8369L0.292762 6.83689C-0.0982383 6.44589 -0.0982383 5.81389 0.292762 5.42289L5.29276 0.422889C5.68376 0.0318887 6.31576 0.0318887 6.70676 0.422889C7.09776 0.813889 7.09776 1.44589 6.70676 1.83689L2.41376 6.12989L6.70676 10.4229C7.09776 10.8139 7.09776 11.4459 6.70676 11.8369C6.51176 12.0319 6.25576 12.1299 5.99976 12.1299Z"
-                  fill="#5C5F62"
-                />
-              </svg>
-            </button>
-            <button class="new__products__slider__vector__right">
-              <svg
-                width="7"
-                height="13"
-                viewBox="0 0 7 13"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M0.999762 12.1299C0.743762 12.1299 0.487762 12.0319 0.292762 11.8369C-0.0982383 11.4459 -0.0982383 10.8139 0.292762 10.4229L4.58576 6.12989L0.292762 1.83689C-0.0982383 1.44589 -0.0982383 0.813889 0.292762 0.422889C0.683762 0.0318887 1.31576 0.0318887 1.70676 0.422889L6.70676 5.42289C7.09776 5.81389 7.09776 6.44589 6.70676 6.83689L1.70676 11.8369C1.51176 12.0319 1.25576 12.1299 0.999762 12.1299Z"
-                  fill="#5C5F62"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div class="new__products__cards" id="new-products-cards"></div>
-        <a href="./catalog.html" class="new__products__watch__more__products"
-          >Смотреть больше товаров</a
-        >
-      </div>
-    </div>
-    <script src="./js/articles.js"></script>
-    <section class="articles">
-      <div class="container">
-        <div class="articles__wrapper">
-          <div class="articles__title__box">
-            <h2 class="articles__title">Полезные статьи</h2>
-            <div class="articles__slider__buttons">
-              <button class="articles__slider__vector__left">
-                <svg
-                  width="7"
-                  height="13"
-                  viewBox="0 0 7 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M5.99976 12.1299C5.74376 12.1299 5.48776 12.0319 5.29276 11.8369L0.292762 6.83689C-0.0982383 6.44589 -0.0982383 5.81389 0.292762 5.42289L5.29276 0.422889C5.68376 0.0318887 6.31576 0.0318887 6.70676 0.422889C7.09776 0.813889 7.09776 1.44589 6.70676 1.83689L2.41376 6.12989L6.70676 10.4229C7.09776 10.8139 7.09776 11.4459 6.70676 11.8369C6.51176 12.0319 6.25576 12.1299 5.99976 12.1299Z"
-                    fill="#5C5F62"
-                  />
-                </svg>
-              </button>
-              <button class="articles__slider__vector__right">
-                <svg
-                  width="7"
-                  height="13"
-                  viewBox="0 0 7 13"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M0.999762 12.1299C0.743762 12.1299 0.487762 12.0319 0.292762 11.8369C-0.0982383 11.4459 -0.0982383 10.8139 0.292762 10.4229L4.58576 6.12989L0.292762 1.83689C-0.0982383 1.44589 -0.0982383 0.813889 0.292762 0.422889C0.683762 0.0318887 1.31576 0.0318887 1.70676 0.422889L6.70676 5.42289C7.09776 5.81389 7.09776 6.44589 6.70676 6.83689L1.70676 11.8369C1.51176 12.0319 1.25576 12.1299 0.999762 12.1299Z"
-                    fill="#5C5F62"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="articles__slider__list" id="articles-slider-list"></div>
-          <a href="#" class="reading__more__articles">Читать больше статей</a>
         </div>
       </div>
     </section>
