@@ -292,6 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ".my__cart__item__info__option"
     );
     const priceCounter = cartItem.querySelector(".my__cart__item__price");
+    const oldPriceCounter = cartItem.querySelector(
+      ".my__cart__item__old__price"
+    );
     const basePrice = parseFloat(product.price);
     const discountPercent = product.sale?.percent || 0;
     const discountedPrice = basePrice * (1 - discountPercent / 100);
@@ -317,13 +320,20 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           let newPrice = 0;
+          let newOldPrice = 0;
+
           if (discountPercent) {
             newPrice = discountedPrice;
+            newOldPrice = basePrice;
           } else {
             newPrice = basePrice;
+            newOldPrice = basePrice;
           }
 
           priceCounter.textContent = `${newPrice.toFixed(2)} BYN`;
+          if (discountPercent > 0) {
+            oldPriceCounter.textContent = `${newOldPrice.toFixed(2)} BYN`;
+          }
 
           fullPrice = fullPrice - currentPrice + newPrice;
 
@@ -346,13 +356,19 @@ document.addEventListener("DOMContentLoaded", () => {
         this.classList.add("my__cart__item__info__option__active");
 
         let newPrice = 0;
+        let newOldPrice = 0;
+
         if (discountPercent > 0) {
           newPrice = discountedPrice * weightValue;
+          newOldPrice = basePrice * weightValue;
         } else {
           newPrice = basePrice * weightValue;
         }
 
         priceCounter.textContent = `${newPrice.toFixed(2)} BYN`;
+        if (discountPercent > 0) {
+          oldPriceCounter.textContent = `${newOldPrice.toFixed(2)} BYN`;
+        }
 
         fullPrice = fullPrice - currentPrice + newPrice;
 
@@ -437,6 +453,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const weightInput = cartItem.querySelector(".set__weight__input");
     const weightButton = cartItem.querySelector(".set__weight__button");
     const totalPriceElement = cartItem.querySelector(".my__cart__item__price");
+    const oldPriceElement = cartItem.querySelector(
+      ".my__cart__item__old__price"
+    );
     const counter = cartItem.querySelector(".product__page__pay__counter");
 
     const basePrice = parseFloat(product.price) || 0;
@@ -475,6 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         totalPriceElement.textContent = newPrice.toFixed(2) + " BYN";
+        oldPriceElement.textContent = newOldPrice.toFixed(2) + " BYN";
 
         fullPrice = fullPrice - currentPrice + newPrice;
         fullOldPrice = fullOldPrice - currentPrice + newOldPrice;
@@ -493,6 +513,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const takeAway = cartItem.querySelector("#take-away");
     const counter = cartItem.querySelector(".product__page__pay__counter");
     const basePriceElement = cartItem.querySelector(".my__cart__item__price");
+    const oldPriceElement = cartItem.querySelector(
+      ".my__cart__item__old__price"
+    );
 
     if (!add || !takeAway || !counter || !basePriceElement) return;
 
@@ -503,25 +526,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const promotion = product.sale?.percent || 0;
 
     add.addEventListener("click", function () {
-      const currentPrice = parseFloat(
+      const currentTotalPrice = parseFloat(
         basePriceElement.textContent.replace(" BYN", "")
       );
 
       count++;
-      const pricePerUnit = currentPrice / (count - 1);
-      const totalPriceValue = pricePerUnit * count;
-      basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+      const pricePerUnit = currentTotalPrice / (count - 1);
+      const newTotalPrice = pricePerUnit * count;
+
+      basePriceElement.textContent = newTotalPrice.toFixed(2) + " BYN";
       counter.textContent = count;
 
-      fullPrice = fullPrice - currentPrice + totalPriceValue;
+      const priceDifference = newTotalPrice - currentTotalPrice;
+      fullPrice += priceDifference;
 
       if (promotion > 0) {
-        const oldPricePerUnit = basePrice;
-        const totalOldPriceValue = oldPricePerUnit * count;
-        fullOldPrice =
-          fullOldPrice - basePrice * (count - 1) + totalOldPriceValue;
+        const currentOldPrice = parseFloat(
+          oldPriceElement.textContent.replace(" BYN", "")
+        );
+        const oldPricePerUnit = currentOldPrice / (count - 1);
+        const newOldPrice = oldPricePerUnit * count;
+
+        oldPriceElement.textContent = newOldPrice.toFixed(2) + " BYN";
+
+        const oldPriceDifference = newOldPrice - currentOldPrice;
+        fullOldPrice += oldPriceDifference;
       } else {
-        fullOldPrice = fullOldPrice - currentPrice + totalPriceValue;
+        fullOldPrice += priceDifference;
       }
 
       updateTotalCounter();
@@ -529,25 +561,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     takeAway.addEventListener("click", function () {
       if (count > 1) {
-        const currentPrice = parseFloat(
+        const currentTotalPrice = parseFloat(
           basePriceElement.textContent.replace(" BYN", "")
         );
 
         count--;
-        const pricePerUnit = currentPrice / (count + 1);
-        const totalPriceValue = pricePerUnit * count;
-        basePriceElement.textContent = totalPriceValue.toFixed(2) + " BYN";
+
+        const pricePerUnit = currentTotalPrice / (count + 1);
+        const newTotalPrice = pricePerUnit * count;
+
+        basePriceElement.textContent = newTotalPrice.toFixed(2) + " BYN";
         counter.textContent = count;
 
-        fullPrice = fullPrice - currentPrice + totalPriceValue;
+        const priceDifference = newTotalPrice - currentTotalPrice;
+        fullPrice += priceDifference;
 
         if (promotion > 0) {
-          const oldPricePerUnit = basePrice;
-          const totalOldPriceValue = oldPricePerUnit * count;
-          fullOldPrice =
-            fullOldPrice - basePrice * (count + 1) + totalOldPriceValue;
+          const currentOldPrice = parseFloat(
+            oldPriceElement.textContent.replace(" BYN", "")
+          );
+          const oldPricePerUnit = currentOldPrice / (count + 1);
+          const newOldPrice = oldPricePerUnit * count;
+
+          oldPriceElement.textContent = newOldPrice.toFixed(2) + " BYN";
+
+          const oldPriceDifference = newOldPrice - currentOldPrice;
+          fullOldPrice += oldPriceDifference;
         } else {
-          fullOldPrice = fullOldPrice - currentPrice + totalPriceValue;
+          fullOldPrice += priceDifference;
         }
 
         updateTotalCounter();
@@ -573,9 +614,17 @@ document.addEventListener("DOMContentLoaded", () => {
       ".my__cart__old__total__price"
     );
 
-    const hasDiscountItems = Array.from(cartItems).some((item) => {
-      return item.querySelector(".popular__product__sale__badge__basket");
-    });
+    let hasDiscountItems = false;
+
+    for (const item of cartItems) {
+      const discountBadge = item.querySelector(
+        ".popular__product__sale__badge__basket"
+      );
+      if (discountBadge) {
+        hasDiscountItems = true;
+        break;
+      }
+    }
 
     if (fullOldPrice > fullPrice) {
       if (!oldPriceElement) {
