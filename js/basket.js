@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createCartItem(allProducts, basketItems);
     ItemRemove(allProducts);
     updateTotalCounter();
+    transferDataOrder();
   }
 
   function createCartItem(allProducts, basketItems) {
@@ -351,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           updateTotalCounter();
-          saveBasketChanges(window.allProducts);
+          updateBasketInLocalStorage(window.allProducts);
           return;
         }
 
@@ -388,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateTotalCounter();
-        saveBasketChanges(window.allProducts);
+        updateBasketInLocalStorage(window.allProducts);
       });
     }
   }
@@ -509,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fullOldPrice = fullOldPrice - currentPrice + newOldPrice;
 
         updateTotalCounter();
-        saveBasketChanges(window.allProducts);
+        updateBasketInLocalStorage(window.allProducts);
 
         weightInput.value = "";
         const setWeightElements = cartItem.querySelector(".set__weight");
@@ -590,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateTotalCounter();
-      saveBasketChanges(window.allProducts);
+      updateBasketInLocalStorage(window.allProducts);
     });
 
     takeAway.addEventListener("click", function () {
@@ -649,7 +650,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateTotalCounter();
-        saveBasketChanges(window.allProducts);
+        updateBasketInLocalStorage(window.allProducts);
       }
     });
   }
@@ -767,7 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function saveBasketChanges(allProducts) {
+  function updateBasketInLocalStorage(allProducts) {
     const basketItems = document.querySelectorAll(".my__cart__item");
     const updatedBasket = [];
 
@@ -809,5 +810,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("basketItem", JSON.stringify(updatedBasket));
     console.log("Корзина обновлена в localStorage:", updatedBasket);
+  }
+
+  function transferDataOrder() {
+    const orderButton = document.querySelector(".my__cart__btn");
+
+    orderButton.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      const basketItems = getBasketItemIds();
+
+      if (basketItems.length === 0) {
+        alert("Корзина пуста! Добавьте товары перед оформлением заказа.");
+        return;
+      }
+
+      const orderData = {
+        basketItems: basketItems,
+        totalPrice: fullPrice,
+        totalItems: basketItems.length,
+        timestamp: new Date().toISOString(),
+      };
+
+      localStorage.setItem("orderData", JSON.stringify(orderData));
+      window.location.href = "order.html";
+    });
   }
 });
