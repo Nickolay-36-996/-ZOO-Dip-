@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Всего товаров загружено:", allProducts.length);
       const basketItems = getBasketItemIds();
       console.log("Товар в корзине", basketItems.length);
+      window.allProducts = allProducts;
 
       if (basketItems.length > 0) {
         showBasketItems(allProducts);
@@ -206,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </defs>
       </svg>
       </button>
-      <div class="product__page__pay__counter"></div>
+      <div class="product__page__pay__counter">${basketItem.quantity || 1}</div>
       <button class="product__page__pay__operator" id="total-add">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_933_8230)">
@@ -245,6 +246,12 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
         cartItemsContainer.appendChild(cartItem);
+        if (basketItem.customWeight) {
+          const weightInput = cartItem.querySelector(".set__weight__input");
+          if (weightInput) {
+            weightInput.value = basketItem.customWeight;
+          }
+        }
 
         weightOptions(product, cartItem, basketItem.packaging);
         setWeightOptions(product, cartItem, basketItem.packaging, itemPrice);
@@ -344,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           updateTotalCounter();
+          saveBasketChanges(window.allProducts);
           return;
         }
 
@@ -380,6 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateTotalCounter();
+        saveBasketChanges(window.allProducts);
       });
     }
   }
@@ -500,6 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fullOldPrice = fullOldPrice - currentPrice + newOldPrice;
 
         updateTotalCounter();
+        saveBasketChanges(window.allProducts);
 
         weightInput.value = "";
         const setWeightElements = cartItem.querySelector(".set__weight");
@@ -519,7 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!add || !takeAway || !counter || !basePriceElement) return;
 
-    let count = 1;
+    let count = parseInt(counter.textContent) || 1;
     counter.textContent = count;
 
     const basePrice = parseFloat(product.price) || 0;
@@ -580,6 +590,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateTotalCounter();
+      saveBasketChanges(window.allProducts);
     });
 
     takeAway.addEventListener("click", function () {
@@ -638,6 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateTotalCounter();
+        saveBasketChanges(window.allProducts);
       }
     });
   }
@@ -672,16 +684,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (fullOldPrice > fullPrice) {
+    if (hasDiscountItems && fullOldPrice > fullPrice) {
       if (!oldPriceElement) {
         oldPriceElement = document.createElement("span");
         oldPriceElement.className = "my__cart__old__total__price";
         totalPriceElement.after(oldPriceElement);
       }
       oldPriceElement.textContent = fullOldPrice.toFixed(0) + " BYN";
-      oldPriceElement.style.display = "block";
     } else if (oldPriceElement) {
-      oldPriceElement.style.display = "none";
+      oldPriceElement.remove();
     }
 
     let productText = "товаров";
@@ -754,5 +765,49 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Товар удален! ID:", cartID);
       });
     }
+  }
+
+  function saveBasketChanges(allProducts) {
+    const basketItems = document.querySelectorAll(".my__cart__item");
+    const updatedBasket = [];
+
+    for (const item of basketItems) {
+      const productId = parseInt(item.dataset.productID);
+      const price = parseFloat(
+        item
+          .querySelector(".my__cart__item__price")
+          .textContent.replace(" BYN", "")
+      );
+      const counter = parseInt(
+        item.querySelector(".product__page__pay__counter").textContent
+      );
+
+      let packaging = null;
+      const activeOption = item.querySelector(
+        ".my__cart__item__info__option__active"
+      );
+      if (activeOption) {
+        packaging = activeOption.textContent.trim();
+      } else {
+        packaging = null;
+      }
+
+      const weightInput = item.querySelector(".set__weight__input");
+      let customWeight = null;
+      if (weightInput && weightInput.value) {
+        customWeight = weightInput.value;
+      }
+
+      updatedBasket.push({
+        productId: productId,
+        price: price,
+        packaging: packaging,
+        quantity: counter,
+        customWeight: customWeight,
+      });
+    }
+
+    localStorage.setItem("basketItem", JSON.stringify(updatedBasket));
+    console.log("Корзина обновлена в localStorage:", updatedBasket);
   }
 });

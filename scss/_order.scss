@@ -12,7 +12,7 @@
 .registration__order {
   display: flex;
   flex-direction: column;
-  align-self: center;
+  align-items: center;
   gap: 32px;
 }
 
@@ -32,4 +32,121 @@
   border-radius: 8px;
   padding: 24px 32px;
   gap: 24px;
+  max-width: 421px;
+  width: 100%;
+}
+
+.registration__window__upper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order__input__box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order__input__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order__input__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.order__input {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  border-radius: 4px;
+  border: 1px solid #a7acb1;
+  padding: 8px 12px;
+}
+
+.registration__order__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 16px;
+}
+
+.registration__order__info__txt {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #8c9196;
+  list-style-type: disc;
+}
+
+.registration__order__quantity {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.registration__window__down {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.registration__window__button {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  background-color: #00a0ac;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08) inset,
+    0px -1px 0px 0px rgba(0, 0, 0, 0.08);
+  padding: 12px 24px;
+  border-radius: 4px;
+  align-self: center;
+}
+
+.registration__window__txt {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  color: #6d7175;
+  text-align: center;
+}
+
+.registration__window__txt__link {
+  color: #2c6ecb;
+}
+
+@media (max-width: 768px) {
+  .registration__order {
+    gap: 16px;
+  }
+
+  .registration__order__title {
+    font-size: 24px;
+  }
+
+  .registration__window {
+    padding: 24px 16px;
+  }
+
+  .registration__window__button {
+    align-self: auto;
+  }
 }

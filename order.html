@@ -487,6 +487,7 @@
         </div>
       </div>
     </header>
+    <script src="./js/order.js"></script>
     <section class="order">
       <div class="container">
         <div class="order__wrapper">
@@ -547,7 +548,42 @@
           </nav>
           <div class="registration__order">
             <h1 class="registration__order__title">Оформление заказа</h1>
-            <form action="" class="registration__window"></form>
+            <form action="" class="registration__window">
+              <div class="registration__window__upper">
+                <div class="order__input__box">
+                  <div class="order__input__wrap">
+                    <h3 class="order__input__title">Имя</h3>
+                    <input
+                      type="name"
+                      class="order__input"
+                      placeholder="Введите ваше имя"
+                    />
+                  </div>
+                  <div class="order__input__wrap">
+                    <h3 class="order__input__title">Номер телефона</h3>
+                    <input type="tel" placeholder="+375" class="order__input" />
+                  </div>
+                </div>
+                <ul class="registration__order__info">
+                  <li class="registration__order__info__txt">
+                    Самовывоз по адресу: Минск, ул. Чюрлёниса, 6.
+                  </li>
+                  <li class="registration__order__info__txt">
+                    Оплата любым способом при получении
+                  </li>
+                </ul>
+                <div class="registration__order__quantity"></div>
+              </div>
+              <div class="registration__window__down">
+                <button class="registration__window__button">Заказать</button>
+                <p class="registration__window__txt">
+                  Нажимая на кнопку вы даёте согласие на обработку
+                  <a href="#" class="registration__window__txt__link"
+                    >персональных данных</a
+                  >
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
