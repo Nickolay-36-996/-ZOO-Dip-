@@ -290,23 +290,29 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         let price = 0;
+        let oldPrice = 0;
         let packaging = null;
 
         if (activeQuantity) {
           packaging = activeQuantity.textContent;
         }
 
+        if (priceElement) {
+          const priceText = priceElement.textContent;
+          price = parseFloat(priceText.replace(" BYN", "").trim());
+        }
+
         if (oldPriceElement) {
-          const priceText = priceElement.textContent;
-          price = parseFloat(priceText.replace(" BYN", "").trim());
+          const oldPriceText = oldPriceElement.textContent;
+          oldPrice = parseFloat(oldPriceText.replace(" BYN", "").trim());
         } else {
-          const priceText = priceElement.textContent;
-          price = parseFloat(priceText.replace(" BYN", "").trim());
+          oldPrice = price;
         }
 
         const cardData = {
           productId: parseInt(productId),
           price: price,
+          oldPrice: oldPrice,
           packaging: packaging,
         };
 

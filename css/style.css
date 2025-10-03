@@ -4775,7 +4775,26 @@ body {
 .registration__order__quantity {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 16px;
+}
+
+.registration__order__quantity__price {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.registration__order__quantity__qnt {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #8C9196;
 }
 
 .registration__window__down {

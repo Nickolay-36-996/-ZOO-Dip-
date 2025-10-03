@@ -171,10 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (product) {
         const itemPrice = basketItem.price;
-
-        const basePrice = parseFloat(product.price) || 0;
-        const promotion = product.sale?.percent || 0;
-        const discountedPrice = basePrice * (1 - promotion / 100);
+        const itemOldPrice = basketItem.oldPrice;
+        const hasPromotion = itemOldPrice && itemOldPrice > itemPrice;
 
         const cartItem = document.createElement("div");
         cartItem.className = "my__cart__item";
@@ -225,9 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="my__cart__item__price__container">
       <p class="my__cart__item__price">${itemPrice.toFixed(2)} BYN</p>
       ${
-        promotion > 0
+        hasPromotion
           ? `
-      <p class="my__cart__item__old__price">${basePrice.toFixed(2)} BYN</p>
+      <p class="my__cart__item__old__price">${itemOldPrice.toFixed(2)} BYN</p>
         `
           : ""
       }
@@ -239,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </svg>
       </button>
       ${
-        promotion > 0
+        hasPromotion
           ? `
       <div class="popular__product__sale__badge__basket">Акция</div>`
           : ""
@@ -829,7 +827,6 @@ document.addEventListener("DOMContentLoaded", () => {
         basketItems: basketItems,
         totalPrice: fullPrice,
         totalItems: basketItems.length,
-        timestamp: new Date().toISOString(),
       };
 
       localStorage.setItem("orderData", JSON.stringify(orderData));

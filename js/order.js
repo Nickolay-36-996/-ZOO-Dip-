@@ -38,13 +38,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalPrice = orderData.totalPrice;
     const totalItems = orderData.totalItems;
 
+    let productText = "товаров";
+    if (totalItems === 1) productText = "товар";
+    else if (totalItems >= 2 && totalItems <= 4) productText = "товара";
+
     const priceElement = document.createElement("div");
     priceElement.className = "registration__order__quantity__price";
     priceElement.textContent = `${totalPrice.toFixed(2)} BYN`;
 
     const quantityElement = document.createElement("div");
     quantityElement.className = "registration__order__quantity__qnt";
-    quantityElement.textContent = `${totalItems}`;
+    quantityElement.textContent = `${totalItems} ${productText}`;
 
     container.appendChild(priceElement);
     container.appendChild(quantityElement);
@@ -53,4 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Общая цена:", totalPrice.toFixed(2) + " BYN");
     console.log("Количество позиций:", totalItems);
   }
+
+  showDataBasket();
 });
