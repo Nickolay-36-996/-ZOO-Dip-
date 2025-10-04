@@ -823,9 +823,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      const oldTotalElement = document.querySelector(
+        ".my__cart__old__total__price"
+      );
+      const oldTotalPrice = oldTotalElement
+        ? parseFloat(oldTotalElement.textContent)
+        : null;
+
       const orderData = {
         basketItems: basketItems,
         totalPrice: fullPrice,
+        oldTotalPrice: oldTotalPrice,
         totalItems: basketItems.length,
       };
 

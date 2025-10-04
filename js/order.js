@@ -6,11 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showDataBasket() {
     const container = document.querySelector(".registration__order__quantity");
+    const priceContainer = document.querySelector(".registration__order__price__box");
     const orderData = getOrderData();
 
     if (!container) return;
-
-    container.innerHTML = "";
 
     if (!orderData) {
       container.innerHTML = `
@@ -36,21 +35,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const totalPrice = orderData.totalPrice;
+    const totalOldPrice = orderData.oldTotalPrice;
     const totalItems = orderData.totalItems;
 
     let productText = "товаров";
     if (totalItems === 1) productText = "товар";
     else if (totalItems >= 2 && totalItems <= 4) productText = "товара";
 
-    const priceElement = document.createElement("div");
-    priceElement.className = "registration__order__quantity__price";
-    priceElement.textContent = `${totalPrice.toFixed(2)} BYN`;
+    if (orderData.oldTotalPrice) {
+      const priceElement = document.createElement("div");
+      priceElement.className = "registration__order__quantity__price";
+      priceElement.textContent = `${totalPrice.toFixed(2)} BYN`;
+
+      priceContainer.appendChild(priceElement);
+
+      const oldPriceElement = document.createElement("div");
+      oldPriceElement.className = "registration__order__quantity__old__price";
+      oldPriceElement.textContent = `${totalOldPrice.toFixed(2)} BYN`;
+
+      priceContainer.appendChild(oldPriceElement);
+
+    } else {
+      const priceElement = document.createElement("div");
+      priceElement.className = "registration__order__quantity__price";
+      priceElement.textContent = `${totalPrice.toFixed(2)} BYN`;
+      priceContainer.appendChild(priceElement);
+    }
 
     const quantityElement = document.createElement("div");
     quantityElement.className = "registration__order__quantity__qnt";
     quantityElement.textContent = `${totalItems} ${productText}`;
 
-    container.appendChild(priceElement);
     container.appendChild(quantityElement);
 
     console.log("✅ Данные заказа отображены:");

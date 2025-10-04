@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cardWidth = container.children[0].clientWidth;
           initSliderControls();
         }
+        addToBasket();
       } else {
         container.innerHTML = "<p>Нет данных о товарах</p>";
       }
@@ -121,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <p class="new__products__card__pay__price__p">${displayPrice} BYN</p>
             `
             }
-            <button class="new__products__card__basked__add">
+            <button class="new__products__card__basked__add" data-product-id="${product.id}">
               <div class="new__products__card__basket__img__box">
                 <svg class="new__products__card__basket__img" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_7865_204)">
@@ -236,5 +237,68 @@ document.addEventListener("DOMContentLoaded", () => {
       saveTranslate = 0;
       container.style.transform = `translateX(0)`;
     });
+  }
+
+  function addToBasket() {
+    const addToCartBtn = document.querySelectorAll(
+      ".new__products__card__basked__add"
+    );
+
+    for (const cart of addToCartBtn) {
+      cart.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const card = this.closest(".new__products__card");
+        const productId = this.getAttribute("data-product-id");
+
+        const priceElement = card.querySelector(
+          ".new__products__card__pay__price__p"
+        );
+        const oldPriceElement = card.querySelector(
+          ".new__products__card__pay__price__old"
+        );
+        const activeQuantity = card.querySelector(
+          ".new__products__card__quantity__active"
+        );
+
+        let price = 0;
+        let oldPrice = 0;
+        let packaging = null;
+
+        if (activeQuantity) {
+          packaging = activeQuantity.textContent;
+        }
+
+        if (priceElement) {
+          const priceText = priceElement.textContent;
+          price = parseFloat(priceText.replace(" BYN", "").trim());
+        }
+
+        if (oldPriceElement) {
+          const oldPriceText = oldPriceElement.textContent;
+          oldPrice = parseFloat(oldPriceText.replace(" BYN", "").trim());
+        } else {
+          oldPrice = price;
+        }
+
+        const cardData = {
+          productId: parseInt(productId),
+          price: price,
+          oldPrice: oldPrice,
+          packaging: packaging,
+        };
+
+        let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+        basketItems.push(cardData);
+        localStorage.setItem("basketItem", JSON.stringify(basketItems));
+
+        console.log("Товар добавлен в корзину! ID:", productId);
+
+        if (typeof updateBasketDisplay === "function") {
+          updateBasketDisplay();
+        }
+      });
+    }
   }
 });

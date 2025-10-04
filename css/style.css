@@ -4779,6 +4779,13 @@ body {
   gap: 16px;
 }
 
+.registration__order__price__box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
 .registration__order__quantity__price {
   font-family: SF Pro Text;
   font-weight: 700;
@@ -4788,13 +4795,26 @@ body {
   color: #202223;
 }
 
+.registration__order__quantity__old__price {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #8c9196;
+  text-decoration: line-through;
+  text-decoration-color: #d72c0d;
+  order: -1;
+  margin-top: 1px;
+}
+
 .registration__order__quantity__qnt {
   font-family: SF Pro Text;
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0px;
-  color: #8C9196;
+  color: #8c9196;
 }
 
 .registration__window__down {
