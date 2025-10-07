@@ -554,14 +554,28 @@
                   <div class="order__input__wrap">
                     <h3 class="order__input__title">Имя</h3>
                     <input
-                      type="name"
+                      type="text"
+                      id="name"
+                      name="name"
+                      maxlength="25"
+                      pattern="[А-Яа-яЁё\s]+"
                       class="order__input"
                       placeholder="Введите ваше имя"
+                      required
                     />
                   </div>
                   <div class="order__input__wrap">
                     <h3 class="order__input__title">Номер телефона</h3>
-                    <input type="tel" placeholder="+375" class="order__input" />
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      maxlength="13"
+                      pattern="\+375[0-9]{9}"
+                      placeholder="+375"
+                      class="order__input"
+                      required
+                    />
                   </div>
                 </div>
                 <ul class="registration__order__info">

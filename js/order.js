@@ -201,6 +201,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.appendChild(modalContent);
     document.body.appendChild(overlay);
+
+    const closeButton = document.querySelector(".modal__order__close");
+
+    closeButton.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      modalContent.style.display = "none";
+      overlay.style.display = "none";
+    });
+
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) {
+        modalContent.style.display = "none";
+        overlay.style.display = "none";
+      }
+    });
   }
 
   showDataBasket();
