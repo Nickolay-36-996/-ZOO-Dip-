@@ -4941,4 +4941,13 @@ body {
   .registration__window__button {
     align-self: auto;
   }
+  .modal__order {
+    max-width: 340px;
+  }
+  .modal__order__wrap {
+    padding: 24px 16px;
+  }
+  .modal__order__title {
+    font-size: 21px;
+  }
 }/*# sourceMappingURL=style.css.map */

@@ -112,12 +112,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.updateBasketCounter = function () {
     const basketCounter = document.querySelector(".header__low__basket p");
+    const basketCounterMobile = document.querySelector(
+      ".header__low__basket__mobile p"
+    );
 
     if (basketCounter) {
       const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
       basketCounter.textContent = basketItems.length;
     }
-  }
+
+    if (basketCounterMobile) {
+      const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+      basketCounterMobile.textContent = basketItems.length;
+    }
+  };
 
   window.addEventListener("resize", handleResize);
   updateBasketCounter();
