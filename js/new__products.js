@@ -122,7 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <p class="new__products__card__pay__price__p">${displayPrice} BYN</p>
             `
             }
-            <button class="new__products__card__basked__add" data-product-id="${product.id}">
+            <button class="new__products__card__basked__add" data-product-id="${
+              product.id
+            }">
               <div class="new__products__card__basket__img__box">
                 <svg class="new__products__card__basket__img" width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clip-path="url(#clip0_7865_204)">
@@ -298,6 +300,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof updateBasketDisplay === "function") {
           updateBasketDisplay();
         }
+
+        updateBasketCounter();
       });
     }
   }

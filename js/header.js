@@ -6,16 +6,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchMobile = document.querySelector(".header__search__mobile");
   const basketMobile = document.querySelector(".header__low__basket__mobile");
   const transition = document.querySelector(".header__options__mobile");
-  const sideBar = document.querySelector(".products__catalog__products__filter");
+  const sideBar = document.querySelector(
+    ".products__catalog__products__filter"
+  );
 
   let isMenuOpen = false;
   let currentBurger = null;
 
   function toggleMenu() {
-
-    if (sideBar && sideBar.classList.contains("products__catalog__products__filter__active")) {
+    if (
+      sideBar &&
+      sideBar.classList.contains("products__catalog__products__filter__active")
+    ) {
       sideBar.classList.remove("products__catalog__products__filter__active");
-      closeMenu()
+      closeMenu();
       return;
     }
 
@@ -98,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (searchMobile) {
-    searchMobile.addEventListener("click", function() {
+    searchMobile.addEventListener("click", function () {
       checkBurgerType();
       if (!isMenuOpen) {
         toggleMenu();
@@ -106,5 +110,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  window.updateBasketCounter = function () {
+    const basketCounter = document.querySelector(".header__low__basket p");
+
+    if (basketCounter) {
+      const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+      basketCounter.textContent = basketItems.length;
+    }
+  }
+
   window.addEventListener("resize", handleResize);
+  updateBasketCounter();
 });

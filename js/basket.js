@@ -761,6 +761,7 @@ document.addEventListener("DOMContentLoaded", () => {
           updateTotalCounter();
         }
 
+        updateBasketCounter();
         console.log("Товар удален! ID:", cartID);
       });
     }

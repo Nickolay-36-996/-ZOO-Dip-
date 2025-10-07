@@ -325,6 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof updateBasketDisplay === "function") {
           updateBasketDisplay();
         }
+
+        updateBasketCounter();
       });
     }
   }
