@@ -77,8 +77,25 @@ document.addEventListener("DOMContentLoaded", () => {
   function initModalOrder() {
     const orderButton = document.querySelector(".registration__window__button");
 
+    function checkFromFilled() {
+      const nameInput = document.getElementById("name");
+      const phoneInput = document.getElementById("phone");
+
+      const isNameFilled = nameInput && nameInput.value.trim() !== "";
+      const isPhoneFilled = phoneInput && phoneInput.value.trim() !== "";
+
+      return isNameFilled && isPhoneFilled;
+    }
+
     orderButton.addEventListener("click", function (e) {
       e.preventDefault();
+
+      if (!checkFromFilled()) {
+        alert(
+          "Пожалуйста, заполните все обязательные поля перед оформлением заказа!"
+        );
+        return;
+      }
 
       modalContent.style.display = "flex";
       overlay.style.display = "block";
@@ -202,6 +219,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(modalContent);
     document.body.appendChild(overlay);
 
+    function clearFormAndBasket() {
+      const nameInput = document.getElementById("name");
+      const phoneInput = document.getElementById("phone");
+
+      if (nameInput) {
+        nameInput.value = "";
+      }
+      if (phoneInput) {
+        phoneInput.value = "";
+      }
+
+      localStorage.removeItem("basketItem");
+      localStorage.removeItem("orderData");
+
+      window.location.href = "catalog.html";
+    }
+
     const closeButton = document.querySelector(".modal__order__close");
 
     closeButton.addEventListener("click", function (e) {
@@ -209,16 +243,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
       modalContent.style.display = "none";
       overlay.style.display = "none";
+      clearFormAndBasket();
     });
 
     overlay.addEventListener("click", function (e) {
       if (e.target === overlay) {
         modalContent.style.display = "none";
         overlay.style.display = "none";
+        clearFormAndBasket();
       }
     });
   }
 
+  function initNameValidation() {
+    const nameInput = document.getElementById("name");
+    const phoneInput = document.getElementById("phone");
+
+    if (nameInput) {
+      nameInput.addEventListener("input", function () {
+        const cursorPosition = this.selectionStart;
+
+        this.value = this.value.replace(/[^А-Яа-яЁё\s]/g, "");
+        this.value = this.value.replace(/\s+/g, " ");
+
+        if (this.value.startsWith(" ")) {
+          this.value = this.value.substring(1);
+        }
+
+        this.value = this.value.replace(/\s+/g, " ");
+      });
+    }
+
+    if (phoneInput) {
+      phoneInput.addEventListener("input", function (e) {
+        const cursorPosition = this.selectionStart;
+
+        let value = this.value.replace(/[^\d+]/g, "");
+
+        if (!value.startsWith("+")) {
+          value = "+";
+        }
+
+        this.value = value;
+      });
+    }
+  }
+
   showDataBasket();
   initModalOrder();
+  initNameValidation();
 });
