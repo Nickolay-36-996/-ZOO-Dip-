@@ -127,6 +127,32 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  function createBasketDropdown() {
+    const basketWrap = document.querySelector(".header__low__basket__wrap");
+    const basketIcone = document.querySelector(".header__low__basket");
+
+    const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "basket__dropdown";
+    basketWrap.appendChild(dropdown);
+
+    basketIcone.addEventListener('mouseenter', function() {
+      dropdown.style.display = "flex";
+    });
+
+    basketIcone.addEventListener('mouseleave', function() {
+      dropdown.style.display = "none";
+    });
+
+    if (basketItems.length === 0) {
+      dropdown.innerHTML = `
+      <p class="empty__cart__drop">Ваша корзина пуста</p>
+      `
+    }
+  }
+
   window.addEventListener("resize", handleResize);
   updateBasketCounter();
+  createBasketDropdown();
 });
