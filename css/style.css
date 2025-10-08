@@ -4950,4 +4950,14 @@ body {
   .modal__order__title {
     font-size: 21px;
   }
+  .order__modal__mobile {
+    display: none;
+  }
+  .order__modal__time__mobile {
+    flex-direction: column;
+  }
+  .remove__padding {
+    padding-right: 0px;
+    border-right: none;
+  }
 }/*# sourceMappingURL=style.css.map */

@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <h1 class="modal__order__title">Заказ оформлен и ожидает вас по адресу:</h1>
     <div class="modal__order__info">
     <div class="footer__low__up__adress">
-    <div class="footer__low__up__adress__icone">
+    <div class="footer__low__up__adress__icone order__modal__mobile">
     <svg
     width="16"
     height="17"
@@ -187,8 +187,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <p class="footer__low__up__adress__txt">Малиновка</p>
     </div>
     </div>
-    <div class="footer__low__up__working__time__info">
-    <div class="footer__low__up__working__time__info__icone">
+    <div class="footer__low__up__working__time__info order__modal__time__mobile">
+    <div class="footer__low__up__working__time__info__icone order__modal__mobile">
     <svg
     width="16"
     height="17"
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     />
     </svg>
     </div>
-    <p class="footer__low__up__working__time__info__txt padding">
+    <p class="footer__low__up__working__time__info__txt padding remove__padding">
     Пон.-Пят. 10:00-21:00
     </p>
     <p class="footer__low__up__working__time__info__txt">
