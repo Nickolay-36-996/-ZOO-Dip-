@@ -172,7 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (product) {
         const itemPrice = basketItem.price;
         const itemOldPrice = basketItem.oldPrice;
-        const hasPromotion = itemOldPrice && itemOldPrice > itemPrice;
+        const hasPromotion =
+          basketItem.hasPromotion && itemOldPrice > itemPrice;
 
         const cartItem = document.createElement("div");
         cartItem.className = "my__cart__item";
@@ -771,6 +772,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const basketItems = document.querySelectorAll(".my__cart__item");
     const updatedBasket = [];
 
+    const currentBasket = JSON.parse(localStorage.getItem("basketItem")) || [];
+
     for (const item of basketItems) {
       const productId = parseInt(item.dataset.productID);
       const price = parseFloat(
@@ -781,6 +784,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const counter = parseInt(
         item.querySelector(".product__page__pay__counter").textContent
       );
+
+      const oldItem = currentBasket.find(
+        (item) => item.productId === productId
+      );
+
+      const oldPriceElement = item.querySelector(".my__cart__item__old__price");
+      const hasPromotion = oldPriceElement !== null;
+
+      let oldPrice = price;
+      if (oldPriceElement) {
+        oldPrice = parseFloat(oldPriceElement.textContent.replace(" BYN", ""));
+      } else if (oldItem && oldItem.oldPrice) {
+        oldPrice = oldItem.oldPrice;
+      }
 
       let packaging = null;
       const activeOption = item.querySelector(
@@ -800,7 +817,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       updatedBasket.push({
         productId: productId,
+        hasPromotion: hasPromotion,
         price: price,
+        oldPrice: oldPrice,
         packaging: packaging,
         quantity: counter,
         customWeight: customWeight,

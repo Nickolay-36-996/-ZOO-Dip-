@@ -289,9 +289,16 @@ document.addEventListener("DOMContentLoaded", () => {
           ".popular__products__card__quantity__active"
         );
 
+        const saleBadge = card.querySelector(".new__product__sale__badge");
+
         let price = 0;
         let oldPrice = 0;
         let packaging = null;
+        let hasPromotion = false;
+
+        if (saleBadge) {
+          hasPromotion = true;
+        }
 
         if (activeQuantity) {
           packaging = activeQuantity.textContent;
@@ -314,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
           price: price,
           oldPrice: oldPrice,
           packaging: packaging,
+          hasPromotion: hasPromotion !== null,
         };
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
