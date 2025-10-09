@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let itemHTML = "";
         const itemsToShow = basketItems.slice(0, 5);
 
-        for (const item of basketItems) {
+        for (const item of itemsToShow) {
           itemHTML += `
         <div class="basket__dropdown__cart">
         <div>

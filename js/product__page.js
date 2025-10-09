@@ -226,7 +226,9 @@ document.addEventListener("DOMContentLoaded", () => {
     </svg>
     </button>
     </div>
-    <button class="product__page__pay__add__to__basked">Добавить в корзину</button>
+    <button class="product__page__pay__add__to__basked" data-product-id="${
+      product.id
+    }">Добавить в корзину</button>
     <p class="product__page__buy">Купить в 1 клик</p>
     </div>
     </div>
@@ -298,6 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
       oldPriceElement,
       totalWeightElement
     );
+    addToBasketAndModal(product);
   }
 
   function brandProducts(product) {
@@ -696,6 +699,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
         counter.textContent = count;
       }
+    });
+  }
+
+  function addToBasketAndModal(product) {
+    const addCartBtn = document.querySelector(
+      ".product__page__pay__add__to__basked"
+    );
+
+    addCartBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const productId = this.getAttribute("data-product-id");
+
+      const priceElement = container.querySelector(".base__price");
+      const oldPriceElement = container.querySelector(".old__price");
+      const quantityActive = container.querySelector(
+        ".weight__option__active"
+      );
+
+      const saleBadge = container.querySelector(".sale__badge__page");
+
+      let price = 0;
+      let oldPrice = 0;
+      let packaging = null;
+      let hasPromotion = false;
+
+      if (saleBadge) {
+        hasPromotion = true;
+      }
+
+      if (quantityActive) {
+        packaging = quantityActive.textContent;
+      }
+
+      if (priceElement) {
+        const priceText = priceElement.textContent;
+        price = parseFloat(priceText.replace(" BYN", "").trim());
+      }
+
+      if (oldPriceElement) {
+        const oldPriceText = oldPriceElement.textContent;
+        oldPrice = parseFloat(oldPriceText.replace(" BYN", "").trim());
+      } else {
+        oldPrice = price;
+      }
+
+      const cardData = {
+        productId: parseInt(productId),
+        price: price,
+        oldPrice: oldPrice,
+        packaging: packaging,
+        hasPromotion: hasPromotion !== null,
+        title: product.title,
+        image: product.image_prev,
+      };
+
+      let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+      basketItems.push(cardData);
+      localStorage.setItem("basketItem", JSON.stringify(basketItems));
+
+      console.log("Товар добавлен в корзину! ID:", productId);
+
+      if (typeof updateBasketDisplay === "function") {
+        updateBasketDisplay();
+      }
+
+      updateBasketCounter();
     });
   }
 });
