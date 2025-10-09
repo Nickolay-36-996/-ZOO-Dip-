@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsData = cardsData.filter((product) => product.sales_counter > 0);
 
         createCards();
-        addToBasket();
+        addToBasket(data);
         if (container.children.length > 0) {
           cardWidth = container.children[0].clientWidth;
           initSliderControls();
@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function addToBasket() {
+  function addToBasket(allProducts) {
     const addToCartBtn = document.querySelectorAll(
       ".popular__products__card__basked__add"
     );
@@ -316,12 +316,16 @@ document.addEventListener("DOMContentLoaded", () => {
           oldPrice = price;
         }
 
+        const product = allProducts.find((p) => p.id === parseInt(productId));
+
         const cardData = {
           productId: parseInt(productId),
           price: price,
           oldPrice: oldPrice,
           packaging: packaging,
           hasPromotion: hasPromotion !== null,
+          title: product.title,
+          image: product.image_prev,
         };
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];

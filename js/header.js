@@ -131,25 +131,45 @@ document.addEventListener("DOMContentLoaded", function () {
     const basketWrap = document.querySelector(".header__low__basket__wrap");
     const basketIcone = document.querySelector(".header__low__basket");
 
-    const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
-
     const dropdown = document.createElement("div");
     dropdown.className = "basket__dropdown";
     basketWrap.appendChild(dropdown);
 
-    basketIcone.addEventListener('mouseenter', function() {
+    basketIcone.addEventListener("mouseenter", function () {
+      const basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+
+      if (basketItems.length === 0) {
+        dropdown.innerHTML = `
+      <p class="empty__cart__drop">Ваша корзина пуста</p>
+      `;
+      } else {
+        let itemHTML = "";
+        const itemsToShow = basketItems.slice(0, 5);
+
+        for (const item of basketItems) {
+          itemHTML += `
+        <div class="basket__dropdown__cart">
+        <div>
+        <img src="${item.image}" alt="${item.title}" class="basket__dropdown__cart__img">
+        </div>
+        <p class="basket__dropdown__cart__title">${item.title}</p>
+        </div>
+        `;
+        }
+        
+        if (basketItems.length > 5) {
+          itemHTML += `<p class="basket__dropdown__more">И ещё ${basketItems.length - 5} товаров</p>`;
+        }
+
+        dropdown.innerHTML = itemHTML;
+      }
+
       dropdown.style.display = "flex";
     });
 
     basketIcone.addEventListener('mouseleave', function() {
       dropdown.style.display = "none";
     });
-
-    if (basketItems.length === 0) {
-      dropdown.innerHTML = `
-      <p class="empty__cart__drop">Ваша корзина пуста</p>
-      `
-    }
   }
 
   window.addEventListener("resize", handleResize);

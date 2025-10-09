@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
           cardWidth = container.children[0].clientWidth;
           initSliderControls();
         }
-        addToBasket();
+        addToBasket(cardsData);
       } else {
         container.innerHTML = "<p>Нет данных о товарах</p>";
       }
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function addToBasket() {
+  function addToBasket(cardsData) {
     const addToCartBtn = document.querySelectorAll(
       ".new__products__card__basked__add"
     );
@@ -264,9 +264,16 @@ document.addEventListener("DOMContentLoaded", () => {
           ".new__products__card__quantity__active"
         );
 
+        const saleBadge = card.querySelector(".new__product__sale__badge");
+
         let price = 0;
         let oldPrice = 0;
         let packaging = null;
+        let hasPromotion = false;
+
+        if (saleBadge) {
+          hasPromotion = true;
+        }
 
         if (activeQuantity) {
           packaging = activeQuantity.textContent;
@@ -284,11 +291,16 @@ document.addEventListener("DOMContentLoaded", () => {
           oldPrice = price;
         }
 
+        const product = cardsData.find((p) => p.id === parseInt(productId));
+
         const cardData = {
           productId: parseInt(productId),
           price: price,
           oldPrice: oldPrice,
           packaging: packaging,
+          title: product.title,
+          image: product.image_prev,
+          hasPromotion: hasPromotion !== null,
         };
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];

@@ -283,10 +283,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
-    addToBasket();
+    addToBasket(cardsData);
   }
 
-  function addToBasket() {
+  function addToBasket(cardsData) {
     const addToCartBtn = document.querySelectorAll(
       ".products__catalog__products__card__basked__add"
     );
@@ -309,9 +309,16 @@ document.addEventListener("DOMContentLoaded", () => {
           ".products__catalog__products__card__quantity__active"
         );
 
+        const saleBadge = card.querySelector(".new__product__sale__badge");
+
         let price = 0;
         let oldPrice = 0;
         let packaging = null;
+        let hasPromotion = false;
+
+        if (saleBadge) {
+          hasPromotion = true;
+        }
 
         if (activeQuantity) {
           packaging = activeQuantity.textContent;
@@ -329,11 +336,16 @@ document.addEventListener("DOMContentLoaded", () => {
           oldPrice = price;
         }
 
+        const product = cardsData.find((p) => p.id === parseInt(productId));
+
         const cardData = {
           productId: parseInt(productId),
           price: price,
           oldPrice: oldPrice,
           packaging: packaging,
+          hasPromotion: hasPromotion !== null,
+          title: product.title,
+          image: product.image_prev,
         };
 
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
