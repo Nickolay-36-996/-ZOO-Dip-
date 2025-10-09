@@ -156,9 +156,9 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
         `;
         }
-        
+
         if (basketItems.length > 5) {
-          itemHTML += `<p class="basket__dropdown__more">И ещё ${basketItems.length - 5} товаров</p>`;
+          itemHTML += `<p class="basket__dropdown__more">И ещё ${basketItems.length - 5}...</p>`;
         }
 
         dropdown.innerHTML = itemHTML;
