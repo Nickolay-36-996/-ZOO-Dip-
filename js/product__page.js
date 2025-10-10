@@ -713,10 +713,26 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       const overlay = document.createElement("div");
-      overlay.className("modal__overlay");
+      overlay.className = "modal__overlay";
+
+      let quantityOptions = "";
+
+      if (
+        product.countitemproduct_set &&
+        product.countitemproduct_set.length > 0
+      ) {
+        quantityOptions = product.countitemproduct_set
+          .map((item) => {
+            return `<span class="product__page__modal__main__qnt" 
+                     data-count="${item.value}">
+                     ${item.value} ${item.unit}
+                   </span>`;
+          })
+          .join("");
+      }
 
       const modalContent = document.createElement("div");
-      modalContent.className("product__page__modal");
+      modalContent.className = "product__page__modal";
       modalContent.innerHTML = `
       <div class="product__page__modal__wrap">
       <div class="product__page__modal__checked">
@@ -727,18 +743,33 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <h1 class="product__page__modal__checked__title">Товар добавлен в корзину</h1>
       </div>
-      <div class="product__page__modal__contain"></div>
+      <div class="product__page__modal__contain">
+      <div>
+      <img class="product__page__modal__img" src="${product.image_prev}" alt="${
+        product.title
+      }">
+      </div>
+      <div class="product__page__modal__main">
+      <h3 class="product__page__modal__main__title">${product.title}</h3>
+      <div class="product__page__modal__main__qnt__wrap">${
+        quantityOptions || "<p>Нет данных о фасовках</p>"
+      }</div>
+      </div>
+      </div>
       </div>
       `;
 
-      addCartBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-      });
+      document.body.appendChild(modalContent);
+      document.body.appendChild(overlay);
+
+      modalContent.style.display = "block";
+      overlay.style.display = "block";
     }
 
     addCartBtn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
+      createModal(product);
 
       const productId = this.getAttribute("data-product-id");
 
