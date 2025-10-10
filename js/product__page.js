@@ -707,6 +707,35 @@ document.addEventListener("DOMContentLoaded", () => {
       ".product__page__pay__add__to__basked"
     );
 
+    function createModal(product) {
+      const addCartBtn = document.querySelector(
+        ".product__page__pay__add__to__basked"
+      );
+
+      const overlay = document.createElement("div");
+      overlay.className("modal__overlay");
+
+      const modalContent = document.createElement("div");
+      modalContent.className("product__page__modal");
+      modalContent.innerHTML = `
+      <div class="product__page__modal__wrap">
+      <div class="product__page__modal__checked">
+      <div class="product__page__modal__checked__img">
+      <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5 12C2.5 17.514 6.986 22 12.5 22C18.014 22 22.5 17.514 22.5 12C22.5 6.486 18.014 2 12.5 2C6.986 2 2.5 6.486 2.5 12ZM17.7071 10.2071C18.0976 9.81658 18.0976 9.18342 17.7071 8.79289C17.3166 8.40237 16.6834 8.40237 16.2929 8.79289L11.5 13.5858L9.20711 11.2929C8.81658 10.9024 8.18342 10.9024 7.79289 11.2929C7.40237 11.6834 7.40237 12.3166 7.79289 12.7071L10.7929 15.7071C11.1834 16.0976 11.8166 16.0976 12.2071 15.7071L17.7071 10.2071Z" fill="#008060"/>
+      </svg>
+      </div>
+      <h1 class="product__page__modal__checked__title">Товар добавлен в корзину</h1>
+      </div>
+      <div class="product__page__modal__contain"></div>
+      </div>
+      `;
+
+      addCartBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+      });
+    }
+
     addCartBtn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
@@ -715,9 +744,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const priceElement = container.querySelector(".base__price");
       const oldPriceElement = container.querySelector(".old__price");
-      const quantityActive = container.querySelector(
-        ".weight__option__active"
-      );
+      const quantityActive = container.querySelector(".weight__option__active");
 
       const saleBadge = container.querySelector(".sale__badge__page");
 
