@@ -735,6 +735,11 @@ document.addEventListener("DOMContentLoaded", () => {
       modalContent.className = "product__page__modal";
       modalContent.innerHTML = `
       <div class="product__page__modal__wrap">
+      <div class="product__page__modal__close">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
+      </svg>
+      </div>
       <div class="product__page__modal__checked">
       <div class="product__page__modal__checked__img">
       <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -754,7 +759,42 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="product__page__modal__main__qnt__wrap">${
         quantityOptions || "<p>Нет данных о фасовках</p>"
       }</div>
+      <button class="product__page__modal__set__weight__input">Указать свой вес</button>
       </div>
+      <div class="product__page__modal__count__wrap">
+      <div class="product__page__pay__add">
+      <button class="product__page__pay__operator" id="take-away-modal">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_933_8222)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M15 9H5C4.447 9 4 9.448 4 10C4 10.552 4.447 11 5 11H15C15.553 11 16 10.552 16 10C16 9.448 15.553 9 15 9Z" fill="#008060"/>
+      </g>
+      <defs>
+      <clipPath id="clip0_933_8222">
+      <rect width="20" height="20" fill="white"/>
+      </clipPath>
+      </defs>
+      </svg>
+      </button>
+      <div class="product__page__pay__counter"></div>
+      <button class="product__page__pay__operator" id="total-add-modal">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g clip-path="url(#clip0_933_8230)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M17 9H11V3C11 2.448 10.553 2 10 2C9.447 2 9 2.448 9 3V9H3C2.447 9 2 9.448 2 10C2 10.552 2.447 11 3 11H9V17C9 17.552 9.447 18 10 18C10.553 18 11 17.552 11 17V11H17C17.553 11 18 10.552 18 10C18 9.448 17.553 9 17 9Z" fill="#008060"/>
+      </g>
+      <defs>
+      <clipPath id="clip0_933_8230">
+      <rect width="20" height="20" fill="white"/>
+      </clipPath>
+      </defs>
+      </svg>
+      </button>
+      </div>
+      <div class="product__page__modal__price__wrap"></div>
+      </div>
+      </div>
+      <div class="product__page__modal__btn__choice">
+      <a href="./basket.html" class="product__page__modal__btn" id="prpduct-page-modal-to-basket">Перейти в корзину</a>
+      <button class="product__page__modal__btn btn__in__modal">Продолжить покупки</button>
       </div>
       </div>
       `;
@@ -764,6 +804,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
       modalContent.style.display = "block";
       overlay.style.display = "block";
+
+      const closeModal = modalContent.querySelector(
+        ".product__page__modal__close"
+      );
+      const continueShop = modalContent.querySelector(
+        ".btn__in__modal"
+      );
+
+      closeModal.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        modalContent.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      continueShop.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        modalContent.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      overlay.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        modalContent.style.display = "none";
+        overlay.style.display = "none";
+      });
+
+      return { overlay, modalContent };
     }
 
     addCartBtn.addEventListener("click", function (e) {
@@ -818,7 +888,7 @@ document.addEventListener("DOMContentLoaded", () => {
       basketItems.push(cardData);
       localStorage.setItem("basketItem", JSON.stringify(basketItems));
 
-      console.log("Товар добавлен в корзину! ID:", productId);
+      console.log("Товар добавлен в корзину! ID:", productId, basketItems);
 
       if (typeof updateBasketDisplay === "function") {
         updateBasketDisplay();
