@@ -707,7 +707,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ".product__page__pay__add__to__basked"
     );
 
-    function createModal(product) {
+    function createModal(product, cardData) {
       const addCartBtn = document.querySelector(
         ".product__page__pay__add__to__basked"
       );
@@ -723,7 +723,13 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         quantityOptions = product.countitemproduct_set
           .map((item) => {
-            return `<span class="product__page__modal__main__qnt" 
+            const isActive =
+              cardData.packaging &&
+              cardData.packaging.includes(item.value.toString());
+            const activeClass = isActive
+              ? "product__page__modal__main__active"
+              : "";
+            return `<span class="product__page__modal__main__qnt ${activeClass}"
                      data-count="${item.value}">
                      ${item.value} ${item.unit}
                    </span>`;
@@ -735,6 +741,13 @@ document.addEventListener("DOMContentLoaded", () => {
       modalContent.className = "product__page__modal";
       modalContent.innerHTML = `
       <div class="product__page__modal__wrap">
+      ${
+        cardData.hasPromotion > 0
+          ? `
+        <div class="product__page__modal__wrap__sale__badge">Акция</div>
+        `
+          : ""
+      }
       <div class="product__page__modal__close">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
@@ -775,7 +788,9 @@ document.addEventListener("DOMContentLoaded", () => {
       </defs>
       </svg>
       </button>
-      <div class="product__page__pay__counter"></div>
+      <div class="product__page__pay__counter modal__counter">${
+        cardData.count
+      }</div>
       <button class="product__page__pay__operator" id="total-add-modal">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_933_8230)">
@@ -789,7 +804,18 @@ document.addEventListener("DOMContentLoaded", () => {
       </svg>
       </button>
       </div>
-      <div class="product__page__modal__price__wrap"></div>
+      <div class="product__page__modal__price__wrap">
+      ${
+        cardData.hasPromotion > 0
+          ? `
+        <span class="product__page__modal__old__price">${cardData.oldPrice.toFixed(0)} BYN</span>
+        <span class="product__page__modal__price">${cardData.price.toFixed(0)} BYN</span>
+        `
+          : `
+        <span class="product__page__modal__price">${cardData.oldPrice.toFixed(0)} BYN</span>
+        `
+      }
+      </div>
       </div>
       </div>
       <div class="product__page__modal__btn__choice">
@@ -808,9 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const closeModal = modalContent.querySelector(
         ".product__page__modal__close"
       );
-      const continueShop = modalContent.querySelector(
-        ".btn__in__modal"
-      );
+      const continueShop = modalContent.querySelector(".btn__in__modal");
 
       closeModal.addEventListener("click", function (e) {
         e.preventDefault();
@@ -839,18 +863,21 @@ document.addEventListener("DOMContentLoaded", () => {
     addCartBtn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
-      createModal(product);
 
       const productId = this.getAttribute("data-product-id");
 
       const priceElement = container.querySelector(".base__price");
       const oldPriceElement = container.querySelector(".old__price");
       const quantityActive = container.querySelector(".weight__option__active");
+      const countElement = container.querySelector(
+        ".product__page__pay__counter"
+      );
 
       const saleBadge = container.querySelector(".sale__badge__page");
 
       let price = 0;
       let oldPrice = 0;
+      let count = 0;
       let packaging = null;
       let hasPromotion = false;
 
@@ -874,10 +901,16 @@ document.addEventListener("DOMContentLoaded", () => {
         oldPrice = price;
       }
 
+      if (countElement) {
+        const countText = countElement.textContent;
+        count = parseFloat(countText.trim());
+      }
+
       const cardData = {
         productId: parseInt(productId),
         price: price,
         oldPrice: oldPrice,
+        count: count,
         packaging: packaging,
         hasPromotion: hasPromotion !== null,
         title: product.title,
@@ -895,6 +928,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       updateBasketCounter();
+      createModal(product, cardData);
     });
   }
 });
