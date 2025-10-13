@@ -4362,6 +4362,7 @@ body {
 .product__page__modal__main__qnt__wrap {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 4px;
 }
 
