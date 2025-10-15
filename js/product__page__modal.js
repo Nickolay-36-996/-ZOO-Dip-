@@ -73,7 +73,7 @@ window.addToBasketAndModal = function (product, productPage) {
       </div>
       <div class="product__page__modal__count__wrap">
       <div class="product__page__pay__add">
-      <button class="product__page__pay__operator" id="take-away-modal">
+      <button class="product__page__pay__operator modal__operator__take__away" id="take-away-modal">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_933_8222)">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M15 9H5C4.447 9 4 9.448 4 10C4 10.552 4.447 11 5 11H15C15.553 11 16 10.552 16 10C16 9.448 15.553 9 15 9Z" fill="#008060"/>
@@ -88,7 +88,7 @@ window.addToBasketAndModal = function (product, productPage) {
       <div class="product__page__pay__counter modal__counter">${
         cardData.count
       }</div>
-      <button class="product__page__pay__operator" id="total-add-modal">
+      <button class="product__page__pay__operator modal__operator__add" id="total-add-modal">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_933_8230)">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M17 9H11V3C11 2.448 10.553 2 10 2C9.447 2 9 2.448 9 3V9H3C2.447 9 2 9.448 2 10C2 10.552 2.447 11 3 11H9V17C9 17.552 9.447 18 10 18C10.553 18 11 17.552 11 17V11H17C17.553 11 18 10.552 18 10C18 9.448 17.553 9 17 9Z" fill="#008060"/>
@@ -132,6 +132,7 @@ window.addToBasketAndModal = function (product, productPage) {
     document.body.appendChild(overlay);
 
     modalSetWeightOption(product, cardData);
+    modalAddTotal(product, cardData);
 
     function modalSetWeightOption(product, cardData) {
       const optionElement = modalContent.querySelectorAll(
@@ -159,17 +160,6 @@ window.addToBasketAndModal = function (product, productPage) {
           const optionText = this.textContent;
           const optionQuantity = parseFloat(optionText);
 
-          if (cardData.hasPromotion > 0 && discountPercent > 0) {
-            newPrice = discountedPrice * optionQuantity;
-            newOldPrice = basePrice * optionQuantity;
-
-            priceElement.textContent = newPrice.toFixed(0) + "BYN";
-            oldPriceElement.textContent = newOldPrice.toFixed(0) + "BYN";
-          } else {
-            newPrice = basePrice * optionQuantity;
-            priceElement.textContent = newPrice.toFixed(0) + "BYN";
-          }
-
           const isActive = this.classList.contains(
             "product__page__modal__main__active"
           );
@@ -178,10 +168,152 @@ window.addToBasketAndModal = function (product, productPage) {
             for (const opt of optionElement) {
               opt.classList.remove("product__page__modal__main__active");
             }
+
+            if (cardData.hasPromotion > 0 && discountPercent > 0) {
+              newPrice = discountedPrice;
+              newOldPrice = basePrice;
+
+              priceElement.textContent = newPrice.toFixed(0) + " BYN";
+              oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+            } else {
+              newPrice = basePrice;
+              priceElement.textContent = newPrice.toFixed(0) + " BYN";
+            }
+          } else {
+            for (const opt of optionElement) {
+              opt.classList.remove("product__page__modal__main__active");
+            }
+
             this.classList.add("product__page__modal__main__active");
+
+            if (cardData.hasPromotion > 0 && discountPercent > 0) {
+              newPrice = discountedPrice * optionQuantity;
+              newOldPrice = basePrice * optionQuantity;
+
+              priceElement.textContent = newPrice.toFixed(0) + " BYN";
+              oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+            } else {
+              newPrice = basePrice * optionQuantity;
+              priceElement.textContent = newPrice.toFixed(0) + " BYN";
+            }
           }
+          updateLocalStorageInModal();
         });
       }
+    }
+
+    function modalAddTotal(product, cardData) {
+      const add = modalContent.querySelector(".modal__operator__add");
+      const takeAway = modalContent.querySelector(
+        ".modal__operator__take__away"
+      );
+      const priceElement = modalContent.querySelector(
+        ".product__page__modal__price"
+      );
+      const oldPriceElement = modalContent.querySelector(
+        ".product__page__modal__old__price"
+      );
+      const counter = modalContent.querySelector(
+        ".product__page__pay__counter"
+      );
+
+      let count = parseInt(counter.textContent) || 1;
+
+      add.addEventListener("click", function (e) {
+        const currentPriceText = priceElement.textContent;
+        const currentPrice = parseFloat(currentPriceText);
+
+        let currentOldPrice = 0;
+        if (oldPriceElement) {
+          const currentOldPriceText = oldPriceElement.textContent;
+          currentOldPrice = parseFloat(currentOldPriceText);
+        }
+
+        count++;
+        counter.textContent = count;
+
+        if (cardData.hasPromotion > 0) {
+          const newPrice = currentPrice * count;
+          priceElement.textContent = newPrice.toFixed(0) + " BYN";
+          if (oldPriceElement) {
+            const newOldPrice = currentOldPrice * count;
+            oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+          }
+        } else {
+          const newPrice = currentPrice * count;
+          priceElement.textContent = newPrice.toFixed(0) + " BYN";
+        }
+        updateLocalStorageInModal();
+      });
+
+      takeAway.addEventListener("click", function (e) {
+        if (count > 1) {
+          const currentPriceText = priceElement.textContent;
+          const currentPrice = parseFloat(currentPriceText);
+
+          let currentOldPrice = 0;
+          if (oldPriceElement) {
+            const currentOldPriceText = oldPriceElement.textContent;
+            currentOldPrice = parseFloat(currentOldPriceText);
+          }
+
+          count--;
+          counter.textContent = count;
+
+          if (cardData.hasPromotion > 0) {
+            const newPrice = currentPrice * count;
+            priceElement.textContent = newPrice.toFixed(0) + " BYN";
+            if (oldPriceElement) {
+              const newOldPrice = currentOldPrice * count;
+              oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+            }
+          } else {
+            const newPrice = currentPrice * count;
+            priceElement.textContent = newPrice.toFixed(0) + " BYN";
+          }
+          updateLocalStorageInModal();
+        }
+      });
+    }
+
+    function updateLocalStorageInModal() {
+      const priceElement = modalContent.querySelector(
+        ".product__page__modal__price"
+      );
+      const oldPriceElement = modalContent.querySelector(
+        ".product__page__modal__old__price"
+      );
+      const counter = modalContent.querySelector(
+        ".product__page__pay__counter"
+      );
+      const optionActive = modalContent.querySelector(
+        ".product__page__modal__main__active"
+      );
+
+      const price = parseFloat(priceElement.textContent);
+      const count = parseInt(counter.textContent);
+      const packaging = optionActive ? optionActive.textContent.trim() : null;
+
+      cardData.price = price;
+      cardData.count = count;
+      cardData.packaging = packaging;
+
+      if (oldPriceElement) {
+        cardData.oldPrice = parseFloat(oldPriceElement.textContent);
+      }
+
+      let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
+      const itemIndex = basketItems.findIndex(
+        (item) => item.productId === cardData.productId
+      );
+
+      if (itemIndex !== -1) {
+        basketItems[itemIndex] = cardData;
+        localStorage.setItem("basketItem", JSON.stringify(basketItems));
+      }
+
+      if (typeof updateBasketDisplay === "function") updateBasketDisplay();
+      updateBasketCounter();
     }
 
     modalContent.style.display = "block";

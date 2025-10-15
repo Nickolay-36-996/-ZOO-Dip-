@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </defs>
       </svg>
       </button>
-      <div class="product__page__pay__counter">${basketItem.quantity || 1}</div>
+      <div class="product__page__pay__counter">${basketItem.count || 1}</div>
       <button class="product__page__pay__operator" id="total-add">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_933_8230)">
@@ -821,7 +821,7 @@ document.addEventListener("DOMContentLoaded", () => {
         price: price,
         oldPrice: oldPrice,
         packaging: packaging,
-        quantity: counter,
+        quantity: count,
         customWeight: customWeight,
       });
     }
