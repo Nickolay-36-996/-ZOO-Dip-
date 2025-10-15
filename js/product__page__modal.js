@@ -217,30 +217,30 @@ window.addToBasketAndModal = function (product, productPage) {
         ".product__page__pay__counter"
       );
 
+      const initialPriceText = priceElement.textContent;
+      const initialPrice = parseFloat(initialPriceText);
+
+      let initialOldPrice = 0;
+      if (oldPriceElement) {
+        const initialOldPriceText = oldPriceElement.textContent;
+        initialOldPrice = parseFloat(initialOldPriceText);
+      }
+
       let count = parseInt(counter.textContent) || 1;
 
       add.addEventListener("click", function (e) {
-        const currentPriceText = priceElement.textContent;
-        const currentPrice = parseFloat(currentPriceText);
-
-        let currentOldPrice = 0;
-        if (oldPriceElement) {
-          const currentOldPriceText = oldPriceElement.textContent;
-          currentOldPrice = parseFloat(currentOldPriceText);
-        }
-
         count++;
         counter.textContent = count;
 
         if (cardData.hasPromotion > 0) {
-          const newPrice = currentPrice * count;
+          const newPrice = initialPrice * count;
           priceElement.textContent = newPrice.toFixed(0) + " BYN";
           if (oldPriceElement) {
-            const newOldPrice = currentOldPrice * count;
+            const newOldPrice = initialOldPrice * count;
             oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
           }
         } else {
-          const newPrice = currentPrice * count;
+          const newPrice = initialPrice * count;
           priceElement.textContent = newPrice.toFixed(0) + " BYN";
         }
         updateLocalStorageInModal();
@@ -248,27 +248,18 @@ window.addToBasketAndModal = function (product, productPage) {
 
       takeAway.addEventListener("click", function (e) {
         if (count > 1) {
-          const currentPriceText = priceElement.textContent;
-          const currentPrice = parseFloat(currentPriceText);
-
-          let currentOldPrice = 0;
-          if (oldPriceElement) {
-            const currentOldPriceText = oldPriceElement.textContent;
-            currentOldPrice = parseFloat(currentOldPriceText);
-          }
-
           count--;
           counter.textContent = count;
 
           if (cardData.hasPromotion > 0) {
-            const newPrice = currentPrice * count;
+            const newPrice = initialPrice * count;
             priceElement.textContent = newPrice.toFixed(0) + " BYN";
             if (oldPriceElement) {
-              const newOldPrice = currentOldPrice * count;
+              const newOldPrice = initialOldPrice * count;
               oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
             }
           } else {
-            const newPrice = currentPrice * count;
+            const newPrice = initialPrice * count;
             priceElement.textContent = newPrice.toFixed(0) + " BYN";
           }
           updateLocalStorageInModal();
@@ -294,9 +285,16 @@ window.addToBasketAndModal = function (product, productPage) {
       const count = parseInt(counter.textContent);
       const packaging = optionActive ? optionActive.textContent.trim() : null;
 
+      let totalWeight = null;
+      if (packaging) {
+        const packagingValue = parseFloat(packaging);
+        totalWeight = packagingValue * count;
+      }
+
       cardData.price = price;
       cardData.count = count;
       cardData.packaging = packaging;
+      cardData.totalWeight = totalWeight;
 
       if (oldPriceElement) {
         cardData.oldPrice = parseFloat(oldPriceElement.textContent);
