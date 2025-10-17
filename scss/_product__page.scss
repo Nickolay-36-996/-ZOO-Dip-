@@ -596,6 +596,7 @@
   font-size: 14px;
   line-height: 20px;
   color: #202223;
+  text-align: center;
   background-color: white;
   border-radius: 4px;
   border: 1px solid #8c9196;
@@ -741,5 +742,30 @@
 
   .product__page__wrapper {
     padding: 16px 0px 40px 0px;
+  }
+}
+
+@media(max-width: 768px) {
+  .product__page__modal {
+    max-width: 340px;
+  }
+
+  .product__page__modal__wrap {
+    padding: 16px 8px;
+    gap: 24px;
+  }
+
+  .product__page__modal__contain {
+    flex-direction: column;
+  }
+
+  .product__page__modal__count__wrap {
+    align-items: flex-start;
+  }
+
+  .product__page__modal__btn__choice {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
   }
 }
