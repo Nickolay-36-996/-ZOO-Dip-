@@ -323,6 +323,9 @@ window.addToBasketAndModal = function (product, productPage) {
       const oldPriceElement = modalContent.querySelector(
         ".product__page__modal__old__price"
       );
+      const optionActive = modalContent.querySelector(
+        ".product__page__modal__main__qnt"
+      );
 
       const basePrice = parseFloat(product.price);
       const discountPercent = product.sale?.percent || 0;
@@ -372,6 +375,10 @@ window.addToBasketAndModal = function (product, productPage) {
           oldPriceElement.textContent = (basePrice * weightValue).toFixed(2);
         } else {
           priceElement.textContent = (basePrice * weightValue).toFixed(2);
+        }
+
+        if (optionActive) {
+          optionActive.classList.remove("product__page__modal__main__active");
         }
 
         contentSetWeightInput.style.display = "none";
