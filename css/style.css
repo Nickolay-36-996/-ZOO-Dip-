@@ -4390,6 +4390,46 @@ body {
   color: white;
 }
 
+.product__page__modal__set__weight__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product__page__modal__set__weight__box {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product__page__modal__set__weight__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 28px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.product__page__modal__set__weight__hide {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.product__page__modal__set__weight__value {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  border-radius: 4px;
+  border: 1px solid #a7acb1;
+  padding: 8px 12px;
+  background-color: #ffffff;
+}
+
 .product__page__modal__set__weight__input {
   font-family: SF Pro Text;
   font-weight: 400;
@@ -4397,6 +4437,20 @@ body {
   line-height: 20px;
   color: #2c6ecb;
   background-color: white;
+  align-self: flex-start;
+}
+
+.product__page__modal__set__weight__btn {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  border-radius: 4px;
+  border: 1px solid #8c9196;
+  padding: 8px 16px;
+  background-color: #ffffff;
 }
 
 .product__page__modal__btn__choice {

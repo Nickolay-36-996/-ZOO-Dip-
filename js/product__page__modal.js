@@ -34,6 +34,10 @@ window.addToBasketAndModal = function (product, productPage) {
         .join("");
     }
 
+    const hasWeightOptions =
+      product.countitemproduct_set &&
+      product.countitemproduct_set.some((item) => item.unit.includes("кг"));
+
     const modalContent = document.createElement("div");
     modalContent.className = "product__page__modal";
     modalContent.innerHTML = `
@@ -69,7 +73,22 @@ window.addToBasketAndModal = function (product, productPage) {
       <div class="product__page__modal__main__qnt__wrap">${
         quantityOptions || "<p>Нет данных о фасовках</p>"
       }</div>
+      ${
+        hasWeightOptions
+          ? `
+      <div class="product__page__modal__set__weight__wrap">
       <button class="product__page__modal__set__weight__input">Указать свой вес</button>
+      <div class="product__page__modal__set__weight__box">
+      <h3 class="product__page__modal__set__weight__title">Задайте свой вес</h3>
+      <div class="product__page__modal__set__weight__hide">
+      <input class="product__page__modal__set__weight__value" placeholder="Например: 1,2 кг" maxlength="4">
+      <button class="product__page__modal__set__weight__btn">Применить</button>
+      </div>
+      </div>
+      </div>
+      `
+          : ""
+      }
       </div>
       <div class="product__page__modal__count__wrap">
       <div class="product__page__pay__add">
@@ -133,6 +152,7 @@ window.addToBasketAndModal = function (product, productPage) {
 
     modalSetWeightOption(product, cardData);
     modalAddTotal(product, cardData);
+    modalSetWeightValue(cardData, product);
 
     function modalSetWeightOption(product, cardData) {
       const optionElement = modalContent.querySelectorAll(
@@ -281,6 +301,82 @@ window.addToBasketAndModal = function (product, productPage) {
 
           updateLocalStorageInModal();
         }
+      });
+    }
+
+    function modalSetWeightValue(cardData, product) {
+      const startSetWeightInput = modalContent.querySelector(
+        ".product__page__modal__set__weight__input"
+      );
+      const contentSetWeightInput = modalContent.querySelector(
+        ".product__page__modal__set__weight__box"
+      );
+      const weightInput = modalContent.querySelector(
+        ".product__page__modal__set__weight__value"
+      );
+      const weightButton = modalContent.querySelector(
+        ".product__page__modal__set__weight__btn"
+      );
+      const priceElement = modalContent.querySelector(
+        ".product__page__modal__price"
+      );
+      const oldPriceElement = modalContent.querySelector(
+        ".product__page__modal__old__price"
+      );
+
+      const basePrice = parseFloat(product.price);
+      const discountPercent = product.sale?.percent || 0;
+      const discountedPrice = basePrice * (1 - discountPercent / 100);
+
+      if (startSetWeightInput) {
+        startSetWeightInput.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (contentSetWeightInput.style.display === "flex") {
+            contentSetWeightInput.style.display = "none";
+          } else {
+            contentSetWeightInput.style.display = "flex";
+          }
+        });
+      }
+
+      weightInput.addEventListener("input", function (event) {
+        let value = event.target.value;
+
+        value = value.replace(/[^\d,.]/g, "");
+
+        const hasComma = value.includes(",");
+        const hasDot = value.includes(".");
+
+        if (hasComma && hasDot) {
+          const commaIndex = value.indexOf(",");
+          const dotIndex = value.indexOf(".");
+
+          if (commaIndex < dotIndex) {
+            value = value.replace(/\./g, "");
+          } else {
+            value = value.replace(/,/g, "");
+          }
+        }
+
+        event.target.value = value;
+      });
+
+      weightButton.addEventListener("click", function () {
+        const InputValue = weightInput.value;
+        const weightValue = parseFloat(InputValue.replace(",", "."));
+
+        if (discountPercent) {
+          priceElement.textContent = (discountedPrice * weightValue).toFixed(2);
+          oldPriceElement.textContent = (basePrice * weightValue).toFixed(2);
+        } else {
+          priceElement.textContent = (basePrice * weightValue).toFixed(2);
+        }
+
+        contentSetWeightInput.style.display = "none";
+        weightInput.value = "";
+        updateLocalStorageInModal();
       });
     }
 
