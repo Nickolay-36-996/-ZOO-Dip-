@@ -506,6 +506,10 @@ body {
     display: none;
   }
 
+  .header__low__wrapper {
+    position: relative;
+  }
+
   .header__options__mobile {
     display: flex;
     flex-direction: row;
@@ -513,6 +517,8 @@ body {
     align-items: center;
     flex: 0 1 122px;
     gap: 10px;
+    position: absolute;
+    right: 0;
   }
 
   .header__options__mobile__unactive {
