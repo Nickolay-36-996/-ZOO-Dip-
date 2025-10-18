@@ -450,6 +450,35 @@ document.addEventListener("DOMContentLoaded", () => {
              <span class="buy__modal__card__price">${product.price}</span>
              </div>
              </div>
+             <p class="buy__modal__card__p">Заполните данные и нажмите кнопку «Оформить заказ». Товар будет ждать вас по адресу: Минск, ул. Чюрлёниса, 6.</p>
+             <div class="order__input__box input__box__buy__click">
+                  <div class="order__input__wrap">
+                    <h3 class="order__input__title">Имя</h3>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      maxlength="25"
+                      pattern="[А-Яа-яЁё\s]+"
+                      class="order__input"
+                      placeholder="Введите ваше имя"
+                      required
+                    />
+                  </div>
+                  <div class="order__input__wrap">
+                    <h3 class="order__input__title">Номер телефона</h3>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      maxlength="13"
+                      pattern="\+375[0-9]{9}"
+                      placeholder="+375"
+                      class="order__input"
+                      required
+                    />
+                  </div>
+                </div>
              </div>
              `;
         }
