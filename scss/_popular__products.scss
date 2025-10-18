@@ -428,6 +428,13 @@
   gap: 4px;
 }
 
+.buy__modal__card__set__weight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .buy__modal__card__btn {
   font-family: SF Pro Text;
   font-weight: 400;
@@ -436,6 +443,27 @@
   color: #2c6ecb;
   background-color: white;
   cursor: pointer;
+}
+
+.buy__modal__card__set__weight__box {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buy__modal__card__set__weight__title {
+  font-family: SF Pro Display;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 28px;
+  letter-spacing: 0px;
+  color: #202223;
+}
+
+.buy__modal__card__set__weight__hide {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }
 
 .buy__modal__card__price__wrap {

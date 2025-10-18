@@ -430,7 +430,16 @@ document.addEventListener("DOMContentLoaded", () => {
              <div class="buy__modal__card__set__weight__wrap">${
                hasWeightOptions
                  ? `
+             <div class="buy__modal__card__set__weight">
              <button class="buy__modal__card__btn">Указать свой вес</button>
+             <div class="buy__modal__card__set__weight__box">
+             <h3 class="buy__modal__card__set__weight__title">Задайте свой вес</h3>
+             <div class="buy__modal__card__set__weight__hide">
+             <input class="product__page__modal__set__weight__value" placeholder="Например: 1,2 кг" maxlength="4">
+             <button class="product__page__modal__set__weight__btn">Применить</button>
+             </div>
+             </div>
+             </div>
               `
                  : ""
              }</div>
@@ -588,7 +597,92 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
 
+          function setInputBuyClick() {
+            const setWeightShow = buyModal.querySelector(
+              ".buy__modal__card__btn"
+            );
+            const setWeightInputContainer = buyModal.querySelector(
+              ".buy__modal__card__set__weight__box"
+            );
+            const weightInput = buyModal.querySelector(
+              ".product__page__modal__set__weight__value"
+            );
+            const weightButton = buyModal.querySelector(
+              ".product__page__modal__set__weight__btn"
+            );
+            const optionActive = buyModal.querySelector(
+              ".popular__products__card__quantity__active"
+            );
+            const priceElement = buyModal.querySelector(
+              ".buy__modal__card__price"
+            );
+            const oldPriceElement = buyModal.querySelector(
+              ".buy__modal__card__old__price"
+            );
+
+            setWeightShow.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              if (setWeightInputContainer.style.display === "flex") {
+                setWeightInputContainer.style.display = "none";
+              } else {
+                setWeightInputContainer.style.display = "flex";
+              }
+            });
+
+            if (weightInput) {
+              weightInput.addEventListener("input", function (event) {
+                let value = event.target.value;
+
+                value = value.replace(/[^\d,.]/g, "");
+
+                const hasComma = value.includes(",");
+                const hasDot = value.includes(".");
+
+                if (hasComma && hasDot) {
+                  const commaIndex = value.indexOf(",");
+                  const dotIndex = value.indexOf(".");
+
+                  if (commaIndex < dotIndex) {
+                    value = value.replace(/\./g, "");
+                  } else {
+                    value = value.replace(/,/g, "");
+                  }
+                }
+                event.target.value = value;
+              });
+            }
+
+            if (weightButton) {
+              weightButton.addEventListener("click", function () {
+                const InputValue = weightInput.value;
+                const weightValue = parseFloat(InputValue.replace(",", "."));
+
+                if (discountPercent) {
+                  priceElement.textContent =
+                    (discountedPrice * weightValue).toFixed(0) + " BYN";
+                  oldPriceElement.textContent =
+                    (basePrice * weightValue).toFixed(0) + " BYN";
+                } else {
+                  priceElement.textContent =
+                    (basePrice * weightValue).toFixed(0) + " BYN";
+                }
+
+                if (optionActive) {
+                  optionActive.classList.remove(
+                    "popular__products__card__quantity__active"
+                  );
+                }
+
+                weightInput.value = "";
+                setWeightInputContainer.style.display = "none";
+              });
+            }
+          }
+
           setOptionsBuyClick();
+          setInputBuyClick();
         }
 
         const closeBuyModal = buyModal.querySelector(".buy__modal__close");
