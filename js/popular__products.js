@@ -467,11 +467,17 @@ document.addEventListener("DOMContentLoaded", () => {
              ${
                discountPercent > 0
                  ? `
-             <span class="buy__modal__card__old__price">${parseFloat(product.price).toFixed(0)} BYN</span>
-             <span class="buy__modal__card__price">${discountedPrice.toFixed(0)} BYN</span>
+             <span class="buy__modal__card__old__price">${parseFloat(
+               product.price
+             ).toFixed(0)} BYN</span>
+             <span class="buy__modal__card__price">${discountedPrice.toFixed(
+               0
+             )} BYN</span>
               `
                  : `
-            <span class="buy__modal__card__price">${parseFloat(product.price).toFixed(0)} BYN</span>
+            <span class="buy__modal__card__price">${parseFloat(
+              product.price
+            ).toFixed(0)} BYN</span>
               `
              }
              </div>
@@ -510,6 +516,79 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p class="buy__modal__card__privaty">Нажимая на кнопку вы даёте согласие на обработку <a href="#" class="buy__modal__card__privaty__link">персональных данных</a></p>
              </div>
              `;
+
+          function setOptionsBuyClick() {
+            const quantityOptions = buyModal.querySelectorAll(
+              ".popular__products__card__quantity"
+            );
+
+            const priceElement = buyModal.querySelector(
+              ".buy__modal__card__price"
+            );
+            const oldPriceElement = buyModal.querySelector(
+              ".buy__modal__card__old__price"
+            );
+
+            let newPrice = 0;
+            let newOldPrice = 0;
+
+            for (const option of quantityOptions) {
+              option.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const optionText = this.textContent.trim();
+                const optionQuantity = parseFloat(optionText);
+
+                const isActive = this.classList.contains(
+                  "popular__products__card__quantity__active"
+                );
+
+                if (isActive) {
+                  for (const opt of quantityOptions) {
+                    opt.classList.remove(
+                      "popular__products__card__quantity__active"
+                    );
+                  }
+
+                  if (discountPercent > 0) {
+                    newPrice = discountedPrice.toFixed(0);
+                    newOldPrice = basePrice.toFixed(0);
+
+                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                    oldPriceElement.textContent =
+                      newOldPrice.toFixed(0) + " BYN";
+                  } else {
+                    newPrice = basePrice;
+                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                  }
+                } else {
+                  for (const opt of quantityOptions) {
+                    opt.classList.remove(
+                      "popular__products__card__quantity__active"
+                    );
+                  }
+                  this.classList.add(
+                    "popular__products__card__quantity__active"
+                  );
+
+                  if (discountPercent > 0) {
+                    newPrice = optionQuantity * discountedPrice;
+                    newOldPrice = optionQuantity * basePrice;
+
+                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                    oldPriceElement.textContent =
+                      newOldPrice.toFixed(0) + " BYN";
+                  } else {
+                    newPrice = optionQuantity * basePrice;
+                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                  }
+                }
+              });
+            }
+          }
+
+          setOptionsBuyClick();
         }
 
         const closeBuyModal = buyModal.querySelector(".buy__modal__close");
