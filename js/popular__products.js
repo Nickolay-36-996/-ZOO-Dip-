@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         createCards();
         addToBasket(data);
+        buyClick(cardsData);
         if (container.children.length > 0) {
           cardWidth = container.children[0].clientWidth;
           initSliderControls();
@@ -339,6 +340,123 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         updateBasketCounter();
+      });
+    }
+  }
+
+  function buyClick(cardsData) {
+    const buyItems = container.querySelectorAll(
+      ".popular__products__card__pay__btn"
+    );
+
+    const overlay = document.createElement("div");
+    overlay.className = "modal__overlay";
+
+    const buyModal = document.createElement("div");
+    buyModal.className = "buy__modal";
+
+    document.body.appendChild(buyModal);
+    document.body.appendChild(overlay);
+
+    for (const buyItem of buyItems) {
+      buyItem.addEventListener("click", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        overlay.style.display = "block";
+        buyModal.style.display = "block";
+
+        const card = this.closest(".popular__products__card");
+        const cardId = card
+          .querySelector(".popular__products__card__basked__add")
+          .getAttribute("data-product-id");
+
+        const product = cardsData.find((item) => item.id === parseInt(cardId));
+
+        if (product) {
+          let quantityOptions = "";
+
+          if (
+            product.countitemproduct_set &&
+            product.countitemproduct_set.length > 0
+          ) {
+            quantityOptions = product.countitemproduct_set
+              .map((item) => {
+                return `<span class="popular__products__card__quantity" 
+                     data-count="${item.value}">
+                     ${item.value} ${item.unit}
+                   </span>`;
+              })
+              .join("");
+          }
+
+          const hasWeightOptions =
+            product.countitemproduct_set &&
+            product.countitemproduct_set.some((item) =>
+              item.unit.includes("кг")
+            );
+
+          buyModal.innerHTML = `
+             <div class="buy__modal__wrap">
+             <h2 class="buy__modal__title">Оформление заказа в 1 клик</h2>
+             <div class="buy__modal__card">
+             <div>
+             <img src="${product.image_prev}" alt="${
+            product.title
+          }" class="buy__modal__card__img">
+             </div>
+             <div class="buy__modal__card__description">
+             <h3 class="buy__modal__card__title">${product.title}</h3>
+             <div class="buy__modal__card__options">${
+               quantityOptions ||
+               '<span class="popular__products__card__quantity">1 шт.</span>'
+             }</div>
+             <div class="buy__modal__card__set__weight__wrap">${
+               hasWeightOptions
+                 ? `
+             <button class="buy__modal__card__btn">Указать свой вес</button>
+              `
+                 : ""
+             }</div>
+             </div>
+             <div class="buy__modal__card__price__wrap">
+             <div class="product__page__pay__add">
+             <button class="product__page__pay__operator modal__operator__take__away" id="take-away-modal">
+             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <g clip-path="url(#clip0_933_8222)">
+             <path fill-rule="evenodd" clip-rule="evenodd" d="M15 9H5C4.447 9 4 9.448 4 10C4 10.552 4.447 11 5 11H15C15.553 11 16 10.552 16 10C16 9.448 15.553 9 15 9Z" fill="#008060"/>
+             </g>
+             <defs>
+             <clipPath id="clip0_933_8222">
+             <rect width="20" height="20" fill="white"/>
+             </clipPath>
+             </defs>
+             </svg>
+             </button>
+             <div class="product__page__pay__counter modal__counter"></div>
+             <button class="product__page__pay__operator modal__operator__add" id="total-add-modal">
+             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <g clip-path="url(#clip0_933_8230)">
+             <path fill-rule="evenodd" clip-rule="evenodd" d="M17 9H11V3C11 2.448 10.553 2 10 2C9.447 2 9 2.448 9 3V9H3C2.447 9 2 9.448 2 10C2 10.552 2.447 11 3 11H9V17C9 17.552 9.447 18 10 18C10.553 18 11 17.552 11 17V11H17C17.553 11 18 10.552 18 10C18 9.448 17.553 9 17 9Z" fill="#008060"/>
+             </g>
+             <defs>
+             <clipPath id="clip0_933_8230">
+             <rect width="20" height="20" fill="white"/>
+             </clipPath>
+             </defs>
+             </svg>
+             </button>
+             </div>
+             </div>
+             </div>
+             </div>
+             `;
+        }
+      });
+
+      overlay.addEventListener("click", function () {
+        overlay.style.display = "none";
+        buyModal.style.display = "none";
       });
     }
   }

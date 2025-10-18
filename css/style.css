@@ -1148,6 +1148,85 @@ body {
   background-color: #347c84;
 }
 
+.buy__modal {
+  display: none;
+  max-width: 611px;
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.buy__modal__wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  position: relative;
+}
+
+.buy__modal__title {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  color: #202223;
+}
+
+.buy__modal__card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.buy__modal__card__img {
+  width: 56px;
+  height: 56px;
+}
+
+.buy__modal__card__description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.buy__modal__card__title {
+  font-family: SF Pro Text;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 130%;
+  color: #202223;
+}
+
+.buy__modal__card__options {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.buy__modal__card__btn {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #2C6ECB;
+  background-color: white;
+}
+
+.buy__modal__card__price__wrap {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
 @media (max-width: 992px) {
   .popular__products__wrapper {
     padding: 32px 0px;

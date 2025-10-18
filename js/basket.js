@@ -821,7 +821,7 @@ document.addEventListener("DOMContentLoaded", () => {
         price: price,
         oldPrice: oldPrice,
         packaging: packaging,
-        quantity: count,
+        count: counter,
         customWeight: customWeight,
       });
     }
