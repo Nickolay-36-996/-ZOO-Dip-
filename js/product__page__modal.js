@@ -13,6 +13,7 @@ window.addToBasketAndModal = function (product, productPage) {
     overlay.className = "modal__overlay";
 
     let quantityOptions = "";
+    let count = 1;
 
     if (
       product.countitemproduct_set &&
@@ -164,6 +165,9 @@ window.addToBasketAndModal = function (product, productPage) {
       const oldPriceElement = modalContent.querySelector(
         ".product__page__modal__old__price"
       );
+      const counter = modalContent.querySelector(
+        ".product__page__pay__counter"
+      );
 
       const basePrice = parseFloat(product.price);
       const discountPercent = product.sale?.percent || 0;
@@ -176,6 +180,9 @@ window.addToBasketAndModal = function (product, productPage) {
         option.addEventListener("click", function (e) {
           e.preventDefault();
           e.stopPropagation();
+
+          count = 1;
+          counter.textContent = count;
 
           const optionText = this.textContent;
           const optionQuantity = parseFloat(optionText);
@@ -241,7 +248,7 @@ window.addToBasketAndModal = function (product, productPage) {
       const discountPercent = product.sale?.percent || 0;
       const discountedPrice = basePrice * (1 - discountPercent / 100);
 
-      let count = parseInt(counter.textContent) || 1;
+      count = parseInt(counter.textContent) || 1;
 
       add.addEventListener("click", function (e) {
         count++;

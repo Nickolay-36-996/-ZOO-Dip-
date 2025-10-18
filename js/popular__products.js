@@ -400,6 +400,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const discountPercent = product.sale?.percent || 0;
           const discountedPrice = basePrice * (1 - discountPercent / 100);
 
+          let count = 1;
+
           buyModal.innerHTML = `
              <div class="buy__modal__wrap">
              ${
@@ -537,6 +539,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const oldPriceElement = buyModal.querySelector(
               ".buy__modal__card__old__price"
             );
+            const counter = buyModal.querySelector(
+              ".product__page__pay__counter"
+            );
 
             let newPrice = 0;
             let newOldPrice = 0;
@@ -545,6 +550,9 @@ document.addEventListener("DOMContentLoaded", () => {
               option.addEventListener("click", function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+
+                count = 1;
+                counter.textContent = count;
 
                 const optionText = this.textContent.trim();
                 const optionQuantity = parseFloat(optionText);
@@ -558,18 +566,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     opt.classList.remove(
                       "popular__products__card__quantity__active"
                     );
-                  }
+                    if (discountPercent > 0) {
+                      newPrice = discountedPrice;
+                      newOldPrice = basePrice;
 
-                  if (discountPercent > 0) {
-                    newPrice = discountedPrice.toFixed(0);
-                    newOldPrice = basePrice.toFixed(0);
-
-                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
-                    oldPriceElement.textContent =
-                      newOldPrice.toFixed(0) + " BYN";
-                  } else {
-                    newPrice = basePrice;
-                    priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                      priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                      oldPriceElement.textContent =
+                        newOldPrice.toFixed(0) + " BYN";
+                    } else {
+                      newPrice = basePrice;
+                      priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                    }
                   }
                 } else {
                   for (const opt of quantityOptions) {
@@ -681,8 +688,86 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
 
+          function addTotalBuyClick() {
+            const add = buyModal.querySelector(".modal__operator__add");
+            const takeAway = buyModal.querySelector(
+              ".modal__operator__take__away"
+            );
+            const priceElement = buyModal.querySelector(
+              ".buy__modal__card__price"
+            );
+            const oldPriceElement = buyModal.querySelector(
+              ".buy__modal__card__old__price"
+            );
+            const counter = buyModal.querySelector(
+              ".product__page__pay__counter"
+            );
+
+            counter.textContent = count;
+
+            add.addEventListener("click", function (e) {
+              count++;
+              counter.textContent = count;
+
+              const quantityActive = buyModal.querySelector(
+                ".popular__products__card__quantity__active"
+              );
+
+              let multiplier = 1;
+
+              if (quantityActive) {
+                const quantityActiveText = quantityActive.textContent.trim();
+                multiplier = parseFloat(quantityActiveText);
+              }
+
+              if (discountPercent > 0) {
+                const newPrice = discountedPrice * multiplier * count;
+                const newOldPrice = basePrice * multiplier * count;
+
+                priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                if (oldPriceElement) {
+                  oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+                }
+              } else {
+                const newPrice = basePrice * multiplier * count;
+                priceElement.textContent = newPrice.toFixed(0) + " BYN";
+              }
+            });
+
+            takeAway.addEventListener("click", function (e) {
+              if (count > 1) {
+                count--;
+                counter.textContent = count;
+
+                const quantityActive = buyModal.querySelector(
+                  ".popular__products__card__quantity__active"
+                );
+                let multiplier = 1;
+                if (quantityActive) {
+                  const quantityActiveText = quantityActive.textContent.trim();
+                  multiplier = parseFloat(quantityActiveText);
+                }
+
+                if (discountPercent > 0) {
+                  const newPrice = discountedPrice * multiplier * count;
+                  const newOldPrice = basePrice * multiplier * count;
+
+                  priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                  if (oldPriceElement) {
+                    oldPriceElement.textContent =
+                      newOldPrice.toFixed(0) + " BYN";
+                  }
+                } else {
+                  const newPrice = basePrice * multiplier * count;
+                  priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                }
+              }
+            });
+          }
+
           setOptionsBuyClick();
           setInputBuyClick();
+          addTotalBuyClick();
         }
 
         const closeBuyModal = buyModal.querySelector(".buy__modal__close");
