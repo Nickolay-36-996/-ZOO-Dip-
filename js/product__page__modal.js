@@ -344,47 +344,53 @@ window.addToBasketAndModal = function (product, productPage) {
         });
       }
 
-      weightInput.addEventListener("input", function (event) {
-        let value = event.target.value;
+      if (weightInput) {
+        weightInput.addEventListener("input", function (event) {
+          let value = event.target.value;
 
-        value = value.replace(/[^\d,.]/g, "");
+          value = value.replace(/[^\d,.]/g, "");
 
-        const hasComma = value.includes(",");
-        const hasDot = value.includes(".");
+          const hasComma = value.includes(",");
+          const hasDot = value.includes(".");
 
-        if (hasComma && hasDot) {
-          const commaIndex = value.indexOf(",");
-          const dotIndex = value.indexOf(".");
+          if (hasComma && hasDot) {
+            const commaIndex = value.indexOf(",");
+            const dotIndex = value.indexOf(".");
 
-          if (commaIndex < dotIndex) {
-            value = value.replace(/\./g, "");
-          } else {
-            value = value.replace(/,/g, "");
+            if (commaIndex < dotIndex) {
+              value = value.replace(/\./g, "");
+            } else {
+              value = value.replace(/,/g, "");
+            }
           }
-        }
 
-        event.target.value = value;
-      });
+          event.target.value = value;
+        });
+      }
 
-      weightButton.addEventListener("click", function () {
-        const InputValue = weightInput.value;
-        const weightValue = parseFloat(InputValue.replace(",", "."));
+      if (weightButton) {
+        weightButton.addEventListener("click", function () {
+          const InputValue = weightInput.value;
+          const weightValue = parseFloat(InputValue.replace(",", "."));
 
-        if (discountPercent) {
-          priceElement.textContent = (discountedPrice * weightValue).toFixed(2);
-          oldPriceElement.textContent = (basePrice * weightValue).toFixed(2);
-        } else {
-          priceElement.textContent = (basePrice * weightValue).toFixed(2);
-        }
+          if (discountPercent) {
+            priceElement.textContent = (discountedPrice * weightValue).toFixed(
+              2
+            );
+            oldPriceElement.textContent = (basePrice * weightValue).toFixed(2);
+          } else {
+            priceElement.textContent = (basePrice * weightValue).toFixed(2);
+          }
 
-        if (optionActive) {
-          optionActive.classList.remove("product__page__modal__main__active");
-        }
+          if (optionActive) {
+            optionActive.classList.remove("product__page__modal__main__active");
+          }
 
-        contentSetWeightInput.style.display = "none";
-        weightInput.value = "";
-        updateLocalStorageInModal();
-      });
+          contentSetWeightInput.style.display = "none";
+          weightInput.value = "";
+          updateLocalStorageInModal();
+        });
+      }
     }
 
     function updateLocalStorageInModal() {

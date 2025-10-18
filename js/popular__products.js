@@ -447,6 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
              </svg>
              </button>
              </div>
+             <span class="buy__modal__card__price">${product.price}</span>
              </div>
              </div>
              </div>
