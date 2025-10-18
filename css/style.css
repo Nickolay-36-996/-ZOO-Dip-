@@ -1182,6 +1182,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   width: 100%;
   padding-bottom: 16px;
@@ -1222,6 +1223,7 @@ body {
   line-height: 20px;
   color: #2c6ecb;
   background-color: white;
+  cursor: pointer;
 }
 
 .buy__modal__card__price__wrap {
@@ -1231,6 +1233,12 @@ body {
   gap: 16px;
 }
 
+.buy__modal__card__price__box {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
 .buy__modal__card__price {
   font-family: SF Pro Text;
   font-weight: 700;
@@ -1238,6 +1246,18 @@ body {
   line-height: 130%;
   letter-spacing: 0px;
   color: #202223;
+  white-space: nowrap;
+}
+
+.buy__modal__card__old__price {
+  font-family: SF Pro Text;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: #8c9196;
+  text-decoration: line-through;
+  text-decoration-color: #d72c0d;
   white-space: nowrap;
 }
 
@@ -1254,6 +1274,45 @@ body {
 .input__box__buy__click {
   max-width: 349px;
   width: 100%;
+}
+
+.buy__modal__card__form__btn {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  padding: 8px 16px;
+  background-color: #00a0ac;
+  box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.2) inset, 0px 1px 0px 0px rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buy__modal__card__privaty {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  color: #6d7175;
+}
+
+.buy__modal__card__privaty__link {
+  color: #2c6ecb;
+}
+
+.buy__modal__close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.buy__modal__badge {
+  left: 8px;
 }
 
 @media (max-width: 992px) {

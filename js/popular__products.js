@@ -396,8 +396,24 @@ document.addEventListener("DOMContentLoaded", () => {
               item.unit.includes("кг")
             );
 
+          const basePrice = parseFloat(product.price) || 0;
+          const discountPercent = product.sale?.percent || 0;
+          const discountedPrice = basePrice * (1 - discountPercent / 100);
+
           buyModal.innerHTML = `
              <div class="buy__modal__wrap">
+             ${
+               discountPercent > 0
+                 ? `
+              <div class="popular__product__sale__badge buy__modal__badge">Акция</div>
+              `
+                 : ""
+             }
+             <span class="buy__modal__close">
+             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
+             </svg>
+             </span>
              <h2 class="buy__modal__title">Оформление заказа в 1 клик</h2>
              <div class="buy__modal__card">
              <div>
@@ -447,11 +463,22 @@ document.addEventListener("DOMContentLoaded", () => {
              </svg>
              </button>
              </div>
-             <span class="buy__modal__card__price">${product.price}</span>
+             <div class="buy__modal__card__price__box">
+             ${
+               discountPercent > 0
+                 ? `
+             <span class="buy__modal__card__old__price">${parseFloat(product.price).toFixed(0)} BYN</span>
+             <span class="buy__modal__card__price">${discountedPrice.toFixed(0)} BYN</span>
+              `
+                 : `
+            <span class="buy__modal__card__price">${parseFloat(product.price).toFixed(0)} BYN</span>
+              `
+             }
+             </div>
              </div>
              </div>
              <p class="buy__modal__card__p">Заполните данные и нажмите кнопку «Оформить заказ». Товар будет ждать вас по адресу: Минск, ул. Чюрлёниса, 6.</p>
-             <div class="order__input__box input__box__buy__click">
+             <form class="order__input__box input__box__buy__click">
                   <div class="order__input__wrap">
                     <h3 class="order__input__title">Имя</h3>
                     <input
@@ -478,10 +505,18 @@ document.addEventListener("DOMContentLoaded", () => {
                       required
                     />
                   </div>
-                </div>
+                </form>
+                <button class="buy__modal__card__form__btn">Оформить заказ</button>
+                <p class="buy__modal__card__privaty">Нажимая на кнопку вы даёте согласие на обработку <a href="#" class="buy__modal__card__privaty__link">персональных данных</a></p>
              </div>
              `;
         }
+
+        const closeBuyModal = buyModal.querySelector(".buy__modal__close");
+        closeBuyModal.addEventListener("click", function () {
+          overlay.style.display = "none";
+          buyModal.style.display = "none";
+        });
       });
 
       overlay.addEventListener("click", function () {
