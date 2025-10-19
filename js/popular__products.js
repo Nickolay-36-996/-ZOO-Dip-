@@ -367,9 +367,20 @@ document.addEventListener("DOMContentLoaded", () => {
         buyModal.style.display = "block";
 
         const card = this.closest(".popular__products__card");
+
         const cardId = card
           .querySelector(".popular__products__card__basked__add")
           .getAttribute("data-product-id");
+
+        const quantityActiveOption = card.querySelector(
+          ".popular__products__card__quantity__active"
+        );
+
+        let activeOptionCount = 0;
+        if (quantityActiveOption) {
+          const quantityActiveText = quantityActiveOption.textContent.trim();
+          activeOptionCount = parseFloat(quantityActiveText);
+        }
 
         const product = cardsData.find((item) => item.id === parseInt(cardId));
 
@@ -382,7 +393,11 @@ document.addEventListener("DOMContentLoaded", () => {
           ) {
             quantityOptions = product.countitemproduct_set
               .map((item) => {
-                return `<span class="popular__products__card__quantity" 
+                const isActive =
+                  item.value === activeOptionCount
+                    ? "popular__products__card__quantity__active"
+                    : "";
+                return `<span class="popular__products__card__quantity ${isActive}" 
                      data-count="${item.value}">
                      ${item.value} ${item.unit}
                    </span>`;
@@ -545,6 +560,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let newPrice = 0;
             let newOldPrice = 0;
+
+            const activeOption = buyModal.querySelector(
+              ".popular__products__card__quantity__active"
+            );
+
+            if (activeOption) {
+              const optionText = activeOption.textContent.trim();
+              const optionQuantity = parseFloat(optionText);
+
+              if (discountPercent > 0) {
+                newPrice = discountedPrice * optionQuantity;
+                newOldPrice = basePrice * optionQuantity;
+
+                priceElement.textContent = newPrice.toFixed(0) + " BYN";
+                oldPriceElement.textContent = newOldPrice.toFixed(0) + " BYN";
+              } else {
+                newPrice = basePrice * optionQuantity;
+                priceElement.textContent = newPrice.toFixed(0) + " BYN";
+              }
+            }
 
             for (const option of quantityOptions) {
               option.addEventListener("click", function (e) {
