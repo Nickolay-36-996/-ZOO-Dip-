@@ -515,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3 class="order__input__title">Имя</h3>
                     <input
                       type="text"
-                      id="name"
+                      id="buy-name"
                       name="name"
                       maxlength="25"
                       pattern="[А-Яа-яЁё\s]+"
@@ -528,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <h3 class="order__input__title">Номер телефона</h3>
                     <input
                       type="tel"
-                      id="phone"
+                      id="buy-phone"
                       name="phone"
                       maxlength="13"
                       pattern="\+375[0-9]{9}"
@@ -800,9 +800,69 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           }
 
+          function initNameValidationAndSent() {
+            const nameInput = document.getElementById("buy-name");
+            const phoneInput = document.getElementById("buy-phone");
+            const sentInput = buyModal.querySelector(
+              ".buy__modal__card__form__btn"
+            );
+
+            if (nameInput) {
+              nameInput.addEventListener("input", function () {
+                const cursorPosition = this.selectionStart;
+
+                this.value = this.value.replace(/[^А-Яа-яЁё\s]/g, "");
+                this.value = this.value.replace(/\s+/g, " ");
+
+                if (this.value.startsWith(" ")) {
+                  this.value = this.value.substring(1);
+                }
+
+                this.value = this.value.replace(/\s+/g, " ");
+              });
+            }
+
+            if (phoneInput) {
+              phoneInput.addEventListener("input", function (e) {
+                const cursorPosition = this.selectionStart;
+
+                let value = this.value.replace(/[^\d+]/g, "");
+
+                if (!value.startsWith("+")) {
+                  value = "+";
+                }
+
+                this.value = value;
+              });
+            }
+
+            sentInput.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              function checkFromFilled() {
+                const isNameFilled = nameInput && nameInput.value.trim() !== "";
+                const isPhoneFilled =
+                  phoneInput && phoneInput.value.trim() !== "";
+
+                return isNameFilled && isPhoneFilled;
+              }
+
+              if (!checkFromFilled()) {
+                alert(
+                  "Пожалуйста, заполните все обязательные поля перед оформлением заказа!"
+                );
+                return;
+              } else {
+                
+              }
+            });
+          }
+
           setOptionsBuyClick();
           setInputBuyClick();
           addTotalBuyClick();
+          initNameValidationAndSent();
         }
 
         const closeBuyModal = buyModal.querySelector(".buy__modal__close");
