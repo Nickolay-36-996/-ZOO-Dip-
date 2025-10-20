@@ -898,8 +898,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const closeButton = successModal.querySelector(
                   ".succes__modal__close"
                 );
+                const waitButton = successModal.querySelector(
+                  ".success__modal__btn"
+                );
 
                 closeButton.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  successModal.style.display = "none";
+                  overlay.style.display = "none";
+                });
+
+                waitButton.addEventListener("click", function (e) {
                   e.preventDefault();
                   e.stopPropagation();
 
