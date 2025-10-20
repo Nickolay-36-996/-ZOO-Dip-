@@ -853,9 +853,60 @@ document.addEventListener("DOMContentLoaded", () => {
                   "Пожалуйста, заполните все обязательные поля перед оформлением заказа!"
                 );
                 return;
-              } else {
-                
               }
+              const priceElement = buyModal.querySelector(
+                ".buy__modal__card__price"
+              );
+
+              const orderData = {
+                productId: product.id,
+                prdoductPrice: parseFloat(priceElement.textContent),
+                Name: nameInput.value.trim(),
+                Phone: phoneInput.value.trim(),
+              };
+
+              localStorage.setItem("SentItem", JSON.stringify(orderData));
+              console.log("Данные заказа сохранены:", orderData);
+
+              buyModal.style.display = "none";
+
+              const successModal = document.createElement("div");
+              successModal.className = "success__modal";
+              successModal.innerHTML = `
+                <div class="success__modal__wrap">
+                <span class="succes__modal__close">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
+                </svg>
+                </span>
+                <div>
+                <svg class="success__modal__img" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 4C35.0457 4 44 12.9543 44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4ZM32.6339 17.6161C32.1783 17.1605 31.4585 17.1301 30.9676 17.525L30.8661 17.6161L20.75 27.7322L17.1339 24.1161C16.6457 23.628 15.8543 23.628 15.3661 24.1161C14.9105 24.5717 14.8801 25.2915 15.275 25.7824L15.3661 25.8839L19.8661 30.3839C20.3217 30.8395 21.0416 30.8699 21.5324 30.475L21.6339 30.3839L32.6339 19.3839C33.122 18.8957 33.122 18.1043 32.6339 17.6161Z" fill="#008060"/>
+                </svg>
+                </div>
+                <h1 class="success__modal__title">Мы получили вашу заявку</h1>
+                <p class="success__modal__text">Ожидайте звонка в течение 15 минут</p>
+                <button class="success__modal__btn">Понятно, жду</button>
+                </div>
+                `;
+
+              document.body.appendChild(successModal);
+
+              function closeSuccessModal() {
+                const closeButton = successModal.querySelector(
+                  ".succes__modal__close"
+                );
+
+                closeButton.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  successModal.style.display = "none";
+                  overlay.style.display = "none";
+                });
+              }
+
+              closeSuccessModal();
             });
           }
 
@@ -875,6 +926,11 @@ document.addEventListener("DOMContentLoaded", () => {
       overlay.addEventListener("click", function () {
         overlay.style.display = "none";
         buyModal.style.display = "none";
+
+        const successModal = document.querySelector(".success__modal");
+        if (successModal) {
+          successModal.style.display = "none";
+        }
       });
     }
   }
