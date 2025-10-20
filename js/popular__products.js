@@ -662,16 +662,18 @@ document.addEventListener("DOMContentLoaded", () => {
               ".buy__modal__card__old__price"
             );
 
-            setWeightShow.addEventListener("click", function (e) {
-              e.preventDefault();
-              e.stopPropagation();
+            if (setWeightShow && setWeightInputContainer) {
+              setWeightShow.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-              if (setWeightInputContainer.style.display === "flex") {
-                setWeightInputContainer.style.display = "none";
-              } else {
-                setWeightInputContainer.style.display = "flex";
-              }
-            });
+                if (setWeightInputContainer.style.display === "flex") {
+                  setWeightInputContainer.style.display = "none";
+                } else {
+                  setWeightInputContainer.style.display = "flex";
+                }
+              });
+            }
 
             if (weightInput) {
               weightInput.addEventListener("input", function (event) {
@@ -696,7 +698,7 @@ document.addEventListener("DOMContentLoaded", () => {
               });
             }
 
-            if (weightButton) {
+            if (weightButton && weightInput) {
               weightButton.addEventListener("click", function () {
                 const InputValue = weightInput.value;
                 const weightValue = parseFloat(InputValue.replace(",", "."));
