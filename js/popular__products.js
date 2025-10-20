@@ -859,21 +859,26 @@ document.addEventListener("DOMContentLoaded", () => {
               const priceElement = buyModal.querySelector(
                 ".buy__modal__card__price"
               );
-              const quantityActive = buyModal.querySelector(
-                ".popular__products__card__quantity__active"
-              );
               const counter = buyModal.querySelector(
                 ".product__page__pay__counter"
+              );
+              const quantityActive = buyModal.querySelector(
+                ".popular__products__card__quantity__active"
               );
 
               const orderData = {
                 productId: product.id,
                 prdoductPrice: parseFloat(priceElement.textContent),
-                quantityOption: parseFloat(quantityActive.textContent),
                 count: parseFloat(counter.textContent),
                 Name: nameInput.value.trim(),
                 Phone: phoneInput.value.trim(),
               };
+
+              if (quantityActive) {
+                orderData.quantityOption = parseFloat(
+                  quantityActive.textContent
+                );
+              }
 
               localStorage.setItem("SentItem", JSON.stringify(orderData));
               console.log("Данные заказа сохранены:", orderData);

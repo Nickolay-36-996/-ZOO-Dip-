@@ -710,4 +710,56 @@
     flex-direction: column;
     max-height: 260px;
   }
+
+  // modal window
+
+  .buy__modal {
+    max-width: 340px;
+  }
+
+  .buy__modal__wrap {
+    padding: 16px 8px;
+  }
+
+  .buy__modal__title {
+    align-self: flex-start;
+  }
+
+  .buy__modal__card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .buy__modal__card__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .buy__modal__card__price__wrap {
+    flex-direction: row;
+  }
+
+  .buy__modal__card__p {
+    font-size: 15px;
+  }
+
+  .buy__modal__card__form__btn {
+    align-self: flex-start;
+  }
+
+  .buy__modal__card__privaty {
+    text-align: center;
+  }
+
+  // success modal
+
+  .success__modal {
+    max-width: 340px;
+  }
+
+  .success__modal__wrap {
+    padding: 24px 19px;
+  }
 }
