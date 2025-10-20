@@ -594,9 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
                       "new__products__card__quantity__active"
                     );
                   }
-                  this.classList.add(
-                    "new__products__card__quantity__active"
-                  );
+                  this.classList.add("new__products__card__quantity__active");
 
                   if (discountPercent > 0) {
                     newPrice = optionQuantity * discountedPrice;
