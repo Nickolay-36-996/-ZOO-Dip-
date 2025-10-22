@@ -463,6 +463,15 @@ body {
   transition: linear 0.3s;
 }
 
+.search__list__item {
+  cursor: pointer;
+  transition: linear 0.3s;
+}
+
+.search__list__item:hover {
+  background-color: #F1F2F3;
+}
+
 .search__list__item__link {
   display: flex;
   flex-direction: row;
