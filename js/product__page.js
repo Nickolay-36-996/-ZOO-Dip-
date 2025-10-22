@@ -704,9 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buyClick(product) {
-    const buyItems = productPage.querySelectorAll(
-      ".product__page__buy"
-    );
+    const buyItems = productPage.querySelectorAll(".product__page__buy");
 
     const overlay = document.createElement("div");
     overlay.className = "modal__overlay";
@@ -741,22 +739,20 @@ document.addEventListener("DOMContentLoaded", () => {
           activeOptionCount = parseFloat(quantityActiveText);
         }
 
-        const productId = product.id === parseInt(cardId);
-
-        if (productId) {
+        if (product.id === parseInt(cardId)) {
           let quantityOptions = "";
 
           if (
-            productId.countitemproduct_set &&
-            productId.countitemproduct_set.length > 0
+            product.countitemproduct_set &&
+            product.countitemproduct_set.length > 0
           ) {
             quantityOptions = product.countitemproduct_set
               .map((item) => {
                 const isActive =
                   item.value === activeOptionCount
-                    ? "weight__option__active"
+                    ? "new__products__card__quantity__active"
                     : "";
-                return `<span class="weight__option ${isActive}" 
+                return `<span class="new__products__card__quantity ${isActive}" 
                      data-count="${item.value}">
                      ${item.value} ${item.unit}
                    </span>`;
@@ -765,8 +761,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           const hasWeightOptions =
-            productId.countitemproduct_set &&
-            productId.countitemproduct_set.some((item) =>
+            product.countitemproduct_set &&
+            product.countitemproduct_set.some((item) =>
               item.unit.includes("кг")
             );
 
@@ -861,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
               `
                  : `
             <span class="buy__modal__card__price">${parseFloat(
-              productId.price
+              product.price
             ).toFixed(0)} BYN</span>
               `
              }
@@ -904,7 +900,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           function setOptionsBuyClick() {
             const quantityOptions = buyModal.querySelectorAll(
-              ".popular__products__card__quantity"
+              ".new__products__card__quantity"
             );
 
             const priceElement = buyModal.querySelector(
@@ -921,7 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let newOldPrice = 0;
 
             const activeOption = buyModal.querySelector(
-              ".popular__products__card__quantity__active"
+              ".new__products__card__quantity__active"
             );
 
             if (activeOption) {
@@ -952,13 +948,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const optionQuantity = parseFloat(optionText);
 
                 const isActive = this.classList.contains(
-                  "popular__products__card__quantity__active"
+                  "new__products__card__quantity__active"
                 );
 
                 if (isActive) {
                   for (const opt of quantityOptions) {
                     opt.classList.remove(
-                      "popular__products__card__quantity__active"
+                      "new__products__card__quantity__active"
                     );
                     if (discountPercent > 0) {
                       newPrice = discountedPrice;
@@ -975,11 +971,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                   for (const opt of quantityOptions) {
                     opt.classList.remove(
-                      "popular__products__card__quantity__active"
+                      "new__products__card__quantity__active"
                     );
                   }
                   this.classList.add(
-                    "popular__products__card__quantity__active"
+                    "new__products__card__quantity__active"
                   );
 
                   if (discountPercent > 0) {
@@ -1012,7 +1008,7 @@ document.addEventListener("DOMContentLoaded", () => {
               ".product__page__modal__set__weight__btn"
             );
             const optionActive = buyModal.querySelector(
-              ".popular__products__card__quantity__active"
+              ".new__products__card__quantity__active"
             );
             const priceElement = buyModal.querySelector(
               ".buy__modal__card__price"
@@ -1074,7 +1070,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (optionActive) {
                   optionActive.classList.remove(
-                    "popular__products__card__quantity__active"
+                    "new__products__card__quantity__active"
                   );
                 }
 
@@ -1106,7 +1102,7 @@ document.addEventListener("DOMContentLoaded", () => {
               counter.textContent = count;
 
               const quantityActive = buyModal.querySelector(
-                ".popular__products__card__quantity__active"
+                ".new__products__card__quantity__active"
               );
 
               let multiplier = 1;
@@ -1136,7 +1132,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 counter.textContent = count;
 
                 const quantityActive = buyModal.querySelector(
-                  ".popular__products__card__quantity__active"
+                  ".new__products__card__quantity__active"
                 );
                 let multiplier = 1;
                 if (quantityActive) {
@@ -1222,7 +1218,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ".product__page__pay__counter"
               );
               const quantityActive = buyModal.querySelector(
-                ".popular__products__card__quantity__active"
+                ".new__products__card__quantity__active"
               );
 
               const orderData = {
