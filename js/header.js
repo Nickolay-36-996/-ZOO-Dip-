@@ -13,6 +13,94 @@ document.addEventListener("DOMContentLoaded", function () {
   let isMenuOpen = false;
   let currentBurger = null;
 
+  async function fetchAllProductsForSearch() {
+    let allProducts = [];
+    let nextUrl =
+      "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
+
+    try {
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          allProducts = [...allProducts, ...data.results];
+        }
+
+        nextUrl = data.next;
+      }
+      return allProducts;
+    } catch (error) {
+      console.error("Ошибка при загрузке товаров:", error);
+      throw error;
+    }
+  }
+
+  fetchAllProductsForSearch()
+    .then((allProducts) => {
+      console.log("✅ Всего товаров загружено для поиска:", allProducts.length);
+      window.allProducts = allProducts;
+      InitSearchInput(allProducts);
+    })
+    .catch((error) => {
+      console.error("❌ Ошибка загрузки товаров для поиска:", error);
+    });
+
+  function InitSearchInput(allProducts) {
+    const searchList = document.querySelector(".search__list");
+    const searchInput = document.querySelector(".search__header__low__input");
+
+    searchInput.addEventListener("input", function () {
+      searchInput.placeholder = `Введите запрос..`;
+
+      const searchText = searchInput.value;
+
+      if (searchList) {
+        searchList.innerHTML = "";
+      }
+
+      if (searchText.length > 0) {
+        searchList.style.display = "flex";
+      } else {
+        searchList.style.display = "none";
+      }
+
+      for (const item of allProducts) {
+        const product = item.title;
+        if (searchText[0].toLowerCase() === product[0].toLowerCase()) {
+          const prdouctItem = document.createElement("div");
+          prdouctItem.className = "search__list__item";
+          prdouctItem.innerHTML = `
+          <img src="${item.image_prev}" alt="${item.title}" class="search__list__item__img">
+          <p class="search__list__item__title">${item.title}</p>
+          `;
+
+          searchList.appendChild(prdouctItem);
+        }
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (searchList && searchList.style.display === "flex") {
+        const clickedElement = e.target;
+
+        if (
+          !searchList.contains(clickedElement) &&
+          clickedElement !== searchInput
+        ) {
+          searchList.style.display = "none";
+        }
+
+        if (searchInput.value.length > 0) {
+          searchInput.value = "";
+          searchInput.placeholder = "Поиск товаров...";
+        }
+      }
+    });
+  }
+
   function toggleMenu() {
     if (
       sideBar &&
@@ -158,7 +246,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (basketItems.length > 5) {
-          itemHTML += `<p class="basket__dropdown__more">И ещё ${basketItems.length - 5}...</p>`;
+          itemHTML += `<p class="basket__dropdown__more">И ещё ${
+            basketItems.length - 5
+          }...</p>`;
         }
 
         dropdown.innerHTML = itemHTML;
@@ -167,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
       dropdown.style.display = "flex";
     });
 
-    basketIcone.addEventListener('mouseleave', function() {
+    basketIcone.addEventListener("mouseleave", function () {
       dropdown.style.display = "none";
     });
   }

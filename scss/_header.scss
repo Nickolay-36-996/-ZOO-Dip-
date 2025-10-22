@@ -158,10 +158,15 @@ body {
   white-space: nowrap;
 }
 
-.header__low__search {
+.header__low__search__wrap {
   display: flex;
-  flex-direction: row;
-  flex: 0 1 500px;
+  flex-direction: column;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+}
+
+.header__low__search {
   position: relative;
 }
 
@@ -176,7 +181,7 @@ body {
   font-weight: 400;
   font-size: 15px;
   line-height: 20px;
-  color: #6d7175;
+  color: black;
   font-style: normal;
   background: white;
   width: 100%;
@@ -423,7 +428,7 @@ body {
   position: absolute;
   top: 52px;
   right: 0px;
-  transition: linear .3s;
+  transition: linear 0.3s;
 }
 
 .empty__cart__drop {
@@ -467,6 +472,51 @@ body {
   font-size: 15px;
   line-height: 20px;
   color: black;
+}
+
+// search
+
+.search__list {
+  display: none;
+  flex-direction: column;
+  padding: 8px 0px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1) inset,
+    0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+  max-height: 392px;
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 37px;
+  transition: linear .3s;
+}
+
+.search__list__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.search__list__item__img {
+  width: 40px;
+  height: 40px;
+}
+
+.search__list__item__title {
+  font-family: SF Pro Text;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #202223;
+  display: -webkit-box;
+  -weblit-box-orierntal: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
