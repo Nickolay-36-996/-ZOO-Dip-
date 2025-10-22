@@ -70,11 +70,13 @@ document.addEventListener("DOMContentLoaded", function () {
       for (const item of allProducts) {
         const product = item.title;
         if (searchText[0].toLowerCase() === product[0].toLowerCase()) {
-          const prdouctItem = document.createElement("div");
+          const prdouctItem = document.createElement("li");
           prdouctItem.className = "search__list__item";
           prdouctItem.innerHTML = `
+          <a class="search__list__item__link" href="product__page.html?id=${item.id}">
           <img src="${item.image_prev}" alt="${item.title}" class="search__list__item__img">
           <p class="search__list__item__title">${item.title}</p>
+          </a>
           `;
 
           searchList.appendChild(prdouctItem);

@@ -490,10 +490,10 @@ body {
   overflow: hidden;
   position: absolute;
   top: 37px;
-  transition: linear .3s;
+  transition: linear 0.3s;
 }
 
-.search__list__item {
+.search__list__item__link {
   display: flex;
   flex-direction: row;
   align-items: center;
