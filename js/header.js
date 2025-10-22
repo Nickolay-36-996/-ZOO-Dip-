@@ -55,7 +55,9 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("input", function () {
       searchInput.placeholder = `Введите запрос..`;
 
-      const searchText = searchInput.value;
+      const searchText = searchInput.value.toLowerCase();
+
+      let foundItems = false;
 
       if (searchList) {
         searchList.innerHTML = "";
@@ -68,8 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       for (const item of allProducts) {
-        const product = item.title;
-        if (searchText[0].toLowerCase() === product[0].toLowerCase()) {
+        const product = item.title.toLowerCase();
+
+        if (product.startsWith(searchText)) {
+          foundItems = true;
           const prdouctItem = document.createElement("li");
           prdouctItem.className = "search__list__item";
           prdouctItem.innerHTML = `
@@ -81,6 +85,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
           searchList.appendChild(prdouctItem);
         }
+      }
+      
+      if (!foundItems) {
+        const notFound = document.createElement("div");
+        notFound.className = "not__found__items";
+        notFound.innerHTML = `
+          <img class="not__found__items__img" src="./img/image 36dog.jpg" alt=""not-found>
+          <h2 class="not__found__items__title">По вашему запросу ничего не найдено. Попробуйте изменить запрос или выбрать товары в нашем каталоге</h2>
+          <a href="catalog.html" class="transfer__to__catalog">Перейти в каталог</a>
+          `;
+        searchList.appendChild(notFound);
       }
     });
 
