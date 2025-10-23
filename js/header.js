@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let isMenuOpen = false;
   let currentBurger = null;
 
-  async function fetchAllProductsForSearch() {
+  async function fetchAllProducts() {
     let allProducts = [];
     let nextUrl =
       "https://oliver1ck.pythonanywhere.com/api/get_products_filter/?order=date_create";
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  fetchAllProductsForSearch()
+  fetchAllProducts()
     .then((allProducts) => {
       console.log("✅ Всего товаров загружено для поиска:", allProducts.length);
       window.allProducts = allProducts;
@@ -51,22 +51,46 @@ document.addEventListener("DOMContentLoaded", function () {
   function InitSearchInput(allProducts) {
     const searchList = document.querySelector(".search__list");
     const searchInput = document.querySelector(".search__header__low__input");
+    const searchListMobile = document.querySelector(".search__list__mobile");
+    const searchInputMobile = document.querySelector(
+      ".search__header__low__input__mobile"
+    );
 
-    searchInput.addEventListener("input", function () {
-      searchInput.placeholder = `Введите запрос..`;
+    if (searchList && searchInput) {
+      searchInput.addEventListener("input", function () {
+        handleSearch();
+      });
+    }
 
-      const searchText = searchInput.value.toLowerCase();
+    if (searchListMobile && searchInputMobile) {
+      searchInputMobile.addEventListener("input", function () {
+        handleSearch();
+      });
+    }
 
-      let foundItems = false;
+    function handleSearch() {
+      let activeInput = null;
+      let activeList = null;
 
-      if (searchList) {
-        searchList.innerHTML = "";
+      if (document.activeElement === searchInput) {
+        activeInput = searchInput;
+        activeList = searchList;
+      } else if (document.activeElement === searchInputMobile) {
+        activeInput = searchInputMobile;
+        activeList = searchListMobile;
       }
 
+      activeInput.placeholder = `Введите запрос..`;
+
+      const searchText = activeInput.value.toLowerCase();
+      let foundItems = false;
+
+      activeList.innerHTML = "";
+
       if (searchText.length > 0) {
-        searchList.style.display = "flex";
+        activeList.style.display = "flex";
       } else {
-        searchList.style.display = "none";
+        activeList.style.display = "none";
       }
 
       for (const item of allProducts) {
@@ -74,45 +98,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (product.startsWith(searchText)) {
           foundItems = true;
-          const prdouctItem = document.createElement("li");
-          prdouctItem.className = "search__list__item";
-          prdouctItem.innerHTML = `
-          <a class="search__list__item__link" href="product__page.html?id=${item.id}">
-          <img src="${item.image_prev}" alt="${item.title}" class="search__list__item__img">
-          <p class="search__list__item__title">${item.title}</p>
-          </a>
-          `;
+          const productItem = document.createElement("li");
+          productItem.className = "search__list__item";
+          productItem.innerHTML = `
+                <a class="search__list__item__link" href="product__page.html?id=${item.id}">
+                <img src="${item.image_prev}" alt="${item.title}" class="search__list__item__img">
+                <p class="search__list__item__title">${item.title}</p>
+                </a>
+                `;
 
-          searchList.appendChild(prdouctItem);
+          activeList.appendChild(productItem);
         }
       }
-      
+
       if (!foundItems) {
         const notFound = document.createElement("div");
         notFound.className = "not__found__items";
         notFound.innerHTML = `
-          <img class="not__found__items__img" src="./img/image 36dog.jpg" alt=""not-found>
-          <h2 class="not__found__items__title">По вашему запросу ничего не найдено. Попробуйте изменить запрос или выбрать товары в нашем каталоге</h2>
-          <a href="catalog.html" class="transfer__to__catalog">Перейти в каталог</a>
-          `;
-        searchList.appendChild(notFound);
+            <img class="not__found__items__img" src="./img/image 36dog.jpg" alt="not-found">
+            <h2 class="not__found__items__title">По вашему запросу ничего не найдено. Попробуйте изменить запрос или выбрать товары в нашем каталоге</h2>
+            <a href="catalog.html" class="transfer__to__catalog">Перейти в каталог</a>
+            `;
+
+        activeList.appendChild(notFound);
       }
-    });
+    }
 
     document.addEventListener("click", function (e) {
-      if (searchList && searchList.style.display === "flex") {
-        const clickedElement = e.target;
+      const clickedElement = e.target;
 
+      if (searchList && searchList.style.display === "flex") {
         if (
           !searchList.contains(clickedElement) &&
           clickedElement !== searchInput
         ) {
           searchList.style.display = "none";
+          if (searchInput) {
+            searchInput.value = "";
+            searchInput.placeholder = "Поиск товаров...";
+          }
         }
+      }
 
-        if (searchInput.value.length > 0) {
-          searchInput.value = "";
-          searchInput.placeholder = "Поиск товаров...";
+      if (searchListMobile && searchListMobile.style.display === "flex") {
+        if (
+          !searchListMobile.contains(clickedElement) &&
+          clickedElement !== searchInputMobile
+        ) {
+          searchListMobile.style.display = "none";
+          if (searchInputMobile) {
+            searchInputMobile.value = "";
+            searchInputMobile.placeholder = "Search";
+          }
         }
       }
     });
