@@ -316,6 +316,66 @@ body {
   display: none;
 }
 
+// back call
+
+.back__call {
+  display: none;
+  max-width: 461px;
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.back__call__wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 56px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.back__call__title {
+  font-family: SF Pro Display;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0px;
+  color: #000000;
+}
+
+.back__call__sent {
+  font-family: SF Pro Text;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0px;
+  color: #ffffff;
+  background-color: #00a0ac;
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.08) inset,
+    0px -1px 0px 0px rgba(0, 0, 0, 0.08);
+  padding: 8px 16px;
+  border-radius: 4px;
+  align-self: center;
+}
+
+.back__call__p {
+  font-family: SF Pro Text;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: center;
+  color: #A7ACB1;
+}
+
+.back__call__link {
+  color: #2C6ECB;
+}
+
 @media (max-width: 992px) {
   .header__top__wrapper {
     display: none;

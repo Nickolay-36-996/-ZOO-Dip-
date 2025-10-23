@@ -157,6 +157,61 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function backCall() {
+    const backCallBtn = document.querySelector(".header__top__backcall__btn");
+
+    backCallBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const overlay = document.createElement("div");
+      overlay.classList = "modal__overlay";
+      overlay.style.display = "block";
+
+      const backCallModal = document.createElement("div");
+      backCallModal.className = "back__call";
+      backCallModal.style.display = "flex";
+      backCallModal.innerHTML = `
+      <div class="back__call__wrap">
+      <h2 class="back__call__title">Перезвоним вам в течение 15 минут</h2>
+      <div class="order__input__box">
+      <div class="order__input__wrap">
+      <h3 class="order__input__title">Имя</h3>
+      <input
+      type="text"
+      id="name"
+      name="name"
+      maxlength="25"
+      pattern="[А-Яа-яЁё\s]+"
+      class="order__input"
+      placeholder="Введите ваше имя"
+      required
+      />
+      </div>
+      <div class="order__input__wrap">
+      <h3 class="order__input__title">Номер телефона</h3>
+      <input
+      type="tel"
+      id="phone"
+      name="phone"
+      maxlength="13"
+      pattern="\+375[0-9]{9}"
+      placeholder="+375"
+      class="order__input"
+      required
+      />
+      </div>
+      </div>
+      <button class="back__call__sent">Отправить</button>
+      <p class="back__call__p">Нажимая на кнопку вы даёте согласие на обработку <a class="back__call__link" href="#">персональных данных</a></p>
+      </div>
+      `;
+      
+      document.body.appendChild(overlay);
+      document.body.appendChild(backCallModal);
+    })
+  }
+
   function toggleMenu() {
     if (
       sideBar &&
@@ -321,4 +376,5 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", handleResize);
   updateBasketCounter();
   createBasketDropdown();
+  backCall();
 });
