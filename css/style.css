@@ -555,7 +555,17 @@ body {
   transition: linear 0.3s;
 }
 
+.search__mobile__hidden {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .search__hidden {
+    display: none;
+  }
+  .search__mobile__hidden {
+    display: flex;
+  }
   body {
     padding-top: 32px;
   }

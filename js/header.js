@@ -75,9 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
       if (document.activeElement === searchInput) {
         activeInput = searchInput;
         activeList = searchList;
+        searchInputMobile.value = "";
       } else if (document.activeElement === searchInputMobile) {
         activeInput = searchInputMobile;
         activeList = searchListMobile;
+        searchInput.value = "";
       }
 
       activeInput.placeholder = `Введите запрос..`;
