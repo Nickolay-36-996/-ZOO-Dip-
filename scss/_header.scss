@@ -336,6 +336,15 @@ body {
   padding: 24px 56px;
   background-color: white;
   border-radius: 8px;
+  position: relative;
+}
+
+.back__call__close {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
 }
 
 .back__call__title {

@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function backCall() {
     const backCallBtn = document.querySelector(".header__top__backcall__btn");
 
-    backCallBtn.addEventListener('click', function(e) {
+    backCallBtn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
 
@@ -168,18 +168,25 @@ document.addEventListener("DOMContentLoaded", function () {
       overlay.classList = "modal__overlay";
       overlay.style.display = "block";
 
+      const successModal = document.createElement("div");
+
       const backCallModal = document.createElement("div");
       backCallModal.className = "back__call";
       backCallModal.style.display = "flex";
       backCallModal.innerHTML = `
       <div class="back__call__wrap">
+      <span class="back__call__close">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
+      </svg>
+      </span>
       <h2 class="back__call__title">Перезвоним вам в течение 15 минут</h2>
       <div class="order__input__box">
       <div class="order__input__wrap">
       <h3 class="order__input__title">Имя</h3>
       <input
       type="text"
-      id="name"
+      id="back-name"
       name="name"
       maxlength="25"
       pattern="[А-Яа-яЁё\s]+"
@@ -192,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <h3 class="order__input__title">Номер телефона</h3>
       <input
       type="tel"
-      id="phone"
+      id="back-phone"
       name="phone"
       maxlength="13"
       pattern="\+375[0-9]{9}"
@@ -206,10 +213,155 @@ document.addEventListener("DOMContentLoaded", function () {
       <p class="back__call__p">Нажимая на кнопку вы даёте согласие на обработку <a class="back__call__link" href="#">персональных данных</a></p>
       </div>
       `;
-      
+
       document.body.appendChild(overlay);
       document.body.appendChild(backCallModal);
-    })
+
+      backCallClose();
+      initInputsAndSentData();
+
+      function initInputsAndSentData() {
+        const inputName = document.getElementById("back-name");
+        const inputPhone = document.getElementById("back-phone");
+        const sentData = backCallModal.querySelector(".back__call__sent");
+
+        if (inputName) {
+          inputName.addEventListener("input", function () {
+            const cursorPosition = this.selectionStart;
+
+            this.value = this.value.replace(/[^А-Яа-яЁё\s]/g, "");
+            this.value = this.value.replace(/\s+/g, " ");
+
+            if (this.value.startsWith(" ")) {
+              this.value = this.value.substring(1);
+            }
+
+            this.value = this.value.replace(/\s+/g, " ");
+          });
+        }
+
+        if (inputPhone) {
+          inputPhone.addEventListener("input", function (e) {
+            const cursorPosition = this.selectionStart;
+
+            let value = this.value.replace(/[^\d+]/g, "");
+
+            if (!value.startsWith("+")) {
+              value = "+";
+            }
+
+            this.value = value;
+          });
+        }
+
+        if (sentData) {
+          sentData.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (inputName.value === "" || inputPhone.value === "") {
+              alert(
+                "Пожалуйста, заполните все обязательные поля перед оформлением заказа!"
+              );
+              return;
+            }
+
+            const userName = inputName.value;
+            const phoneNumber = inputPhone.value;
+
+            const data = {
+              userName: userName,
+              phoneNumber: phoneNumber,
+            };
+
+            localStorage.setItem("backCallData", JSON.stringify(data));
+            console.log("данные отправлены:", data);
+
+            backCallModal.style.display = "none";
+
+            successModal.className = "success__modal";
+            successModal.innerHTML = `
+                <div class="success__modal__wrap">
+                <span class="succes__modal__close">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.89705 4.05379L3.96967 3.96967C4.23594 3.7034 4.6526 3.6792 4.94621 3.89705L5.03033 3.96967L10 8.939L14.9697 3.96967C15.2359 3.7034 15.6526 3.6792 15.9462 3.89705L16.0303 3.96967C16.2966 4.23594 16.3208 4.6526 16.1029 4.94621L16.0303 5.03033L11.061 10L16.0303 14.9697C16.2966 15.2359 16.3208 15.6526 16.1029 15.9462L16.0303 16.0303C15.7641 16.2966 15.3474 16.3208 15.0538 16.1029L14.9697 16.0303L10 11.061L5.03033 16.0303C4.76406 16.2966 4.3474 16.3208 4.05379 16.1029L3.96967 16.0303C3.7034 15.7641 3.6792 15.3474 3.89705 15.0538L3.96967 14.9697L8.939 10L3.96967 5.03033C3.7034 4.76406 3.6792 4.3474 3.89705 4.05379L3.96967 3.96967L3.89705 4.05379Z" fill="#5C5F62"/>
+                </svg>
+                </span>
+                <div>
+                <svg class="success__modal__img" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 4C35.0457 4 44 12.9543 44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4ZM32.6339 17.6161C32.1783 17.1605 31.4585 17.1301 30.9676 17.525L30.8661 17.6161L20.75 27.7322L17.1339 24.1161C16.6457 23.628 15.8543 23.628 15.3661 24.1161C14.9105 24.5717 14.8801 25.2915 15.275 25.7824L15.3661 25.8839L19.8661 30.3839C20.3217 30.8395 21.0416 30.8699 21.5324 30.475L21.6339 30.3839L32.6339 19.3839C33.122 18.8957 33.122 18.1043 32.6339 17.6161Z" fill="#008060"/>
+                </svg>
+                </div>
+                <h1 class="success__modal__title">Мы получили вашу заявку</h1>
+                <p class="success__modal__text">Ожидайте звонка в течение 15 минут</p>
+                <button class="success__modal__btn">Понятно, жду</button>
+                </div>
+                `;
+
+            document.body.appendChild(successModal);
+
+            successModalClose();
+
+            function successModalClose() {
+              const successModalClose = successModal.querySelector(
+                ".success__modal__btn"
+              );
+              const closeButton = successModal.querySelector(
+                ".succes__modal__close"
+              );
+
+              successModalClose.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                overlay.style.display = "none";
+                successModal.style.display = "none";
+
+                document.body.removeChild(backCallModal);
+              });
+
+              closeButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                overlay.style.display = "none";
+                successModal.style.display = "none";
+
+                document.body.removeChild(backCallModal);
+              });
+            }
+          });
+        }
+      }
+
+      function backCallClose() {
+        const backCallClose = backCallModal.querySelector(".back__call__close");
+
+        backCallClose.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          overlay.style.display = "none";
+          backCallModal.style.display = "none";
+
+          document.body.removeChild(backCallModal);
+        });
+
+        overlay.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          overlay.style.display = "none";
+          backCallModal.style.display = "none";
+
+          if (successModal.style.display !== "none") {
+            successModal.style.display = "none";
+          }
+
+          document.body.removeChild(backCallModal);
+        });
+      }
+    });
   }
 
   function toggleMenu() {
