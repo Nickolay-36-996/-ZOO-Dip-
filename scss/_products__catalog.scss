@@ -800,7 +800,7 @@
 
 @media (max-width: 576px) {
   .products__catalog__products__list {
-    grid-template-columns: repeat(1, 340px);
+    grid-template-columns: 1fr;
   }
 
   .products__catalog__products__list__slider__item__switch__txt {

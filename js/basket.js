@@ -724,8 +724,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let basketItems = JSON.parse(localStorage.getItem("basketItem")) || [];
         let updateBasket = [];
 
+        let hasRemovedOne = false;
         for (const item of basketItems) {
-          if (item.productId !== cartID) {
+          if (item.productId === cartID && hasRemovedOne === false) {
+            hasRemovedOne = true;
+          } else {
             updateBasket.push(item);
           }
         }
