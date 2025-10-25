@@ -76,11 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initModalOrder() {
     const orderButton = document.querySelector(".registration__window__button");
+    const nameInput = document.getElementById("name");
+    const phoneInput = document.getElementById("phone");
 
     function checkFromFilled() {
-      const nameInput = document.getElementById("name");
-      const phoneInput = document.getElementById("phone");
-
       const isNameFilled = nameInput && nameInput.value.trim() !== "";
       const isPhoneFilled = phoneInput && phoneInput.value.trim() !== "";
 
@@ -96,6 +95,17 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         return;
       }
+
+      const userName = nameInput.value.trim();
+      const userPhone = phoneInput.value.trim();
+
+      const dataItems = JSON.parse(localStorage.getItem("orderData")) || [];
+      dataItems.userName = userName;
+      dataItems.userPhone = userPhone;
+
+      localStorage.setItem("orderData", JSON.stringify(dataItems));
+
+      console.log("данные обновлены:", dataItems);
 
       modalContent.style.display = "flex";
       overlay.style.display = "block";
