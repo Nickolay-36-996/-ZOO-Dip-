@@ -320,6 +320,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentPrice = parseFloat(
           priceCounter.textContent.replace(" BYN", "")
         );
+        const currentOldPrice = oldPriceCounter
+          ? parseFloat(oldPriceCounter.textContent.replace(" BYN", ""))
+          : currentPrice;
 
         if (isCurrentlyActive) {
           for (const opt of weightOption) {
@@ -345,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
           fullPrice = fullPrice - currentPrice + newPrice;
 
           if (discountPercent > 0) {
-            fullOldPrice = fullOldPrice - basePrice + basePrice;
+            fullOldPrice = fullOldPrice - currentOldPrice + newOldPrice;
           } else {
             fullOldPrice = fullOldPrice - currentPrice + newPrice;
           }
@@ -381,8 +384,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fullPrice = fullPrice - currentPrice + newPrice;
 
         if (discountPercent > 0) {
-          const oldPriceValue = basePrice * weightValue;
-          fullOldPrice = fullOldPrice - currentPrice + oldPriceValue;
+          fullOldPrice = fullOldPrice - currentOldPrice + newOldPrice;
         } else {
           fullOldPrice = fullOldPrice - currentPrice + newPrice;
         }
