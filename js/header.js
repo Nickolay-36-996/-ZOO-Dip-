@@ -159,11 +159,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function backCall() {
     const backCallBtn = document.querySelector(".header__top__backcall__btn");
+    const backCallBtnForFooter = document.querySelector(".back__call__footer");
 
     backCallBtn.addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
+      backCallModalEvent();
+    });
 
+    backCallBtnForFooter.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      backCallModalEvent();
+    });
+
+    function backCallModalEvent() {
       const overlay = document.createElement("div");
       overlay.classList = "modal__overlay";
       overlay.style.display = "block";
@@ -361,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.body.removeChild(backCallModal);
         });
       }
-    });
+    }
   }
 
   function toggleMenu() {
