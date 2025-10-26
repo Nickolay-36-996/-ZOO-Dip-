@@ -118,13 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
           <a href="product__page.html?id=${
             product.id
           }" class="popular__products__card__title__link">${product.title}</a>
-          ${
-            product.sale?.percent > 0
-              ? `
-            <div class="product__sale__badge"><span>${product.sale.percent}%</span></div>
-          `
-              : ""
-          }
         </div>
         <div class="popular__products__card__quantity__container">
           <div class="popular__products__card__quantity__box">
