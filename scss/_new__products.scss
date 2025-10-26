@@ -333,8 +333,17 @@
   }
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
   .new__products__slider__buttons {
     display: none;
+  }
+
+  .new__products__cards {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }

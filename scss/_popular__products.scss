@@ -711,6 +711,15 @@
     max-height: 260px;
   }
 
+  .popular__products__cards {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   // modal window
 
   .buy__modal {

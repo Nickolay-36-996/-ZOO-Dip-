@@ -1665,6 +1665,14 @@ body {
     flex-direction: column;
     max-height: 260px;
   }
+  .popular__products__cards {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .popular__products__cards::-webkit-scrollbar {
+    display: none;
+  }
   .buy__modal {
     max-width: 340px;
   }
@@ -2031,6 +2039,14 @@ body {
 }
 @media (max-width: 768px) {
   .new__products__slider__buttons {
+    display: none;
+  }
+  .new__products__cards {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .new__products__cards::-webkit-scrollbar {
     display: none;
   }
 }
