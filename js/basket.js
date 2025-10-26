@@ -484,6 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
           totalPriceElement.textContent.replace(" BYN", "")
         );
 
+        const currentOldPrice = oldPriceElement
+          ? parseFloat(oldPriceElement.textContent.replace(" BYN", ""))
+          : currentPrice;
+
         const weightOptions = cartItem.querySelectorAll(
           ".my__cart__item__info__option"
         );
@@ -508,7 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
         oldPriceElement.textContent = newOldPrice.toFixed(2) + " BYN";
 
         fullPrice = fullPrice - currentPrice + newPrice;
-        fullOldPrice = fullOldPrice - currentPrice + newOldPrice;
+        fullOldPrice = fullOldPrice - currentOldPrice + newOldPrice;
 
         updateTotalCounter();
         updateBasketInLocalStorage(window.allProducts);
