@@ -2596,6 +2596,10 @@ body {
   .articles__slider__buttons {
     display: none;
   }
+  .articles__slider__list {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
 }
 .about__owner__wrapper {
   display: flex;

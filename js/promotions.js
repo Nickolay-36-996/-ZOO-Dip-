@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     allSales.sort(() => Math.random() - 0.5);
 
     for (const sale of allSales) {
+      if (sale.percent <= 0) {
+        continue;
+      }
+      
       const promotionItem = document.createElement("div");
       promotionItem.classList = "promotion__item";
       promotionItem.innerHTML = `
@@ -61,10 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       salesContainer.appendChild(promotionItem);
-
-      if (sale.percent <= 0) {
-        promotionItem.classList.add("promotion__item__hide");
-      }
     }
   }
 });
