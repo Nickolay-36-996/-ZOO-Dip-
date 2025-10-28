@@ -31,6 +31,30 @@ document.addEventListener("DOMContentLoaded", () => {
     ".products__catalog__filter__title"
   );
 
+  function safeQuerySelector(selector) {
+    try {
+      return document.querySelector(selector);
+    } catch (e) {
+      console.warn("Selector error:", selector, e);
+      return null;
+    }
+  }
+
+  function safeGetDataset(element, property) {
+    if (!element) return null;
+    return element.dataset?.[property] || null;
+  }
+
+  function safeClosest(element, selector) {
+    if (!element) return null;
+    try {
+      return element.closest(selector);
+    } catch (e) {
+      console.warn("Closest error:", selector, e);
+      return null;
+    }
+  }
+
   document.addEventListener("animalFilterClicked", (e) => {
     const { animalType } = e.detail;
     currentAnimalFilter = animalType;
@@ -52,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function filterProductsByAnimal(animalType) {
-    const promotionalOnly = promotionalIndicator.classList.contains(
+    const promotionalOnly = promotionalIndicator?.classList.contains(
       "promotional__item__indicator__active"
     );
 
@@ -76,13 +100,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function filterProductsByCategory(categoryIds) {
-    const activeAnimalLink = document.querySelector(
+    const activeAnimalLink = safeQuerySelector(
       ".animal__category__catalog__active"
     );
-    if (!activeAnimalLink) return;
+    if (!activeAnimalLink) {
+      console.warn("No active animal category found");
+      return;
+    }
 
-    const animalType = activeAnimalLink.dataset.animalType;
-    const promotionalOnly = promotionalIndicator.classList.contains(
+    const animalType = safeGetDataset(activeAnimalLink, "animalType");
+    if (!animalType) {
+      console.warn("Active animal category has no animalType");
+      return;
+    }
+
+    const promotionalOnly = promotionalIndicator?.classList.contains(
       "promotional__item__indicator__active"
     );
 
@@ -113,22 +145,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function filterProductsByBrand() {
-    const activeAnimalLink = document.querySelector(
+    const activeAnimalLink = safeQuerySelector(
       ".animal__category__catalog__active"
     );
-    const animalType = activeAnimalLink
-      ? activeAnimalLink.dataset.animalType
-      : null;
+    const animalType = safeGetDataset(activeAnimalLink, "animalType");
 
-    const activeCategoryItem = document.querySelector(
+    const activeCategoryItem = safeQuerySelector(
       ".products__catalog__filter__type__indicator__active"
     );
-    const categoryId =
-      activeCategoryItem?.closest(
-        ".products__catalog__filter__type__list__item"
-      )?.dataset.categoryId || null;
+    const categoryItem = safeClosest(
+      activeCategoryItem,
+      ".products__catalog__filter__type__list__item"
+    );
+    const categoryId = safeGetDataset(categoryItem, "categoryId");
 
-    const promotionalOnly = promotionalIndicator.classList.contains(
+    const promotionalOnly = promotionalIndicator?.classList.contains(
       "promotional__item__indicator__active"
     );
 
@@ -148,8 +179,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const mainAnimalLinks = document.querySelectorAll(
       ".animal__category__catalog"
     );
+
     for (const categoryLink of mainAnimalLinks) {
-      const isActive = categoryLink.dataset.animalType === animalType;
+      const linkAnimalType = safeGetDataset(categoryLink, "animalType");
+      if (!linkAnimalType) continue;
+
+      const isActive = linkAnimalType === animalType;
       categoryLink.classList.toggle(
         "animal__category__catalog__active",
         isActive
@@ -159,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterItems = document.querySelectorAll(
       ".products__catalog__filter__type__list__item"
     );
+
     for (const filterItem of filterItems) {
       const itemTextElement = filterItem.querySelector(
         ".products__catalog__filter__type__txt"
@@ -199,9 +235,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateCategoryFilters(animalType, products) {
-    const filterTypeList = document.querySelector(
+    const filterTypeList = safeQuerySelector(
       ".products__catalog__filter__type__list"
     );
+    if (!filterTypeList) return;
+
     filterTypeList.innerHTML = "";
 
     const categoryCounts = {};
@@ -209,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const fillerCategories = {};
 
     for (const product of products) {
-      if (!product.animal.some((a) => a.type.toLowerCase() === animalType))
+      if (!product.animal?.some((a) => a.type?.toLowerCase() === animalType))
         continue;
       if (!product.category) continue;
 
@@ -223,6 +261,7 @@ document.addEventListener("DOMContentLoaded", () => {
           (word) => categoryName.toLowerCase().includes(word)
         ) ||
         (product.category.parent && product.category.parent === 5);
+
       const target = isFood
         ? foodCategories
         : isFiller
@@ -244,19 +283,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (Object.keys(foodCategories).length > 0) {
-      const foodCategoryItem = document.createElement("li");
-      foodCategoryItem.className = "food__category__item";
-
-      const totalCount = Object.values(foodCategories).reduce(
-        (sum, cat) => sum + cat.count,
-        0
+      createCategoryWithSubcategories(
+        filterTypeList,
+        foodCategories,
+        "Корм",
+        "food__category__item",
+        "food__subcategories__list"
       );
-      const hasSale = Object.values(foodCategories).some((cat) => cat.hasSale);
+    }
 
-      foodCategoryItem.innerHTML = `
+    if (Object.keys(fillerCategories).length > 0) {
+      createCategoryWithSubcategories(
+        filterTypeList,
+        fillerCategories,
+        "Наполнители",
+        "food__category__item",
+        "food__subcategories__list"
+      );
+    }
+
+    for (const [categoryId, categoryInfo] of Object.entries(categoryCounts)) {
+      createSimpleCategory(filterTypeList, categoryId, categoryInfo);
+    }
+  }
+
+  function createCategoryWithSubcategories(
+    container,
+    categoriesData,
+    categoryName,
+    itemClass,
+    subListClass
+  ) {
+    const categoryItem = document.createElement("li");
+    categoryItem.className = itemClass;
+
+    const totalCount = Object.values(categoriesData).reduce(
+      (sum, cat) => sum + cat.count,
+      0
+    );
+    const hasSale = Object.values(categoriesData).some((cat) => cat.hasSale);
+
+    categoryItem.innerHTML = `
       <div class="food__category__contain">
         <div class="products__catalog__filter__type__indicator"></div>
-        <p class="products__catalog__filter__type__txt">Корм</p>
+        <p class="products__catalog__filter__type__txt">${categoryName}</p>
         <span class="products__catalog__filter__type__count">(${totalCount})</span>
         ${
           hasSale
@@ -264,213 +334,114 @@ document.addEventListener("DOMContentLoaded", () => {
             : ""
         }
       </div>
-      <div class="food__subcategories__list"></div>
+      <div class="${subListClass}"></div>
     `;
 
-      const subCategoriesList = foodCategoryItem.querySelector(
-        ".food__subcategories__list"
-      );
-      const foodIndicator = foodCategoryItem.querySelector(
-        ".products__catalog__filter__type__indicator"
-      );
+    const subCategoriesList = categoryItem.querySelector(`.${subListClass}`);
+    const mainIndicator = categoryItem.querySelector(
+      ".products__catalog__filter__type__indicator"
+    );
 
-      foodCategoryItem
-        .querySelector(".food__category__contain")
-        .addEventListener("click", () => {
-          resetAllIndicators();
-          foodIndicator.classList.add(
+    categoryItem
+      .querySelector(".food__category__contain")
+      .addEventListener("click", () => {
+        resetAllIndicators();
+        if (mainIndicator) {
+          mainIndicator.classList.add(
             "products__catalog__filter__type__indicator__active"
           );
+        }
 
-          const subItems = subCategoriesList.querySelectorAll(
-            ".food__subcategory__item"
+        const subItems = subCategoriesList.querySelectorAll(
+          ".food__subcategory__item"
+        );
+        for (const subItem of subItems) {
+          const subIndicator = subItem.querySelector(
+            ".products__catalog__filter__brand__indicator"
           );
-          for (const subItem of subItems) {
-            subItem
-              .querySelector(".products__catalog__filter__brand__indicator")
-              .classList.add(
-                "products__catalog__filter__brand__indicator__active"
-              );
+          if (subIndicator) {
+            subIndicator.classList.add(
+              "products__catalog__filter__brand__indicator__active"
+            );
           }
+        }
 
-          filterProductsByCategory(Object.keys(foodCategories));
-        });
+        filterProductsByCategory(Object.keys(categoriesData));
+      });
 
-      for (const [categoryId, categoryInfo] of Object.entries(foodCategories)) {
-        const subItem = document.createElement("div");
-        subItem.className = "food__subcategory__item";
-        subItem.dataset.categoryId = categoryId;
+    for (const [categoryId, categoryInfo] of Object.entries(categoriesData)) {
+      const subItem = document.createElement("div");
+      subItem.className = "food__subcategory__item";
+      subItem.dataset.categoryId = categoryId;
 
-        subItem.innerHTML = `
+      subItem.innerHTML = `
         <div class="products__catalog__filter__brand__indicator"></div>
         <p class="products__catalog__filter__brand__txt">${categoryInfo.name}</p>
         <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
       `;
 
-        const subIndicator = subItem.querySelector(
-          ".products__catalog__filter__brand__indicator"
+      const subIndicator = subItem.querySelector(
+        ".products__catalog__filter__brand__indicator"
+      );
+
+      subItem.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        const allTypeIndicators = document.querySelectorAll(
+          ".products__catalog__filter__type__indicator"
         );
-
-        subItem.addEventListener("click", (e) => {
-          e.stopPropagation();
-
-          const allTypeIndicators = document.querySelectorAll(
-            ".products__catalog__filter__type__indicator"
-          );
-          for (const indicator of allTypeIndicators) {
-            indicator.classList.remove(
-              "products__catalog__filter__type__indicator__active"
-            );
-          }
-
-          subIndicator.classList.toggle(
-            "products__catalog__filter__brand__indicator__active"
-          );
-
-          const activeSubs = subCategoriesList.querySelectorAll(
-            ".products__catalog__filter__brand__indicator__active"
-          );
-
-          foodIndicator.classList.toggle(
-            "products__catalog__filter__type__indicator__active",
-            activeSubs.length > 0
-          );
-
-          const selectedIds = [];
-          for (const indicator of activeSubs) {
-            selectedIds.push(
-              indicator.closest(".food__subcategory__item").dataset.categoryId
-            );
-          }
-
-          filterProductsByCategory(selectedIds.length > 0 ? selectedIds : null);
-        });
-
-        subCategoriesList.appendChild(subItem);
-      }
-
-      filterTypeList.appendChild(foodCategoryItem);
-    }
-
-    if (Object.keys(fillerCategories).length > 0) {
-      const fillerCategoryItem = document.createElement("li");
-      fillerCategoryItem.className = "food__category__item";
-
-      const totalCount = Object.values(fillerCategories).reduce(
-        (sum, cat) => sum + cat.count,
-        0
-      );
-      const hasSale = Object.values(fillerCategories).some(
-        (cat) => cat.hasSale
-      );
-
-      fillerCategoryItem.innerHTML = `
-    <div class="food__category__contain">
-      <div class="products__catalog__filter__type__indicator"></div>
-      <p class="products__catalog__filter__type__txt">Наполнители</p>
-      <span class="products__catalog__filter__type__count">(${totalCount})</span>
-      ${
-        hasSale
-          ? '<span class="products__catalog__filter__type__sale">Акция</span>'
-          : ""
-      }
-    </div>
-    <div class="food__subcategories__list"></div>
-  `;
-
-      const subCategoriesList = fillerCategoryItem.querySelector(
-        ".food__subcategories__list"
-      );
-      const fillerIndicator = fillerCategoryItem.querySelector(
-        ".products__catalog__filter__type__indicator"
-      );
-
-      fillerCategoryItem
-        .querySelector(".food__category__contain")
-        .addEventListener("click", () => {
-          resetAllIndicators();
-          fillerIndicator.classList.add(
+        for (const indicator of allTypeIndicators) {
+          indicator.classList.remove(
             "products__catalog__filter__type__indicator__active"
           );
+        }
 
-          const subItems = subCategoriesList.querySelectorAll(
-            ".food__subcategory__item"
-          );
-          for (const subItem of subItems) {
-            subItem
-              .querySelector(".products__catalog__filter__brand__indicator")
-              .classList.add(
-                "products__catalog__filter__brand__indicator__active"
-              );
-          }
-
-          filterProductsByCategory(Object.keys(fillerCategories));
-        });
-
-      for (const [categoryId, categoryInfo] of Object.entries(
-        fillerCategories
-      )) {
-        const subItem = document.createElement("div");
-        subItem.className = "food__subcategory__item";
-        subItem.dataset.categoryId = categoryId;
-
-        subItem.innerHTML = `
-      <div class="products__catalog__filter__brand__indicator"></div>
-      <p class="products__catalog__filter__brand__txt">${categoryInfo.name}</p>
-      <span class="products__catalog__filter__type__count">(${categoryInfo.count})</span>
-    `;
-
-        const subIndicator = subItem.querySelector(
-          ".products__catalog__filter__brand__indicator"
-        );
-
-        subItem.addEventListener("click", (e) => {
-          e.stopPropagation();
-
-          const allTypeIndicators = document.querySelectorAll(
-            ".products__catalog__filter__type__indicator"
-          );
-          for (const indicator of allTypeIndicators) {
-            indicator.classList.remove(
-              "products__catalog__filter__type__indicator__active"
-            );
-          }
-
+        if (subIndicator) {
           subIndicator.classList.toggle(
             "products__catalog__filter__brand__indicator__active"
           );
+        }
 
-          const activeSubs = subCategoriesList.querySelectorAll(
-            ".products__catalog__filter__brand__indicator__active"
-          );
+        const activeSubs = subCategoriesList.querySelectorAll(
+          ".products__catalog__filter__brand__indicator__active"
+        );
 
-          fillerIndicator.classList.toggle(
+        if (mainIndicator) {
+          mainIndicator.classList.toggle(
             "products__catalog__filter__type__indicator__active",
             activeSubs.length > 0
           );
+        }
 
-          const selectedIds = [];
-          for (const indicator of activeSubs) {
-            selectedIds.push(
-              indicator.closest(".food__subcategory__item").dataset.categoryId
-            );
+        const selectedIds = [];
+        for (const indicator of activeSubs) {
+          const subItemElement = safeClosest(
+            indicator,
+            ".food__subcategory__item"
+          );
+          const categoryId = safeGetDataset(subItemElement, "categoryId");
+          if (categoryId) {
+            selectedIds.push(categoryId);
           }
+        }
 
-          filterProductsByCategory(selectedIds.length > 0 ? selectedIds : null);
-        });
+        filterProductsByCategory(selectedIds.length > 0 ? selectedIds : null);
+      });
 
+      if (subCategoriesList) {
         subCategoriesList.appendChild(subItem);
       }
-
-      filterTypeList.appendChild(fillerCategoryItem);
     }
 
-    for (const [categoryId, categoryInfo] of Object.entries(categoryCounts)) {
-      const item = document.createElement("li");
-      item.className = "products__catalog__filter__type__list__item";
-      item.dataset.categoryId = categoryId;
+    container.appendChild(categoryItem);
+  }
 
-      item.innerHTML = `
+  function createSimpleCategory(container, categoryId, categoryInfo) {
+    const item = document.createElement("li");
+    item.className = "products__catalog__filter__type__list__item";
+    item.dataset.categoryId = categoryId;
+
+    item.innerHTML = `
       <div class="products__catalog__filter__type__indicator"></div>
       <p class="products__catalog__filter__type__txt">${categoryInfo.name}</p>
       <span class="products__catalog__filter__type__count">(${
@@ -483,20 +454,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     `;
 
-      const indicator = item.querySelector(
-        ".products__catalog__filter__type__indicator"
-      );
+    const indicator = item.querySelector(
+      ".products__catalog__filter__type__indicator"
+    );
 
-      item.addEventListener("click", () => {
-        resetAllIndicators();
+    item.addEventListener("click", () => {
+      resetAllIndicators();
+      if (indicator) {
         indicator.classList.add(
           "products__catalog__filter__type__indicator__active"
         );
-        filterProductsByCategory(categoryId);
-      });
+      }
+      filterProductsByCategory(categoryId);
+    });
 
-      filterTypeList.appendChild(item);
-    }
+    container.appendChild(item);
   }
 
   function resetAllIndicators() {
@@ -544,9 +516,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadBrandFilters(products) {
-    const brandList = document.querySelector(
+    const brandList = safeQuerySelector(
       ".products__catalog__filter__brand__list"
     );
+    if (!brandList) return;
+
     brandList.innerHTML = "";
     allBrandsData = [];
 
@@ -595,9 +569,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const indicator = item.querySelector(
           ".products__catalog__filter__brand__indicator"
         );
-        indicator.classList.toggle(
-          "products__catalog__filter__brand__indicator__active"
-        );
+        if (indicator) {
+          indicator.classList.toggle(
+            "products__catalog__filter__brand__indicator__active"
+          );
+        }
 
         if (window.innerWidth < 993) return;
 
@@ -607,10 +583,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         for (const indicator of activeIndicators) {
-          selectedBrands.push(
-            indicator.closest(".products__catalog__filter__brand__item").dataset
-              .brandId
+          const brandItem = safeClosest(
+            indicator,
+            ".products__catalog__filter__brand__item"
           );
+          const brandId = safeGetDataset(brandItem, "brandId");
+          if (brandId) {
+            selectedBrands.push(brandId);
+          }
         }
 
         currentBrandFilter = selectedBrands.length > 0 ? selectedBrands : null;
@@ -624,9 +604,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initBrandSearch() {
-    const brandSearchInput = document.querySelector(
+    const brandSearchInput = safeQuerySelector(
       ".products__catalog__filter__brand__src__input"
     );
+    if (!brandSearchInput) return;
+
     brandSearchInput.addEventListener("input", () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(
@@ -640,17 +622,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const brandItems = document.querySelectorAll(
       ".products__catalog__filter__brand__item"
     );
-    let visibleCount = 0;
     const searchLower = searchText.toLowerCase().trim();
 
     for (const item of brandItems) {
-      const brandName = item
-        .querySelector(".products__catalog__filter__brand__txt")
-        .textContent.toLowerCase();
+      const brandNameElement = item.querySelector(
+        ".products__catalog__filter__brand__txt"
+      );
+      if (!brandNameElement) continue;
+
+      const brandName = brandNameElement.textContent.toLowerCase();
       const isVisible =
         searchLower === "" || checkBrandMatch(brandName, searchLower);
       item.style.display = isVisible ? "flex" : "none";
-      if (isVisible) visibleCount++;
     }
   }
 
@@ -677,9 +660,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateBrandFilters(products) {
-    const brandList = document.querySelector(
+    const brandList = safeQuerySelector(
       ".products__catalog__filter__brand__list"
     );
+    if (!brandList) return;
+
     const allBrandItems = brandList.querySelectorAll(
       ".products__catalog__filter__brand__item"
     );
@@ -693,7 +678,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     for (const item of allBrandItems) {
-      const brandId = item.dataset.brandId;
+      const brandId = safeGetDataset(item, "brandId");
       const countElement = item.querySelector(
         ".products__catalog__filter__brand__count"
       );
@@ -724,12 +709,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (const item of sortItems) {
       item.addEventListener("click", () => {
-        const sortText = item.querySelector(
+        const sortTextElement = item.querySelector(
           ".products__catalog__sort__select__list__item__txt"
-        ).textContent;
-        document.querySelector(
+        );
+        if (!sortTextElement) return;
+
+        const sortText = sortTextElement.textContent;
+        const activeSortElement = safeQuerySelector(
           ".products__catalog__sort__select__active"
-        ).textContent = sortText;
+        );
+        if (activeSortElement) {
+          activeSortElement.textContent = sortText;
+        }
 
         if (sortText.includes("названию: «от А до Я»")) {
           currentSortType = "name_asc";
@@ -753,83 +744,90 @@ document.addEventListener("DOMContentLoaded", () => {
   function applySorting() {
     document.dispatchEvent(
       new CustomEvent("sortProducts", {
-        detail: {
-          sortType: currentSortType,
-        },
+        detail: { sortType: currentSortType },
       })
     );
   }
 
-  promotional.addEventListener("click", function () {
-    promotionalIndicator.classList.toggle(
-      "promotional__item__indicator__active"
-    );
-    const isPromoActive = promotionalIndicator.classList.contains(
-      "promotional__item__indicator__active"
-    );
+  if (promotional) {
+    promotional.addEventListener("click", function () {
+      if (!promotionalIndicator) return;
 
-    if (window.innerWidth >= 993) {
-      currentPromotionalFilter = isPromoActive;
-      const activeAnimalLink = document.querySelector(
-        ".animal__category__catalog__active"
+      promotionalIndicator.classList.toggle(
+        "promotional__item__indicator__active"
       );
-      const animalType = activeAnimalLink
-        ? activeAnimalLink.dataset.animalType
-        : null;
+      const isPromoActive = promotionalIndicator.classList.contains(
+        "promotional__item__indicator__active"
+      );
 
-      const activeCategoryItem = document.querySelector(
-        ".products__catalog__filter__type__indicator__active"
-      );
-      const categoryId =
-        activeCategoryItem?.closest(
+      if (window.innerWidth >= 993) {
+        currentPromotionalFilter = isPromoActive;
+        const activeAnimalLink = safeQuerySelector(
+          ".animal__category__catalog__active"
+        );
+        const animalType = safeGetDataset(activeAnimalLink, "animalType");
+
+        const activeCategoryItem = safeQuerySelector(
+          ".products__catalog__filter__type__indicator__active"
+        );
+        const categoryItem = safeClosest(
+          activeCategoryItem,
           ".products__catalog__filter__type__list__item"
-        )?.dataset.categoryId || null;
+        );
+        const categoryId = safeGetDataset(categoryItem, "categoryId");
 
-      const event = new CustomEvent("filterProducts", {
-        detail: {
-          animalType: animalType,
-          categoryId: categoryId,
-          promotionalOnly: isPromoActive,
-          brandIds: currentBrandFilter,
-          sortType: currentSortType,
-        },
-      });
-      document.dispatchEvent(event);
-    } else {
-      tempFilters.promotionalOnly = isPromoActive;
-    }
-  });
+        const event = new CustomEvent("filterProducts", {
+          detail: {
+            animalType: animalType,
+            categoryId: categoryId,
+            promotionalOnly: isPromoActive,
+            brandIds: currentBrandFilter,
+            sortType: currentSortType,
+          },
+        });
+        document.dispatchEvent(event);
+      } else {
+        tempFilters.promotionalOnly = isPromoActive;
+      }
+    });
+  }
 
-  revealSelect.addEventListener("click", function () {
-    selectList.classList.toggle(
-      "products__catalog__sort__select__list__active"
-    );
-    revealSelectIndicator.classList.toggle("select__icon__active");
-  });
+  if (revealSelect) {
+    revealSelect.addEventListener("click", function () {
+      if (!selectList || !revealSelectIndicator) return;
+
+      selectList.classList.toggle(
+        "products__catalog__sort__select__list__active"
+      );
+      revealSelectIndicator.classList.toggle("select__icon__active");
+    });
+  }
 
   if (applyFiltersBtn) {
     applyFiltersBtn.addEventListener("click", function () {
       if (window.innerWidth < 993) {
         const selectedBrands = [];
-        document
-          .querySelectorAll(
-            ".products__catalog__filter__brand__indicator__active"
-          )
-          .forEach((indicator) => {
-            selectedBrands.push(
-              indicator.closest(".products__catalog__filter__brand__item")
-                .dataset.brandId
-            );
-          });
+        const activeIndicators = document.querySelectorAll(
+          ".products__catalog__filter__brand__indicator__active"
+        );
+
+        for (const indicator of activeIndicators) {
+          const brandItem = safeClosest(
+            indicator,
+            ".products__catalog__filter__brand__item"
+          );
+          const brandId = safeGetDataset(brandItem, "brandId");
+          if (brandId) {
+            selectedBrands.push(brandId);
+          }
+        }
         currentBrandFilter = selectedBrands.length > 0 ? selectedBrands : null;
       }
 
-      const activeAnimalLink = document.querySelector(
+      const activeAnimalLink = safeQuerySelector(
         ".animal__category__catalog__active"
       );
-      const animalType = activeAnimalLink
-        ? activeAnimalLink.dataset.animalType
-        : null;
+      const animalType = safeGetDataset(activeAnimalLink, "animalType");
 
       currentAnimalFilter =
         tempFilters.animalType !== null ? tempFilters.animalType : animalType;
@@ -847,13 +845,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       document.dispatchEvent(event);
 
-      const sideBar = document.querySelector(
-        ".products__catalog__products__filter"
-      );
-      const burgerMobile = document.querySelector(".burger__menu__mobile");
-      const burger = document.querySelector(".burger__menu");
+      const sideBar = safeQuerySelector(".products__catalog__products__filter");
+      const burgerMobile = safeQuerySelector(".burger__menu__mobile");
+      const burger = safeQuerySelector(".burger__menu");
 
-      sideBar.classList.remove("products__catalog__products__filter__active");
+      if (sideBar)
+        sideBar.classList.remove("products__catalog__products__filter__active");
       if (burgerMobile) burgerMobile.classList.remove("burger__active__mobile");
       if (burger) burger.classList.remove("burger__active");
     });
