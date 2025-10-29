@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ".products__catalog__filter__title"
   );
 
-  // Загрузка брендов при старте
   fetchAllProducts()
     .then((allProducts) => {
       loadBrandFilters(allProducts);
@@ -257,7 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Категория "Корм" с подкатегориями
     if (Object.keys(foodCategories).length > 0) {
       const foodCategoryItem = document.createElement("li");
       foodCategoryItem.className = "food__category__item";
@@ -373,7 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
       filterTypeList.appendChild(foodCategoryItem);
     }
 
-    // Категория "Наполнители" с подкатегориями
     if (Object.keys(fillerCategories).length > 0) {
       const fillerCategoryItem = document.createElement("li");
       fillerCategoryItem.className = "food__category__item";
@@ -493,7 +490,6 @@ document.addEventListener("DOMContentLoaded", () => {
       filterTypeList.appendChild(fillerCategoryItem);
     }
 
-    // Обычные категории
     for (const [categoryId, categoryInfo] of Object.entries(categoryCounts)) {
       const item = document.createElement("li");
       item.className = "products__catalog__filter__type__list__item";
